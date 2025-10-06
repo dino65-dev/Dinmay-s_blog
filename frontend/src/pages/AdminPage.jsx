@@ -40,35 +40,75 @@ const AdminPage = () => {
     }
   };
 
-  const handleHtmlSubmit = (e) => {
-    e.preventDefault();
-    // TODO: Replace with API call
-    console.log('HTML Post:', { htmlTitle, htmlContent, htmlImage });
-    alert('Blog post submitted! (Mock data - not saved yet)');
-    setHtmlTitle('');
-    setHtmlContent('');
-    setHtmlImage('');
+  const generateSlug = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
   };
 
-  const handleMarkdownSubmit = (e) => {
+  const handleHtmlSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Replace with API call
-    console.log('Markdown Post:', { mdTitle, mdContent, mdImage });
-    alert('Blog post submitted! (Mock data - not saved yet)');
-    setMdTitle('');
-    setMdContent('');
-    setMdImage('');
+    try {
+      const slug = generateSlug(htmlTitle);
+      await api.createPost({
+        title: htmlTitle,
+        slug: slug,
+        content: htmlContent,
+        featuredImage: htmlImage,
+        contentType: 'html',
+        excerpt: htmlContent.substring(0, 150),
+      });
+      alert('Blog post published successfully!');
+      setHtmlTitle('');
+      setHtmlContent('');
+      setHtmlImage('');
+    } catch (error) {
+      alert('Error publishing post: ' + (error.response?.data?.detail || error.message));
+    }
   };
 
-  const handleAdminSubmit = (e) => {
+  const handleMarkdownSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Replace with API call
-    console.log('Admin Panel Post:', { adminTitle, adminContent, adminImage, adminExcerpt });
-    alert('Blog post submitted! (Mock data - not saved yet)');
-    setAdminTitle('');
-    setAdminContent('');
-    setAdminImage('');
-    setAdminExcerpt('');
+    try {
+      const slug = generateSlug(mdTitle);
+      await api.createPost({
+        title: mdTitle,
+        slug: slug,
+        content: mdContent,
+        featuredImage: mdImage,
+        contentType: 'markdown',
+        excerpt: mdContent.substring(0, 150),
+      });
+      alert('Blog post published successfully!');
+      setMdTitle('');
+      setMdContent('');
+      setMdImage('');
+    } catch (error) {
+      alert('Error publishing post: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const handleAdminSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const slug = generateSlug(adminTitle);
+      await api.createPost({
+        title: adminTitle,
+        slug: slug,
+        content: adminContent,
+        featuredImage: adminImage,
+        contentType: 'markdown',
+        excerpt: adminExcerpt || adminContent.substring(0, 150),
+      });
+      alert('Blog post published successfully!');
+      setAdminTitle('');
+      setAdminContent('');
+      setAdminImage('');
+      setAdminExcerpt('');
+    } catch (error) {
+      alert('Error publishing post: ' + (error.response?.data?.detail || error.message));
+    }
   };
 
   if (!isAuthenticated) {
