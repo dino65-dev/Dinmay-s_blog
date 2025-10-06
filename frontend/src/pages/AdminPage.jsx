@@ -5,10 +5,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import { toast } from '../hooks/use-toast';
 
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
