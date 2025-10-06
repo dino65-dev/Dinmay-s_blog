@@ -68,12 +68,19 @@ const AdminPage = () => {
         contentType: 'html',
         excerpt: htmlContent.substring(0, 150),
       });
-      alert('Blog post published successfully!');
+      toast({
+        title: "Success",
+        description: "Blog post published successfully!",
+      });
       setHtmlTitle('');
       setHtmlContent('');
       setHtmlImage('');
     } catch (error) {
-      alert('Error publishing post: ' + (error.response?.data?.detail || error.message));
+      toast({
+        title: "Error",
+        description: error.response?.data?.detail || error.message,
+        variant: "destructive",
+      });
     }
   };
 
