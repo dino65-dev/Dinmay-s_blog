@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
@@ -15,9 +15,76 @@ import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-css';
 import 'katex/dist/katex.min.css';
 
-const MarkdownRenderer = ({ content }) => {
+const CodeBlock = ({ inline, className, children, ...props }) => {
+  const [copied, setCopied] = useState(false);
+  const codeRef = useRef(null);
+
+  const handleCopy = async () => {
+    const code = codeRef.current?.textContent || '';
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   useEffect(() => {
-    Prism.highlightAll();
+    if (codeRef.current) {
+      Prism.highlightElement(codeRef.current);
+    }
+  }, [children]);
+
+  const match = /language-(\w+)/.exec(className || '');
+  const language = match ? match[1] : '';
+
+  if (!inline && match) {
+    return (
+      <div className="code-block-wrapper">
+        <div className="code-block-header">
+          <span className="code-language">{language}</span>
+          <button
+            onClick={handleCopy}
+            className="copy-button"
+            title={copied ? 'Copied!' : 'Copy code'}
+          >
+            {copied ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            )}
+            <span className="copy-text">{copied ? 'Copied!' : 'Copy'}</span>
+          </button>
+        </div>
+        <pre className={className}>
+          <code ref={codeRef} className={className} {...props}>
+            {children}
+          </code>
+        </pre>
+      </div>
+    );
+  }
+
+  return (
+    <code className={className} {...props}>
+      {children}
+    </code>
+  );
+};
+
+const MarkdownRenderer = ({ content }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      Prism.highlightAllUnder(containerRef.current);
+    }
   }, [content]);
 
   return (
