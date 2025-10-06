@@ -22,7 +22,7 @@ const MarkdownRenderer = ({ content }) => {
   }, [content]);
 
   return (
-    <div className="markdown-content prose prose-lg max-w-none">
+    <div className="markdown-content prose prose-lg dark:prose-invert max-w-none">
       <style>{`
         .markdown-content h1 {
           font-size: 2.5rem;
@@ -58,6 +58,9 @@ const MarkdownRenderer = ({ content }) => {
           padding: 0.2rem 0.4rem;
           border-radius: 3px;
           font-size: 0.9em;
+        }
+        .dark .markdown-content code {
+          background: #374151;
         }
         .markdown-content pre code {
           background: transparent;
