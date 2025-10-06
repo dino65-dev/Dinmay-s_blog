@@ -22,45 +22,63 @@ const MarkdownRenderer = ({ content }) => {
   }, [content]);
 
   return (
-    <div className="markdown-content prose prose-lg dark:prose-invert max-w-none">
+    <div className="markdown-content prose prose-lg dark:prose-invert max-w-none text-gray-900 dark:text-gray-100">
       <style>{`
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+          font-weight: bold;
+          color: inherit;
+        }
         .markdown-content h1 {
           font-size: 2.5rem;
-          font-weight: bold;
           margin-top: 2rem;
           margin-bottom: 1rem;
         }
         .markdown-content h2 {
           font-size: 2rem;
-          font-weight: bold;
           margin-top: 1.5rem;
           margin-bottom: 0.75rem;
         }
         .markdown-content h3 {
           font-size: 1.5rem;
-          font-weight: bold;
           margin-top: 1.25rem;
           margin-bottom: 0.5rem;
         }
         .markdown-content p {
           margin: 1rem 0;
           line-height: 1.7;
+          color: inherit;
         }
         .markdown-content ul, .markdown-content ol {
           margin: 1rem 0;
           padding-left: 2rem;
+          color: inherit;
         }
         .markdown-content li {
           margin: 0.5rem 0;
+          color: inherit;
+        }
+        .markdown-content a {
+          color: #3b82f6;
+          text-decoration: underline;
+        }
+        .dark .markdown-content a {
+          color: #60a5fa;
         }
         .markdown-content code {
           background: #f4f4f4;
+          color: #1f2937;
           padding: 0.2rem 0.4rem;
           border-radius: 3px;
           font-size: 0.9em;
         }
         .dark .markdown-content code {
           background: #374151;
+          color: #e5e7eb;
         }
         .markdown-content pre code {
           background: transparent;
@@ -72,6 +90,21 @@ const MarkdownRenderer = ({ content }) => {
         .markdown-content .katex-display {
           margin: 1.5rem 0;
           overflow-x: auto;
+        }
+        .markdown-content strong {
+          color: inherit;
+        }
+        .markdown-content em {
+          color: inherit;
+        }
+        .markdown-content blockquote {
+          border-left: 4px solid #d1d5db;
+          padding-left: 1rem;
+          color: inherit;
+          font-style: italic;
+        }
+        .dark .markdown-content blockquote {
+          border-left-color: #4b5563;
         }
       `}</style>
       <ReactMarkdown
