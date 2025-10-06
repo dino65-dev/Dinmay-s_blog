@@ -290,9 +290,9 @@ You can test the backend APIs using the built-in Swagger documentation:
 
 ## Default Credentials
 
-- **Admin Password**: `admin123`
+- **Admin Password**: `tapuhero@123`
 
-**⚠️ IMPORTANT**: Change this password in production by updating the `ADMIN_PASSWORD` in `backend/.env`
+**⚠️ IMPORTANT**: This password is set in `backend/.env` under `ADMIN_PASSWORD`
 
 ## Tech Stack
 
