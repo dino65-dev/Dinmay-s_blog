@@ -1,0 +1,289 @@
+import React, { useState } from 'react';
+import Header from '../components/Header';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Label } from '../components/ui/label';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import MarkdownRenderer from '../components/MarkdownRenderer';
+import { toast } from '../hooks/use-toast';
+
+const AdminPage = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState('rich');
+
+  // Rich Text Editor State
+  const [richTitle, setRichTitle] = useState('');
+  const [richContent, setRichContent] = useState('');
+  const [richImage, setRichImage] = useState('');
+
+  // Markdown Editor State
+  const [mdTitle, setMdTitle] = useState('');
+  const [mdContent, setMdContent] = useState('');
+  const [mdImage, setMdImage] = useState('');
+
+  // Admin Panel State
+  const [adminTitle, setAdminTitle] = useState('');
+  const [adminContent, setAdminContent] = useState('');
+  const [adminImage, setAdminImage] = useState('');
+  const [adminExcerpt, setAdminExcerpt] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // TODO: Replace with actual authentication
+    if (password === 'admin123') {
+      setIsAuthenticated(true);
+    } else {
+      alert('Incorrect password');
+    }
+  };
+
+  const handleRichSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Replace with API call
+    console.log('Rich Text Post:', { richTitle, richContent, richImage });
+    alert('Blog post submitted! (Mock data - not saved yet)');
+    setRichTitle('');
+    setRichContent('');
+    setRichImage('');
+  };
+
+  const handleMarkdownSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Replace with API call
+    console.log('Markdown Post:', { mdTitle, mdContent, mdImage });
+    alert('Blog post submitted! (Mock data - not saved yet)');
+    setMdTitle('');
+    setMdContent('');
+    setMdImage('');
+  };
+
+  const handleAdminSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Replace with API call
+    console.log('Admin Panel Post:', { adminTitle, adminContent, adminImage, adminExcerpt });
+    alert('Blog post submitted! (Mock data - not saved yet)');
+    setAdminTitle('');
+    setAdminContent('');
+    setAdminImage('');
+    setAdminExcerpt('');
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="max-w-md mx-auto px-6 py-24">
+          <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
+            <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+            <form onSubmit={handleLogin}>
+              <div className="mb-4">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter admin password"
+                  className="mt-2"
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
+            </form>
+            <p className="text-xs text-gray-500 mt-4 text-center">
+              Demo password: admin123
+            </p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <Header />
+      <main className="max-w-5xl mx-auto px-6 py-12">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold">Admin Panel</h1>
+          <Button onClick={() => setIsAuthenticated(false)} variant="outline">
+            Logout
+          </Button>
+        </div>
+
+        <Tabs defaultValue="rich" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="rich">Rich Text Editor</TabsTrigger>
+            <TabsTrigger value="markdown">Markdown Editor</TabsTrigger>
+            <TabsTrigger value="admin">Admin Panel</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="rich">
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-bold mb-6">Create Post - Rich Text Editor</h2>
+              <form onSubmit={handleRichSubmit}>
+                <div className="mb-4">
+                  <Label htmlFor="rich-title">Title</Label>
+                  <Input
+                    id="rich-title"
+                    value={richTitle}
+                    onChange={(e) => setRichTitle(e.target.value)}
+                    placeholder="Enter post title"
+                    required
+                    className="mt-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <Label htmlFor="rich-image">Featured Image URL</Label>
+                  <Input
+                    id="rich-image"
+                    value={richImage}
+                    onChange={(e) => setRichImage(e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                    className="mt-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <Label>Content</Label>
+                  <div className="mt-2 bg-white">
+                    <ReactQuill
+                      theme="snow"
+                      value={richContent}
+                      onChange={setRichContent}
+                      modules={{
+                        toolbar: [
+                          [{ header: [1, 2, 3, false] }],
+                          ['bold', 'italic', 'underline', 'strike'],
+                          [{ list: 'ordered' }, { list: 'bullet' }],
+                          ['blockquote', 'code-block'],
+                          ['link', 'image'],
+                          ['clean'],
+                        ],
+                      }}
+                      style={{ minHeight: '300px' }}
+                    />
+                  </div>
+                </div>
+                <Button type="submit" className="w-full mt-16">
+                  Publish Post
+                </Button>
+              </form>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="markdown">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 className="text-xl font-bold mb-6">Write in Markdown</h2>
+                <form onSubmit={handleMarkdownSubmit}>
+                  <div className="mb-4">
+                    <Label htmlFor="md-title">Title</Label>
+                    <Input
+                      id="md-title"
+                      value={mdTitle}
+                      onChange={(e) => setMdTitle(e.target.value)}
+                      placeholder="Enter post title"
+                      required
+                      className="mt-2"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="md-image">Featured Image URL</Label>
+                    <Input
+                      id="md-image"
+                      value={mdImage}
+                      onChange={(e) => setMdImage(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      className="mt-2"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="md-content">Content (Markdown)</Label>
+                    <Textarea
+                      id="md-content"
+                      value={mdContent}
+                      onChange={(e) => setMdContent(e.target.value)}
+                      placeholder="# Your markdown content here..."
+                      className="mt-2 font-mono"
+                      rows={15}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Publish Post
+                  </Button>
+                </form>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 className="text-xl font-bold mb-6">Live Preview</h2>
+                {mdTitle && <h1 className="text-3xl font-bold mb-4">{mdTitle}</h1>}
+                {mdImage && (
+                  <img src={mdImage} alt="Preview" className="w-full h-48 object-cover rounded mb-4" />
+                )}
+                {mdContent && <MarkdownRenderer content={mdContent} />}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="admin">
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-bold mb-6">Create Post - Admin Panel</h2>
+              <form onSubmit={handleAdminSubmit}>
+                <div className="mb-4">
+                  <Label htmlFor="admin-title">Title</Label>
+                  <Input
+                    id="admin-title"
+                    value={adminTitle}
+                    onChange={(e) => setAdminTitle(e.target.value)}
+                    placeholder="Enter post title"
+                    required
+                    className="mt-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <Label htmlFor="admin-excerpt">Excerpt</Label>
+                  <Input
+                    id="admin-excerpt"
+                    value={adminExcerpt}
+                    onChange={(e) => setAdminExcerpt(e.target.value)}
+                    placeholder="Short description of the post"
+                    className="mt-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <Label htmlFor="admin-image">Featured Image URL</Label>
+                  <Input
+                    id="admin-image"
+                    value={adminImage}
+                    onChange={(e) => setAdminImage(e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                    className="mt-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <Label htmlFor="admin-content">Content (HTML/Markdown)</Label>
+                  <Textarea
+                    id="admin-content"
+                    value={adminContent}
+                    onChange={(e) => setAdminContent(e.target.value)}
+                    placeholder="Paste your pre-written content here..."
+                    className="mt-2 font-mono"
+                    rows={15}
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  Publish Post
+                </Button>
+              </form>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
+  );
+};
+
+export default AdminPage;
