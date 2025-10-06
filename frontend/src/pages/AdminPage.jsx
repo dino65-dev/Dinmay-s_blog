@@ -165,7 +165,7 @@ const AdminPage = () => {
               </Button>
             </form>
             <p className="text-xs text-gray-500 mt-4 text-center">
-              Demo password: admin123
+              Demo password: tapuhero@123
             </p>
           </div>
         </main>
