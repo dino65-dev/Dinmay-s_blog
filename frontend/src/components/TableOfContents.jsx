@@ -4,6 +4,7 @@ const TableOfContents = ({ content }) => {
   const [headings, setHeadings] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [activeId, setActiveId] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   console.log('TableOfContents rendered, content length:', content?.length);
   console.log('Headings found:', headings.length);
