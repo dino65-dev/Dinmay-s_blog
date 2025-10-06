@@ -17,12 +17,14 @@ def get_posts_collection():
 @router.get("/posts", response_model=List[BlogPost])
 async def get_all_posts():
     """Get all blog posts, sorted by published date (newest first)"""
+    posts_collection = get_posts_collection()
     posts = await posts_collection.find().sort("publishedDate", -1).to_list(1000)
     return [BlogPost(**post) for post in posts]
 
 @router.get("/posts/{slug}")
 async def get_post_by_slug(slug: str):
     """Get a single blog post by slug"""
+    posts_collection = get_posts_collection()
     post = await posts_collection.find_one({"slug": slug})
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -31,6 +33,7 @@ async def get_post_by_slug(slug: str):
 @router.post("/posts", response_model=BlogPost)
 async def create_post(post: BlogPostCreate, token: dict = Depends(verify_token)):
     """Create a new blog post (requires authentication)"""
+    posts_collection = get_posts_collection()
     # Check if slug already exists
     existing = await posts_collection.find_one({"slug": post.slug})
     if existing:
@@ -43,6 +46,7 @@ async def create_post(post: BlogPostCreate, token: dict = Depends(verify_token))
 @router.put("/posts/{post_id}", response_model=BlogPost)
 async def update_post(post_id: str, post_update: BlogPostUpdate, token: dict = Depends(verify_token)):
     """Update a blog post (requires authentication)"""
+    posts_collection = get_posts_collection()
     existing_post = await posts_collection.find_one({"id": post_id})
     if not existing_post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -57,6 +61,7 @@ async def update_post(post_id: str, post_update: BlogPostUpdate, token: dict = D
 @router.delete("/posts/{post_id}")
 async def delete_post(post_id: str, token: dict = Depends(verify_token)):
     """Delete a blog post (requires authentication)"""
+    posts_collection = get_posts_collection()
     result = await posts_collection.delete_one({"id": post_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Post not found")
