@@ -112,60 +112,50 @@ const AdminPage = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="rich" className="w-full">
+        <Tabs defaultValue="html" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="rich">Rich Text Editor</TabsTrigger>
+            <TabsTrigger value="html">HTML Editor</TabsTrigger>
             <TabsTrigger value="markdown">Markdown Editor</TabsTrigger>
-            <TabsTrigger value="admin">Admin Panel</TabsTrigger>
+            <TabsTrigger value="admin">Quick Upload</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="rich">
+          <TabsContent value="html">
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h2 className="text-xl font-bold mb-6">Create Post - Rich Text Editor</h2>
-              <form onSubmit={handleRichSubmit}>
+              <h2 className="text-xl font-bold mb-6">Create Post - HTML Editor</h2>
+              <form onSubmit={handleHtmlSubmit}>
                 <div className="mb-4">
-                  <Label htmlFor="rich-title">Title</Label>
+                  <Label htmlFor="html-title">Title</Label>
                   <Input
-                    id="rich-title"
-                    value={richTitle}
-                    onChange={(e) => setRichTitle(e.target.value)}
+                    id="html-title"
+                    value={htmlTitle}
+                    onChange={(e) => setHtmlTitle(e.target.value)}
                     placeholder="Enter post title"
                     required
                     className="mt-2"
                   />
                 </div>
                 <div className="mb-4">
-                  <Label htmlFor="rich-image">Featured Image URL</Label>
+                  <Label htmlFor="html-image">Featured Image URL</Label>
                   <Input
-                    id="rich-image"
-                    value={richImage}
-                    onChange={(e) => setRichImage(e.target.value)}
+                    id="html-image"
+                    value={htmlImage}
+                    onChange={(e) => setHtmlImage(e.target.value)}
                     placeholder="https://example.com/image.jpg"
                     className="mt-2"
                   />
                 </div>
                 <div className="mb-4">
-                  <Label>Content</Label>
-                  <div className="mt-2 bg-white">
-                    <ReactQuill
-                      theme="snow"
-                      value={richContent}
-                      onChange={setRichContent}
-                      modules={{
-                        toolbar: [
-                          [{ header: [1, 2, 3, false] }],
-                          ['bold', 'italic', 'underline', 'strike'],
-                          [{ list: 'ordered' }, { list: 'bullet' }],
-                          ['blockquote', 'code-block'],
-                          ['link', 'image'],
-                          ['clean'],
-                        ],
-                      }}
-                      style={{ minHeight: '300px' }}
-                    />
-                  </div>
+                  <Label htmlFor="html-content">Content (HTML/Markdown)</Label>
+                  <Textarea
+                    id="html-content"
+                    value={htmlContent}
+                    onChange={(e) => setHtmlContent(e.target.value)}
+                    placeholder="<h1>Your HTML content</h1> or # Your markdown"
+                    className="mt-2 font-mono"
+                    rows={15}
+                  />
                 </div>
-                <Button type="submit" className="w-full mt-16">
+                <Button type="submit" className="w-full">
                   Publish Post
                 </Button>
               </form>
