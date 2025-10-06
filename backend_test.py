@@ -93,9 +93,7 @@ class BlogAPITester:
         # Test 3: Verify valid token
         if self.auth_token:
             try:
-                response = requests.post(f"{API_BASE}/auth/verify", 
-                    json={"token": self.auth_token},
-                    headers={"Content-Type": "application/json"})
+                response = requests.post(f"{API_BASE}/auth/verify?token={self.auth_token}")
                 
                 if response.status_code == 200:
                     data = response.json()
@@ -112,9 +110,7 @@ class BlogAPITester:
 
         # Test 4: Verify invalid token
         try:
-            response = requests.post(f"{API_BASE}/auth/verify", 
-                json={"token": "invalid_token_123"},
-                headers={"Content-Type": "application/json"})
+            response = requests.post(f"{API_BASE}/auth/verify?token=invalid_token_123")
             
             if response.status_code == 200:
                 data = response.json()
