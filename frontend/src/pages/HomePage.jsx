@@ -1,23 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import BlogPostCard from '../components/BlogPostCard';
-import { mockBlogPosts } from '../mockData';
+import api from '../utils/api';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // TODO: Replace with API call
-    setPosts(mockBlogPosts);
+    const fetchPosts = async () => {
+      try {
+        const data = await api.getPosts();
+        setPosts(data);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="max-w-3xl mx-auto px-6 py-12">
+          <p className="text-center text-gray-600">Loading posts...</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <main className="max-w-3xl mx-auto px-6 py-12">
-        {posts.map((post) => (
-          <BlogPostCard key={post.id} post={post} />
-        ))}
+        {posts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 mb-4">No blog posts yet.</p>
+            <p className="text-sm text-gray-500">
+              Visit <a href="/admin" className="underline">admin panel</a> to create your first post.
+            </p>
+          </div>
+        ) : (
+          posts.map((post) => (
+            <BlogPostCard key={post.id} post={post} />
+          ))
+        )}
       </main>
     </div>
   );
