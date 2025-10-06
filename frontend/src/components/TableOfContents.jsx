@@ -5,6 +5,9 @@ const TableOfContents = ({ content }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeId, setActiveId] = useState('');
 
+  console.log('TableOfContents rendered, content length:', content?.length);
+  console.log('Headings found:', headings.length);
+
   useEffect(() => {
     // Extract headings from content
     const tempDiv = document.createElement('div');
