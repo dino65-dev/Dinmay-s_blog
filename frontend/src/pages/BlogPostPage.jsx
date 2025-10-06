@@ -94,7 +94,20 @@ const BlogPostPage = () => {
               className="w-full h-96 object-cover rounded-lg mb-8"
             />
           )}
-          <h1 className="text-4xl font-bold mb-4 text-black">{post.title}</h1>
+          <div className="flex justify-between items-start mb-4">
+            <h1 className="text-4xl font-bold text-black flex-1">{post.title}</h1>
+            {isAuthenticated && (
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="ml-4"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </Button>
+            )}
+          </div>
           <p className="text-gray-600 mb-8">Published: {formatDate(post.publishedDate)}</p>
         </div>
         <MarkdownRenderer content={post.content} />
