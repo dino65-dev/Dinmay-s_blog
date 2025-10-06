@@ -44,6 +44,26 @@ export const blogAPI = {
     }
   },
 
+  // Search posts with advanced filters
+  searchPosts: async (filters = {}) => {
+    try {
+      const params = new URLSearchParams();
+      if (filters.q) params.append('q', filters.q);
+      if (filters.contentType) params.append('content_type', filters.contentType);
+      if (filters.startDate) params.append('start_date', filters.startDate);
+      if (filters.endDate) params.append('end_date', filters.endDate);
+      if (filters.sortBy) params.append('sort_by', filters.sortBy);
+      if (filters.order) params.append('order', filters.order);
+      
+      const response = await fetch(`${API_BASE_URL}/api/search/posts?${params.toString()}`);
+      if (!response.ok) throw new Error('Failed to search posts');
+      return await response.json();
+    } catch (error) {
+      console.error('Error searching posts:', error);
+      return [];
+    }
+  },
+
   // Get post by slug
   getPostBySlug: async (slug) => {
     try {
