@@ -21,20 +21,56 @@ const MarkdownRenderer = ({ content }) => {
     Prism.highlightAll();
   }, [content]);
 
-  useEffect(() => {
-    // Load MathJax dynamically
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-    script.async = true;
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
   return (
     <div className="markdown-content prose prose-lg max-w-none">
+      <style>{`
+        .markdown-content h1 {
+          font-size: 2.5rem;
+          font-weight: bold;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+        }
+        .markdown-content h2 {
+          font-size: 2rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+        }
+        .markdown-content h3 {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-top: 1.25rem;
+          margin-bottom: 0.5rem;
+        }
+        .markdown-content p {
+          margin: 1rem 0;
+          line-height: 1.7;
+        }
+        .markdown-content ul, .markdown-content ol {
+          margin: 1rem 0;
+          padding-left: 2rem;
+        }
+        .markdown-content li {
+          margin: 0.5rem 0;
+        }
+        .markdown-content code {
+          background: #f4f4f4;
+          padding: 0.2rem 0.4rem;
+          border-radius: 3px;
+          font-size: 0.9em;
+        }
+        .markdown-content pre code {
+          background: transparent;
+          padding: 0;
+        }
+        .markdown-content .katex {
+          font-size: 1.1em;
+        }
+        .markdown-content .katex-display {
+          margin: 1.5rem 0;
+          overflow-x: auto;
+        }
+      `}</style>
       <ReactMarkdown
         remarkPlugins={[remarkMath, remarkGfm]}
         rehypePlugins={[rehypeKatex, rehypeRaw]}
