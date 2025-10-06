@@ -360,15 +360,18 @@ frontend:
 
   - task: "Table of Contents (TOC)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/components/TableOfContents.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created TableOfContents component that auto-generates TOC from H1, H2, H3 headings in post content. Features: collapsible with toggle button, smooth scroll to sections, scroll spy to highlight active section, proper indentation for heading levels. Integrated into BlogPostPage sidebar (hidden on mobile, visible on desktop)."
+      - working: true
+        agent: "main"
+        comment: "Fixed TOC not showing headings. Issue: Component was looking for .blog-content class but MarkdownRenderer uses .markdown-content. Also, it was trying to parse raw content instead of waiting for ReactMarkdown to render. Solution: Changed selector to .markdown-content, added retry logic to wait for DOM render, extract headings from actual rendered DOM instead of parsing raw HTML. TOC now correctly extracts and displays all h1, h2, h3 headings."
 
   - task: "Mobile-responsive design"
     implemented: true
