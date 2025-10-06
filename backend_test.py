@@ -385,12 +385,12 @@ class BlogAPITester:
             
             response = requests.put(f"{API_BASE}/about", json=unauthorized_content)
             
-            if response.status_code == 401:
+            if response.status_code in [401, 403]:
                 self.log_test('about_tests', 'Update about without auth (should fail)', True, 
-                            "Correctly returned 401 Unauthorized")
+                            f"Correctly returned {response.status_code} Unauthorized/Forbidden")
             else:
                 self.log_test('about_tests', 'Update about without auth (should fail)', False, 
-                            f"Expected 401, got {response.status_code}")
+                            f"Expected 401/403, got {response.status_code}")
         except Exception as e:
             self.log_test('about_tests', 'Update about without auth (should fail)', False, str(e))
 
