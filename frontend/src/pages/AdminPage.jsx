@@ -10,12 +10,12 @@ import MarkdownRenderer from '../components/MarkdownRenderer';
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState('rich');
+  const [activeTab, setActiveTab] = useState('html');
 
-  // Rich Text Editor State
-  const [richTitle, setRichTitle] = useState('');
-  const [richContent, setRichContent] = useState('');
-  const [richImage, setRichImage] = useState('');
+  // HTML Editor State
+  const [htmlTitle, setHtmlTitle] = useState('');
+  const [htmlContent, setHtmlContent] = useState('');
+  const [htmlImage, setHtmlImage] = useState('');
 
   // Markdown Editor State
   const [mdTitle, setMdTitle] = useState('');
