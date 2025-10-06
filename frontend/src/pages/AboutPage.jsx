@@ -1,14 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import { mockAboutContent } from '../mockData';
+import api from '../utils/api';
 
 const AboutPage = () => {
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAbout = async () => {
+      try {
+        const data = await api.getAbout();
+        setContent(data.content);
+      } catch (error) {
+        console.error('Error fetching about content:', error);
+        setContent('# About\n\nWelcome to the blog!');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAbout();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="max-w-3xl mx-auto px-6 py-12">
+          <p className="text-center text-gray-600">Loading...</p>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <main className="max-w-3xl mx-auto px-6 py-12">
-        <MarkdownRenderer content={mockAboutContent} />
+        <MarkdownRenderer content={content} />
       </main>
     </div>
   );
