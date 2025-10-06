@@ -143,7 +143,7 @@ const AdminPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
         <Header />
         <main className="max-w-md mx-auto px-6 py-24">
           <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
@@ -174,7 +174,7 @@ const AdminPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <Header />
       <main className="max-w-5xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
