@@ -85,6 +85,27 @@ export const api = {
     });
     return response.data;
   },
+
+  // Comments API
+  // Get all comments for a post
+  getComments: async (postId) => {
+    const response = await axios.get(`${API}/posts/${postId}/comments`);
+    return response.data;
+  },
+
+  // Create a comment (no auth required)
+  createComment: async (postId, commentData) => {
+    const response = await axios.post(`${API}/posts/${postId}/comments`, commentData);
+    return response.data;
+  },
+
+  // Delete a comment (requires auth)
+  deleteComment: async (commentId) => {
+    const response = await axios.delete(`${API}/comments/${commentId}`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
 };
 
 export default api;
