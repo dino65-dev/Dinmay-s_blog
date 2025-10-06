@@ -8,7 +8,7 @@ import { Label } from '../components/ui/label';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
-import { useToast } from '../components/ui/use-toast';
+import { useToast } from '../hooks/use-toast';
 
 const AdminPage = () => {
   const { isAuthenticated, login, logout } = useAuth();
