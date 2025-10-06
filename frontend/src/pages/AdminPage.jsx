@@ -38,14 +38,14 @@ const AdminPage = () => {
     }
   };
 
-  const handleRichSubmit = (e) => {
+  const handleHtmlSubmit = (e) => {
     e.preventDefault();
     // TODO: Replace with API call
-    console.log('Rich Text Post:', { richTitle, richContent, richImage });
+    console.log('HTML Post:', { htmlTitle, htmlContent, htmlImage });
     alert('Blog post submitted! (Mock data - not saved yet)');
-    setRichTitle('');
-    setRichContent('');
-    setRichImage('');
+    setHtmlTitle('');
+    setHtmlContent('');
+    setHtmlImage('');
   };
 
   const handleMarkdownSubmit = (e) => {
