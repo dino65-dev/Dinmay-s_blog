@@ -11,7 +11,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/ui/use-toast';
 
 const AdminPage = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, login, logout } = useAuth();
+  const { toast } = useToast();
   const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('html');
 
