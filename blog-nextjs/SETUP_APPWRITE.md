@@ -163,9 +163,9 @@ NEXT_PUBLIC_APPWRITE_POSTS_COLLECTION_ID=blog_posts
 NEXT_PUBLIC_APPWRITE_ABOUT_COLLECTION_ID=about
 NEXT_PUBLIC_APPWRITE_BUCKET_ID=blog_images
 
-# Admin credentials (change if needed)
-NEXT_PUBLIC_ADMIN_EMAIL=admin@dinmay.com
-ADMIN_PASSWORD=tapuhero@123
+# Admin credentials (configure your own)
+NEXT_PUBLIC_ADMIN_EMAIL=your_email@example.com
+ADMIN_PASSWORD=your_secure_password
 ```
 
 ## Step 7: Test the Setup
