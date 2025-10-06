@@ -1,0 +1,76 @@
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+// Helper function to get auth token
+const getAuthToken = () => {
+  return localStorage.getItem('authToken');
+};
+
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = getAuthToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+// Blog Posts API
+export const api = {
+  // Get all posts
+  getPosts: async () => {
+    const response = await axios.get(`${API}/posts`);
+    return response.data;
+  },
+
+  // Get post by slug
+  getPostBySlug: async (slug) => {
+    const response = await axios.get(`${API}/posts/${slug}`);
+    return response.data;
+  },
+
+  // Create a new post (requires auth)
+  createPost: async (postData) => {
+    const response = await axios.post(`${API}/posts`, postData, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  // Update a post (requires auth)
+  updatePost: async (postId, postData) => {
+    const response = await axios.put(`${API}/posts/${postId}`, postData, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  // Delete a post (requires auth)
+  deletePost: async (postId) => {
+    const response = await axios.delete(`${API}/posts/${postId}`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  // Auth API
+  login: async (password) => {
+    const response = await axios.post(`${API}/auth/login`, { password });
+    return response.data;
+  },
+
+  // About API
+  getAbout: async () => {
+    const response = await axios.get(`${API}/about`);
+    return response.data;
+  },
+
+  // Update about (requires auth)
+  updateAbout: async (content) => {
+    const response = await axios.put(`${API}/about`, { content }, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+};
+
+export default api;
