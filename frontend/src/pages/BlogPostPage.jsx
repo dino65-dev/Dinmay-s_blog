@@ -90,9 +90,16 @@ const BlogPostPage = () => {
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main content */}
-          <div className="lg:col-span-8">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+          {/* Sidebar Left - Hidden on mobile, visible on xl screens */}
+          <aside className="hidden xl:block xl:col-span-3">
+            <div className="sticky top-8">
+              <TableOfContents content={post.content} />
+            </div>
+          </aside>
+
+          {/* Main content - Centered on large screens */}
+          <div className="xl:col-span-6 mx-auto w-full max-w-4xl">
             <article>
               {post.featuredImage && (
                 <img 
@@ -116,6 +123,11 @@ const BlogPostPage = () => {
               </div>
               <p className="text-gray-600 dark:text-gray-400 mb-8">Published: {formatDate(post.publishedDate)}</p>
               
+              {/* Table of Contents - Mobile view */}
+              <div className="xl:hidden mb-8">
+                <TableOfContents content={post.content} />
+              </div>
+
               <div className="blog-content">
                 <MarkdownRenderer content={post.content} />
               </div>
@@ -132,15 +144,11 @@ const BlogPostPage = () => {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-8">
-            {/* Table of Contents */}
-            <div className="hidden lg:block">
-              <TableOfContents content={post.content} />
+          {/* Sidebar Right */}
+          <aside className="xl:col-span-3">
+            <div className="sticky top-8">
+              <RelatedPosts currentPostId={post.id} />
             </div>
-
-            {/* Related Posts */}
-            <RelatedPosts currentPostId={post.id} />
           </aside>
         </div>
       </main>
