@@ -7,19 +7,22 @@ import AllPostsPage from './pages/AllPostsPage';
 import AboutPage from './pages/AboutPage';
 import AdminPage from './pages/AdminPage';
 import { Toaster } from './components/ui/toaster';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/post/:slug" element={<BlogPostPage />} />
-          <Route path="/all-posts" element={<AllPostsPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/post/:slug" element={<BlogPostPage />} />
+            <Route path="/all-posts" element={<AllPostsPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
       <Toaster />
     </div>
   );
