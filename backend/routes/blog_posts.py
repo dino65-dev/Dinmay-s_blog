@@ -21,6 +21,61 @@ async def get_all_posts():
     posts = await posts_collection.find().sort("publishedDate", -1).to_list(1000)
     return [BlogPost(**post) for post in posts]
 
+@router.get("/search/posts", response_model=List[BlogPost])
+async def search_posts(
+    q: Optional[str] = Query(None, description="Search query for title and content"),
+    content_type: Optional[str] = Query(None, description="Filter by content type (markdown/html)"),
+    start_date: Optional[str] = Query(None, description="Filter posts from this date (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, description="Filter posts until this date (YYYY-MM-DD)"),
+    sort_by: Optional[str] = Query("date", description="Sort by: date, title"),
+    order: Optional[str] = Query("desc", description="Sort order: asc, desc")
+):
+    """Advanced search for blog posts"""
+    posts_collection = get_posts_collection()
+    
+    # Build query filter
+    query_filter = {}
+    
+    # Text search in title and content
+    if q:
+        query_filter["$or"] = [
+            {"title": {"$regex": q, "$options": "i"}},
+            {"content": {"$regex": q, "$options": "i"}},
+            {"excerpt": {"$regex": q, "$options": "i"}}
+        ]
+    
+    # Filter by content type
+    if content_type and content_type in ["markdown", "html"]:
+        query_filter["contentType"] = content_type
+    
+    # Date range filter
+    date_filter = {}
+    if start_date:
+        try:
+            start = datetime.strptime(start_date, "%Y-%m-%d")
+            date_filter["$gte"] = start
+        except ValueError:
+            pass
+    
+    if end_date:
+        try:
+            end = datetime.strptime(end_date, "%Y-%m-%d")
+            end = end.replace(hour=23, minute=59, second=59)
+            date_filter["$lte"] = end
+        except ValueError:
+            pass
+    
+    if date_filter:
+        query_filter["publishedDate"] = date_filter
+    
+    # Determine sort field and order
+    sort_field = "publishedDate" if sort_by == "date" else "title"
+    sort_order = -1 if order == "desc" else 1
+    
+    # Execute query
+    posts = await posts_collection.find(query_filter).sort(sort_field, sort_order).to_list(1000)
+    return [BlogPost(**post) for post in posts]
+
 @router.get("/posts/{slug}")
 async def get_post_by_slug(slug: str):
     """Get a single blog post by slug"""
