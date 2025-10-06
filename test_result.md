@@ -197,15 +197,18 @@ backend:
 
   - task: "Comments API - MongoDB models and endpoints"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/models/comment.py, /app/backend/routes/comments.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created Comment model with id (UUID), post_id, parent_id (for nested replies), author_name, author_email, content, created_at. Implemented GET /api/posts/{post_id}/comments (get all comments for a post), POST /api/posts/{post_id}/comments (create comment, no auth required), DELETE /api/comments/{comment_id} (delete comment and its replies, auth required). Registered routes in server.py."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Comments API fully functional. All 15 comment-specific tests passed (100% success rate). GET /api/posts/{post_id}/comments correctly returns comments sorted by created_at (oldest first). POST /api/posts/{post_id}/comments successfully creates top-level comments and nested replies with proper validation (email format, required fields, parent_id existence, post_id matching). DELETE /api/comments/{comment_id} requires authentication and correctly deletes comments and all their replies. Proper error handling: 422 for validation errors, 404 for non-existent resources, 403 for unauthorized access, 400 for post_id mismatch. Fixed authentication issue by making password loading dynamic in auth utility."
 
 frontend:
   - task: "API service layer"
