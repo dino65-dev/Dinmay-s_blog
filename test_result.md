@@ -372,6 +372,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "Fixed TOC not showing headings. Issue: Component was looking for .blog-content class but MarkdownRenderer uses .markdown-content. Also, it was trying to parse raw content instead of waiting for ReactMarkdown to render. Solution: Changed selector to .markdown-content, added retry logic to wait for DOM render, extract headings from actual rendered DOM instead of parsing raw HTML. TOC now correctly extracts and displays all h1, h2, h3 headings."
+      - working: true
+        agent: "main"
+        comment: "Enhanced TOC animations significantly. Added: 1) Fade-in & slide-up animation on mount, 2) Container hover scale (1.02x) & shadow enhancement, 3) Staggered slide-in animation for heading items (50ms delay each), 4) Smooth expand/collapse with max-height transition, 5) Toggle button rotation (90° on hover, 180° on state change), 6) Heading items translate-x on hover, 7) Gradient backgrounds for active/hover states, 8) Ripple effect on button interactions, 9) Active section with animated slide-down border, 10) Rounded corners enhanced to rounded-xl. All transitions use proper easing functions (ease-out, ease-in-out) for smooth, professional feel."
 
   - task: "Mobile-responsive design"
     implemented: true
