@@ -34,12 +34,18 @@ const AdminPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const response = await api.login(password);
-      localStorage.setItem('authToken', response.token);
-      setIsAuthenticated(true);
-    } catch (error) {
-      alert('Incorrect password');
+    const result = await login(password);
+    if (result.success) {
+      toast({
+        title: "Success",
+        description: "Logged in successfully",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Incorrect password",
+        variant: "destructive",
+      });
     }
   };
 
