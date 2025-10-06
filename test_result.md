@@ -307,6 +307,78 @@ frontend:
         agent: "main"
         comment: "Already implemented. Fetches content from API and renders markdown"
 
+  - task: "Dark/Light mode with theme toggle"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/contexts/ThemeContext.jsx, /app/frontend/src/components/Header.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created ThemeContext with localStorage persistence and system preference detection. Added theme toggle button in Header. Updated all pages and components (Header, HomePage, BlogPostPage, AllPostsPage, AboutPage, BlogPostCard, MarkdownRenderer) to support dark mode using Tailwind dark: classes. Integrated ThemeProvider in App.js."
+
+  - task: "Comments section with nested replies"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Comments.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Comments component with comment form (name, email, content fields), nested reply functionality, comment listing with tree structure, reply buttons on each comment, delete buttons for admins. Integrated into BlogPostPage."
+
+  - task: "Social sharing buttons"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/SocialShare.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created SocialShare component with buttons for Twitter/X, Facebook, LinkedIn, and WhatsApp. Each opens a share window with proper URL encoding. Integrated into BlogPostPage."
+
+  - task: "Related posts component"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/RelatedPosts.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created RelatedPosts component that fetches and displays up to 3 latest posts, excluding the current post. Shows post thumbnail, title, excerpt, and publish date. Integrated into BlogPostPage sidebar."
+
+  - task: "Table of Contents (TOC)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/TableOfContents.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created TableOfContents component that auto-generates TOC from H1, H2, H3 headings in post content. Features: collapsible with toggle button, smooth scroll to sections, scroll spy to highlight active section, proper indentation for heading levels. Integrated into BlogPostPage sidebar (hidden on mobile, visible on desktop)."
+
+  - task: "Mobile-responsive design"
+    implemented: true
+    working: "NA"
+    file: "All frontend components and pages"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated all components and pages with mobile-first responsive design using Tailwind breakpoints (sm:, md:, lg:). Features: responsive grid layouts, proper padding/gap adjustments, stack layouts on mobile, flex wrapping for navigation, responsive image sizes, touch-friendly buttons and forms."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
