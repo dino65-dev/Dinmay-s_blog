@@ -28,12 +28,13 @@ const AdminPage = () => {
   const [adminImage, setAdminImage] = useState('');
   const [adminExcerpt, setAdminExcerpt] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // TODO: Replace with actual authentication
-    if (password === 'admin123') {
+    try {
+      const response = await api.login(password);
+      localStorage.setItem('authToken', response.token);
       setIsAuthenticated(true);
-    } else {
+    } catch (error) {
       alert('Incorrect password');
     }
   };
