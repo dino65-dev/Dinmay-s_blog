@@ -135,37 +135,109 @@ const MarkdownRenderer = ({ content }) => {
         .dark .markdown-content a {
           color: #60a5fa;
         }
+        
+        /* Inline code */
         .markdown-content code {
           background: #f4f4f4;
-          color: #1f2937;
+          color: #e11d48;
           padding: 0.2rem 0.4rem;
           border-radius: 3px;
           font-size: 0.9em;
+          font-family: 'Courier New', monospace;
         }
         .dark .markdown-content code {
           background: #374151;
-          color: #e5e7eb;
+          color: #fb7185;
         }
-        .markdown-content pre {
-          background: #f7f7f7;
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          padding: 1rem;
-          overflow-x: auto;
+        
+        /* Code block wrapper */
+        .markdown-content .code-block-wrapper {
+          position: relative;
           margin: 1.5rem 0;
+          border-radius: 8px;
+          overflow: hidden;
+          border: 1px solid #e5e7eb;
         }
-        .dark .markdown-content pre {
-          background: #1e1e1e;
+        .dark .markdown-content .code-block-wrapper {
           border-color: #374151;
         }
-        .markdown-content pre code {
+        
+        /* Code block header */
+        .markdown-content .code-block-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem 1rem;
+          background: #f3f4f6;
+          border-bottom: 1px solid #e5e7eb;
+        }
+        .dark .markdown-content .code-block-header {
+          background: #1f2937;
+          border-bottom-color: #374151;
+        }
+        
+        .markdown-content .code-language {
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          color: #6b7280;
+          letter-spacing: 0.05em;
+        }
+        .dark .markdown-content .code-language {
+          color: #9ca3af;
+        }
+        
+        /* Copy button */
+        .markdown-content .copy-button {
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+          padding: 0.25rem 0.625rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: #4b5563;
+          background: #fff;
+          border: 1px solid #d1d5db;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .markdown-content .copy-button:hover {
+          background: #f9fafb;
+          border-color: #9ca3af;
+          color: #1f2937;
+        }
+        .dark .markdown-content .copy-button {
+          color: #d1d5db;
+          background: #374151;
+          border-color: #4b5563;
+        }
+        .dark .markdown-content .copy-button:hover {
+          background: #4b5563;
+          border-color: #6b7280;
+          color: #f3f4f6;
+        }
+        
+        /* Code block pre */
+        .markdown-content .code-block-wrapper pre {
+          margin: 0;
+          background: #fafafa;
+          padding: 1rem;
+          overflow-x: auto;
+        }
+        .dark .markdown-content .code-block-wrapper pre {
+          background: #111827;
+        }
+        
+        .markdown-content .code-block-wrapper pre code {
           background: transparent;
           padding: 0;
           color: #1f2937;
-          font-size: 0.9em;
+          font-size: 0.875rem;
           line-height: 1.6;
+          font-family: 'Courier New', monospace;
         }
-        .dark .markdown-content pre code {
+        .dark .markdown-content .code-block-wrapper pre code {
           color: #e5e7eb;
         }
         /* Prism Light Theme Styles */
