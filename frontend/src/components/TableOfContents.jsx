@@ -9,28 +9,38 @@ const TableOfContents = ({ content }) => {
   console.log('Headings found:', headings.length);
 
   useEffect(() => {
-    // Extract headings from content
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = content;
-    
-    const headingElements = tempDiv.querySelectorAll('h1, h2, h3');
-    const headingsData = Array.from(headingElements).map((heading, index) => {
-      const id = `heading-${index}`;
-      const level = parseInt(heading.tagName.substring(1));
-      const text = heading.textContent;
+    // Wait for DOM to be ready, then extract headings from the rendered markdown
+    const extractHeadings = () => {
+      const actualHeadings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3');
       
-      return { id, level, text };
-    });
+      if (actualHeadings.length === 0) {
+        // If no headings found yet, try again after a short delay
+        setTimeout(extractHeadings, 100);
+        return;
+      }
+
+      const headingsData = Array.from(actualHeadings).map((heading, index) => {
+        const id = `heading-${index}`;
+        const level = parseInt(heading.tagName.substring(1));
+        const text = heading.textContent;
+        
+        // Add ID to the actual heading element
+        heading.id = id;
+        
+        return { id, level, text };
+      });
+      
+      setHeadings(headingsData);
+    };
+
+    // Small delay to ensure markdown is rendered
+    const timeoutId = setTimeout(extractHeadings, 50);
     
-    setHeadings(headingsData);
+    return () => clearTimeout(timeoutId);
   }, [content]);
 
   useEffect(() => {
-    // Add IDs to actual headings in the DOM
-    const actualHeadings = document.querySelectorAll('.blog-content h1, .blog-content h2, .blog-content h3');
-    actualHeadings.forEach((heading, index) => {
-      heading.id = `heading-${index}`;
-    });
+    if (headings.length === 0) return;
 
     // Scroll spy
     const observer = new IntersectionObserver(
@@ -44,6 +54,7 @@ const TableOfContents = ({ content }) => {
       { rootMargin: '-20% 0px -80% 0px' }
     );
 
+    const actualHeadings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3');
     actualHeadings.forEach((heading) => observer.observe(heading));
 
     return () => observer.disconnect();
