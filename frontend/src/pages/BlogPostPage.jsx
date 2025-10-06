@@ -9,9 +9,13 @@ import { useToast } from '../components/ui/use-toast';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
