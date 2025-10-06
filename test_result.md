@@ -390,7 +390,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Comments API endpoints"
     - "Dark/Light mode functionality"
     - "Comments section with nested replies"
     - "Social sharing buttons"
