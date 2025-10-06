@@ -217,7 +217,7 @@ const AdminPage = () => {
 
           <TabsContent value="admin">
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h2 className="text-xl font-bold mb-6">Create Post - Admin Panel</h2>
+              <h2 className="text-xl font-bold mb-6">Quick Upload - Paste Content</h2>
               <form onSubmit={handleAdminSubmit}>
                 <div className="mb-4">
                   <Label htmlFor="admin-title">Title</Label>
