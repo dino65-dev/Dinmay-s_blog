@@ -32,6 +32,8 @@ const TableOfContents = ({ content }) => {
       });
       
       setHeadings(headingsData);
+      // Trigger mount animation
+      setTimeout(() => setMounted(true), 100);
     };
 
     // Small delay to ensure markdown is rendered
