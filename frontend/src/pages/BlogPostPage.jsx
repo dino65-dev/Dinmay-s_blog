@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import api from '../utils/api';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '../components/ui/button';
+import { useToast } from '../components/ui/use-toast';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
