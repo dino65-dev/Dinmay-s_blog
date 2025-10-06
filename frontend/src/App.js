@@ -9,23 +9,26 @@ import AdminPage from './pages/AdminPage';
 import SearchPage from './pages/SearchPage';
 import { Toaster } from './components/ui/toaster';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/post/:slug" element={<BlogPostPage />} />
-            <Route path="/all-posts" element={<AllPostsPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/search" element={<SearchPage />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-      <Toaster />
+      <ThemeProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/post/:slug" element={<BlogPostPage />} />
+              <Route path="/all-posts" element={<AllPostsPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/search" element={<SearchPage />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+        <Toaster />
+      </ThemeProvider>
     </div>
   );
 }
