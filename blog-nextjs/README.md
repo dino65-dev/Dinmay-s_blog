@@ -46,6 +46,7 @@ Generate API key with database and storage permissions.
 ### 3. Update .env.local
 
 ```env
+NEXT_PUBLIC_ADMIN_EMAIL=your_email@example.com
 APPWRITE_API_KEY=your_api_key_here
 ```
 
