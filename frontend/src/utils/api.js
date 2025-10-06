@@ -22,6 +22,20 @@ export const api = {
     return response.data;
   },
 
+  // Search posts with advanced filters
+  searchPosts: async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.q) params.append('q', filters.q);
+    if (filters.contentType) params.append('content_type', filters.contentType);
+    if (filters.startDate) params.append('start_date', filters.startDate);
+    if (filters.endDate) params.append('end_date', filters.endDate);
+    if (filters.sortBy) params.append('sort_by', filters.sortBy);
+    if (filters.order) params.append('order', filters.order);
+    
+    const response = await axios.get(`${API}/search/posts?${params.toString()}`);
+    return response.data;
+  },
+
   // Get post by slug
   getPostBySlug: async (slug) => {
     const response = await axios.get(`${API}/posts/${slug}`);
