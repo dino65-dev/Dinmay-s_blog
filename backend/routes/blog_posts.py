@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends
-from typing import List
+from fastapi import APIRouter, HTTPException, Depends, Query
+from typing import List, Optional
 from models.blog_post import BlogPost, BlogPostCreate, BlogPostUpdate
 from utils.auth import verify_token
 from datetime import datetime
