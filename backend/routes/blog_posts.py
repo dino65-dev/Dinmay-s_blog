@@ -2,17 +2,17 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List
 from models.blog_post import BlogPost, BlogPostCreate, BlogPostUpdate
 from utils.auth import verify_token
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
 from datetime import datetime
 
 router = APIRouter()
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-posts_collection = db.blog_posts
+def get_posts_collection():
+    from motor.motor_asyncio import AsyncIOMotorClient
+    import os
+    mongo_url = os.environ['MONGO_URL']
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[os.environ['DB_NAME']]
+    return db.blog_posts
 
 @router.get("/posts", response_model=List[BlogPost])
 async def get_all_posts():
