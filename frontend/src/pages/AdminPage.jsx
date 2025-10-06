@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Button } from '../components/ui/button';
@@ -7,6 +7,8 @@ import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import api from '../utils/api';
+import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../components/ui/use-toast';
 
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
