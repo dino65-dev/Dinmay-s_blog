@@ -195,6 +195,18 @@ backend:
         agent: "testing"
         comment: "✅ TESTED: Database configuration working properly. MongoDB connection established successfully. All CRUD operations on blog_posts and about collections functioning correctly."
 
+  - task: "Comments API - MongoDB models and endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/models/comment.py, /app/backend/routes/comments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Comment model with id (UUID), post_id, parent_id (for nested replies), author_name, author_email, content, created_at. Implemented GET /api/posts/{post_id}/comments (get all comments for a post), POST /api/posts/{post_id}/comments (create comment, no auth required), DELETE /api/comments/{comment_id} (delete comment and its replies, auth required). Registered routes in server.py."
+
 frontend:
   - task: "API service layer"
     implemented: true
