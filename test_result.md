@@ -219,6 +219,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "API service already existed using axios. Includes all blog posts, auth, and about endpoints"
+      - working: "NA"
+        agent: "main"
+        comment: "Added comments API methods: getComments, createComment, deleteComment"
   
   - task: "Authentication context"
     implemented: true
