@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Build a blog application (Dinmay's Blog) with frontend and backend. Features include: homepage with blog posts, individual post pages with markdown/HTML rendering, math equations (KaTeX), code highlighting (Prism.js), admin panel with password protection for creating posts (HTML editor, Markdown editor with preview, Quick upload), admin login functionality, and delete functionality for logged-in admins."
+user_problem_statement: "Build a blog application (Dinmay's Blog) with frontend and backend. Features include: homepage with blog posts, individual post pages with markdown/HTML rendering, math equations (KaTeX), code highlighting (Prism.js), admin panel with password protection for creating posts (HTML editor, Markdown editor with preview, Quick upload), admin login functionality, delete functionality for logged-in admins, dark/light mode, comments section with nested replies, social sharing buttons, related posts, table of contents, and mobile-responsive design."
 
 backend:
   - task: "MongoDB models for BlogPost"
