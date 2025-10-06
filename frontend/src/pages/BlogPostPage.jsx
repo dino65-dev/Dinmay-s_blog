@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import TableOfContents from '../components/TableOfContents';
+import SocialShare from '../components/SocialShare';
+import RelatedPosts from '../components/RelatedPosts';
+import Comments from '../components/Comments';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
@@ -33,10 +37,10 @@ const BlogPostPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
         <Header />
-        <main className="max-w-3xl mx-auto px-6 py-12">
-          <p className="text-center text-gray-600">Loading...</p>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+          <p className="text-center text-gray-600 dark:text-gray-400">Loading...</p>
         </main>
       </div>
     );
@@ -44,10 +48,10 @@ const BlogPostPage = () => {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
         <Header />
-        <main className="max-w-3xl mx-auto px-6 py-12">
-          <p className="text-center text-gray-600">Post not found</p>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+          <p className="text-center text-gray-600 dark:text-gray-400">Post not found</p>
         </main>
       </div>
     );
