@@ -179,7 +179,7 @@ const AdminPage = () => {
       <main className="max-w-5xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Admin Panel</h1>
-          <Button onClick={() => setIsAuthenticated(false)} variant="outline">
+          <Button onClick={logout} variant="outline">
             Logout
           </Button>
         </div>
