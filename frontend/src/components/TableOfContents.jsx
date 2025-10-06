@@ -56,12 +56,12 @@ const TableOfContents = ({ content }) => {
   if (headings.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sticky top-4 transition-colors">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5 transition-colors shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-lg text-gray-900 dark:text-white">Table of Contents</h3>
+        <h3 className="font-bold text-base text-gray-900 dark:text-white">📑 Table of Contents</h3>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-xl leading-none"
           aria-label="Toggle table of contents"
         >
           {isOpen ? '−' : '+'}
@@ -69,21 +69,21 @@ const TableOfContents = ({ content }) => {
       </div>
       
       {isOpen && (
-        <nav className="space-y-2">
+        <nav className="space-y-2.5">
           {headings.map((heading) => (
             <button
               key={heading.id}
               onClick={() => scrollToHeading(heading.id)}
-              className={`block w-full text-left text-sm transition-colors ${
+              className={`block w-full text-left text-sm transition-all duration-200 py-1 px-2 rounded ${
                 heading.level === 1 ? 'font-semibold' : ''
               } ${
                 heading.level === 2 ? 'pl-4' : ''
               } ${
-                heading.level === 3 ? 'pl-8' : ''
+                heading.level === 3 ? 'pl-8 text-xs' : ''
               } ${
                 activeId === heading.id
-                  ? 'text-blue-600 dark:text-blue-400 font-medium'
-                  : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                  ? 'text-blue-600 dark:text-blue-400 font-medium bg-blue-50 dark:bg-blue-900/20'
+                  : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700/50'
               }`}
             >
               {heading.text}
