@@ -58,6 +58,30 @@ const BlogPostPage = () => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this post?')) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      await api.deletePost(post.id);
+      toast({
+        title: "Success",
+        description: "Post deleted successfully",
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete post",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
