@@ -288,15 +288,18 @@ frontend:
   
   - task: "All posts page"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/AllPostsPage.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Already implemented. Fetches and displays all posts from API"
+      - working: true
+        agent: "main"
+        comment: "Enhanced all posts page: 1) Increased width from max-w-3xl to max-w-6xl for wider layout, 2) Redesigned BlogPostCard with larger cards, borders, shadows, and enhanced hover effects, 3) Fixed excerpt rendering - added cleanExcerpt() function to remove markdown syntax (code blocks, headers, links, formatting), 4) Larger images (320px on desktop), 5) Better typography with 2xl/3xl titles, 6) Added 'Read more →' link with calendar icon, 7) Improved spacing and responsive design for mobile/tablet/desktop."
   
   - task: "About page"
     implemented: true
