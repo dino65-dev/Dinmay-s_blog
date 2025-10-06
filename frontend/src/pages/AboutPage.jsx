@@ -24,19 +24,19 @@ const AboutPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
         <Header />
-        <main className="max-w-3xl mx-auto px-6 py-12">
-          <p className="text-center text-gray-600">Loading...</p>
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+          <p className="text-center text-gray-600 dark:text-gray-400">Loading...</p>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <Header />
-      <main className="max-w-3xl mx-auto px-6 py-12">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
         <MarkdownRenderer content={content} />
       </main>
     </div>
