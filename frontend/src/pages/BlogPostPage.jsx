@@ -95,24 +95,24 @@ const BlogPostPage = () => {
         <TableOfContents content={post.content} />
       </div>
 
-      <main className="w-full px-4 sm:px-6 py-8 md:py-12">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex gap-6 xl:gap-8">
+      <main className="w-full py-8 md:py-12">
+        <div className="max-w-[95%] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6">
+          <div className="flex gap-6">
             {/* Sidebar Left - Table of Contents (Desktop) */}
-            <aside className="hidden lg:block w-56 xl:w-64 shrink-0">
+            <aside className="hidden lg:block w-64 shrink-0">
               <div className="sticky top-8">
                 <TableOfContents content={post.content} />
               </div>
             </aside>
 
-            {/* Main content - Much Wider */}
-            <div className="flex-1 min-w-0">
+            {/* Main content - MUCH WIDER NOW */}
+            <div className="flex-1 w-full">
               <article className="w-full">
                 {post.featuredImage && (
                   <img 
                     src={post.featuredImage} 
                     alt={post.title}
-                    className="w-full h-64 md:h-96 object-cover rounded-lg mb-8"
+                    className="w-full h-64 md:h-96 lg:h-[500px] object-cover rounded-lg mb-8"
                   />
                 )}
                 <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
@@ -130,7 +130,7 @@ const BlogPostPage = () => {
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">Published: {formatDate(post.publishedDate)}</p>
 
-                <div className="blog-content">
+                <div className="blog-content w-full">
                   <MarkdownRenderer content={post.content} />
                 </div>
               </article>
@@ -144,19 +144,12 @@ const BlogPostPage = () => {
               <div className="mt-12">
                 <Comments postId={post.id} />
               </div>
-            </div>
 
-            {/* Sidebar Right - Related Posts (Desktop) */}
-            <aside className="hidden xl:block w-80 shrink-0">
-              <div className="sticky top-8">
+              {/* Related Posts - Show below content on all screens */}
+              <div className="mt-12">
                 <RelatedPosts currentPostId={post.id} />
               </div>
-            </aside>
-          </div>
-
-          {/* Related Posts - Mobile/Tablet */}
-          <div className="xl:hidden mt-12">
-            <RelatedPosts currentPostId={post.id} />
+            </div>
           </div>
         </div>
       </main>
