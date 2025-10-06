@@ -88,7 +88,7 @@ const MarkdownRenderer = ({ content }) => {
   }, [content]);
 
   return (
-    <div className="markdown-content prose prose-lg dark:prose-invert max-w-none text-gray-900 dark:text-gray-100">
+    <div ref={containerRef} className="markdown-content prose prose-lg dark:prose-invert max-w-none text-gray-900 dark:text-gray-100">
       <style>{`
         .markdown-content h1,
         .markdown-content h2,
