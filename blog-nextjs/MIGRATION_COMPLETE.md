@@ -95,9 +95,7 @@ File: `/app/blog-nextjs/.env.local`
 ## 🎯 Admin Access
 
 1. Go to `/admin`
-2. Login with:
-   - Email: `admin@dinmay.com`
-   - Password: `tapuhero@123`
+2. Login with the credentials you configured in `.env.local`
 3. Create, edit, delete posts
 
 ## 📚 Key Files
