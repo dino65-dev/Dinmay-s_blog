@@ -10,6 +10,9 @@ const Header = () => {
           <span className="text-2xl">🌕</span>
         </Link>
         <nav className="flex items-center gap-6">
+          <Link to="/search" className="text-black hover:opacity-70 transition-opacity">
+            Search
+          </Link>
           <Link to="/about" className="text-black hover:opacity-70 transition-opacity">
             About
           </Link>
