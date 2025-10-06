@@ -52,7 +52,7 @@ APPWRITE_API_KEY=your_api_key_here
 ## 📖 Usage
 
 1. Go to `/admin`
-2. Login (Email: admin@dinmay.com, Password: tapuhero@123)
+2. Login with your configured credentials (set in .env.local)
 3. Create posts!
 
 ## 🏗️ Tech Stack
