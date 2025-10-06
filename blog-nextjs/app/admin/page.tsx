@@ -96,7 +96,7 @@ export default function AdminPage() {
                   <label className="block text-sm font-medium mb-2">Email</label>
                   <Input
                     type="email"
-                    placeholder="admin@dinmay.com"
+                    placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
