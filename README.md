@@ -67,7 +67,7 @@ Visit: http://localhost:3000
 
 ## Default Credentials
 
-- **Admin Password**: `admin123`
+- **Admin Password**: `tapuhero@123`
 
 ## Project Structure
 
