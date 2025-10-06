@@ -405,6 +405,7 @@ class BlogAPITester:
         self.test_authentication()
         self.test_blog_posts_crud()
         self.test_about_api()
+        self.test_comments_api()
         
         # Print summary
         print("\n" + "=" * 60)
