@@ -1,17 +1,17 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from utils.auth import verify_token
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
 from datetime import datetime
 
 router = APIRouter()
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-about_collection = db.about
+def get_about_collection():
+    from motor.motor_asyncio import AsyncIOMotorClient
+    import os
+    mongo_url = os.environ['MONGO_URL']
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[os.environ['DB_NAME']]
+    return db.about
 
 class AboutContent(BaseModel):
     content: str
