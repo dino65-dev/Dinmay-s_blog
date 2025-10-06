@@ -5,7 +5,7 @@ import MarkdownRenderer from '../components/MarkdownRenderer';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
-import { useToast } from '../components/ui/use-toast';
+import { useToast } from '../hooks/use-toast';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
