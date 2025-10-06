@@ -57,7 +57,7 @@ class BlogAPITester:
         # Test 1: Login with correct password
         try:
             response = requests.post(f"{API_BASE}/auth/login", 
-                json={"password": "admin123"},
+                json={"password": "tapuhero@123"},
                 headers={"Content-Type": "application/json"})
             
             if response.status_code == 200:
