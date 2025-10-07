@@ -35,13 +35,9 @@ export function MarkdownRenderer({ content, contentType }: MarkdownRendererProps
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex, rehypeRaw]}
         components={{
-          code({ node, inline, className, children, ...props }) {
+          code({ className, children, ...props }: any) {
             const match = /language-(\w+)/.exec(className || '')
-            return !inline && match ? (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            ) : (
+            return (
               <code className={className} {...props}>
                 {children}
               </code>
