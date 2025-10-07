@@ -38,7 +38,8 @@ const AdminPage = () => {
   // Validate if URL is a direct image URL
   const isDirectImageUrl = (url) => {
     if (!url) return true; // Empty is okay
-    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|avif)(\?.*)?$/i;
+    // Allow URLs with query parameters that still contain image extensions
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|avif)/i;
     return imageExtensions.test(url);
   };
 
