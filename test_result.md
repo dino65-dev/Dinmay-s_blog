@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Build a blog application (Dinmay's Blog) with frontend and backend. Features include: homepage with blog posts, individual post pages with markdown/HTML rendering, math equations (KaTeX), code highlighting (Prism.js), admin panel with password protection for creating posts (HTML editor, Markdown editor with preview, Quick upload), admin login functionality, and delete functionality for logged-in admins."
+user_problem_statement: "Build a blog application (Dinmay's Blog) with frontend and backend. Features include: homepage with blog posts, individual post pages with markdown/HTML rendering, math equations (KaTeX), code highlighting (Prism.js), admin panel with password protection for creating posts (HTML editor, Markdown editor with preview, Quick upload), admin login functionality, delete functionality for logged-in admins, dark/light mode, comments section with nested replies, social sharing buttons, related posts, table of contents, and mobile-responsive design."
 
 backend:
   - task: "MongoDB models for BlogPost"
@@ -195,6 +195,21 @@ backend:
         agent: "testing"
         comment: "✅ TESTED: Database configuration working properly. MongoDB connection established successfully. All CRUD operations on blog_posts and about collections functioning correctly."
 
+  - task: "Comments API - MongoDB models and endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/models/comment.py, /app/backend/routes/comments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Comment model with id (UUID), post_id, parent_id (for nested replies), author_name, author_email, content, created_at. Implemented GET /api/posts/{post_id}/comments (get all comments for a post), POST /api/posts/{post_id}/comments (create comment, no auth required), DELETE /api/comments/{comment_id} (delete comment and its replies, auth required). Registered routes in server.py."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Comments API fully functional. All 15 comment-specific tests passed (100% success rate). GET /api/posts/{post_id}/comments correctly returns comments sorted by created_at (oldest first). POST /api/posts/{post_id}/comments successfully creates top-level comments and nested replies with proper validation (email format, required fields, parent_id existence, post_id matching). DELETE /api/comments/{comment_id} requires authentication and correctly deletes comments and all their replies. Proper error handling: 422 for validation errors, 404 for non-existent resources, 403 for unauthorized access, 400 for post_id mismatch. Fixed authentication issue by making password loading dynamic in auth utility."
+
 frontend:
   - task: "API service layer"
     implemented: true
@@ -207,6 +222,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "API service already existed using axios. Includes all blog posts, auth, and about endpoints"
+      - working: "NA"
+        agent: "main"
+        comment: "Added comments API methods: getComments, createComment, deleteComment"
   
   - task: "Authentication context"
     implemented: true
@@ -270,15 +288,18 @@ frontend:
   
   - task: "All posts page"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/AllPostsPage.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Already implemented. Fetches and displays all posts from API"
+      - working: true
+        agent: "main"
+        comment: "Enhanced all posts page: 1) Increased width from max-w-3xl to max-w-6xl for wider layout, 2) Redesigned BlogPostCard with larger cards, borders, shadows, and enhanced hover effects, 3) Fixed excerpt rendering - added cleanExcerpt() function to remove markdown syntax (code blocks, headers, links, formatting), 4) Larger images (320px on desktop), 5) Better typography with 2xl/3xl titles, 6) Added 'Read more →' link with calendar icon, 7) Improved spacing and responsive design for mobile/tablet/desktop."
   
   - task: "About page"
     implemented: true
@@ -292,17 +313,98 @@ frontend:
         agent: "main"
         comment: "Already implemented. Fetches content from API and renders markdown"
 
+  - task: "Dark/Light mode with theme toggle"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/contexts/ThemeContext.jsx, /app/frontend/src/components/Header.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created ThemeContext with localStorage persistence and system preference detection. Added theme toggle button in Header. Updated all pages and components (Header, HomePage, BlogPostPage, AllPostsPage, AboutPage, BlogPostCard, MarkdownRenderer) to support dark mode using Tailwind dark: classes. Integrated ThemeProvider in App.js."
+
+  - task: "Comments section with nested replies"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Comments.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Comments component with comment form (name, email, content fields), nested reply functionality, comment listing with tree structure, reply buttons on each comment, delete buttons for admins. Integrated into BlogPostPage."
+
+  - task: "Social sharing buttons"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/SocialShare.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created SocialShare component with buttons for Twitter/X, Facebook, LinkedIn, and WhatsApp. Each opens a share window with proper URL encoding. Integrated into BlogPostPage."
+
+  - task: "Related posts component"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/RelatedPosts.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created RelatedPosts component that fetches and displays up to 3 latest posts, excluding the current post. Shows post thumbnail, title, excerpt, and publish date. Integrated into BlogPostPage sidebar."
+
+  - task: "Table of Contents (TOC)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/TableOfContents.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created TableOfContents component that auto-generates TOC from H1, H2, H3 headings in post content. Features: collapsible with toggle button, smooth scroll to sections, scroll spy to highlight active section, proper indentation for heading levels. Integrated into BlogPostPage sidebar (hidden on mobile, visible on desktop)."
+      - working: true
+        agent: "main"
+        comment: "Fixed TOC not showing headings. Issue: Component was looking for .blog-content class but MarkdownRenderer uses .markdown-content. Also, it was trying to parse raw content instead of waiting for ReactMarkdown to render. Solution: Changed selector to .markdown-content, added retry logic to wait for DOM render, extract headings from actual rendered DOM instead of parsing raw HTML. TOC now correctly extracts and displays all h1, h2, h3 headings."
+      - working: true
+        agent: "main"
+        comment: "Enhanced TOC animations significantly. Added: 1) Fade-in & slide-up animation on mount, 2) Container hover scale (1.02x) & shadow enhancement, 3) Staggered slide-in animation for heading items (50ms delay each), 4) Smooth expand/collapse with max-height transition, 5) Toggle button rotation (90° on hover, 180° on state change), 6) Heading items translate-x on hover, 7) Gradient backgrounds for active/hover states, 8) Ripple effect on button interactions, 9) Active section with animated slide-down border, 10) Rounded corners enhanced to rounded-xl. All transitions use proper easing functions (ease-out, ease-in-out) for smooth, professional feel."
+
+  - task: "Mobile-responsive design"
+    implemented: true
+    working: "NA"
+    file: "All frontend components and pages"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated all components and pages with mobile-first responsive design using Tailwind breakpoints (sm:, md:, lg:). Features: responsive grid layouts, proper padding/gap adjustments, stack layouts on mobile, flex wrapping for navigation, responsive image sizes, touch-friendly buttons and forms."
+
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 0
+  version: "1.1"
+  test_sequence: 1
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Frontend authentication integration"
-    - "Frontend blog post management"
-    - "Admin panel functionality"
+    - "Dark/Light mode functionality"
+    - "Comments section with nested replies"
+    - "Social sharing buttons"
+    - "Related posts component"
+    - "Table of Contents"
+    - "Mobile responsiveness"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -314,3 +416,7 @@ agent_communication:
     message: "🎉 BACKEND TESTING COMPLETE - ALL TESTS PASSED (21/21 - 100% success rate). Comprehensive testing performed on all backend APIs: ✅ Authentication (login/verify with correct/incorrect credentials) ✅ Blog Posts CRUD (create/read/update/delete with proper auth checks) ✅ About page API (get/update with auth) ✅ Error handling (401/403/404/400 responses) ✅ Data validation and sorting ✅ Database operations. Backend is fully functional and ready for production. Created comprehensive test suite in /app/backend_test.py for future regression testing."
   - agent: "main"
     message: "Added advanced search functionality: Backend endpoint GET /api/search/posts with filters (text query, content type, date range, sorting). Frontend SearchPage with basic and advanced search UI. Search link added to header. Admin password updated to tapuhero@123."
+  - agent: "main"
+    message: "Implemented new features: 1) Dark/Light mode with ThemeContext, localStorage persistence, system preference detection, theme toggle in header. 2) Comments system with nested replies - backend Comment model and API endpoints (GET, POST, DELETE), frontend Comments component with nested reply UI. 3) Social sharing buttons for Twitter, Facebook, LinkedIn, WhatsApp. 4) Related posts component showing 3 latest posts. 5) Table of Contents auto-generated from headings with scroll spy. 6) All components updated for mobile-responsive design. Backend comments API endpoints need testing. Admin password: tapuhero@123."
+  - agent: "testing"
+    message: "✅ COMMENTS API TESTING COMPLETE - ALL TESTS PASSED (15/15 - 100% success rate). Comprehensive testing performed on all comments API endpoints: ✅ GET /api/posts/{post_id}/comments (retrieves comments sorted by created_at, handles non-existent posts) ✅ POST /api/posts/{post_id}/comments (creates top-level comments and nested replies, validates email format, required fields, parent_id existence, post_id matching) ✅ DELETE /api/comments/{comment_id} (requires authentication, deletes comment and all replies, proper error handling) ✅ Authentication integration (login with tapuhero@123 password working) ✅ Error handling (422 validation, 404 not found, 403 unauthorized, 400 bad request) ✅ Data validation and nested reply functionality. Fixed authentication issue by making password loading dynamic. Comments API is fully functional and ready for frontend integration."

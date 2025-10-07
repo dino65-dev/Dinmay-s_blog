@@ -8,13 +8,12 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 24
 
-# Admin password (in production, this should be hashed and stored in DB)
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
-
 security = HTTPBearer()
 
 def verify_password(plain_password: str) -> bool:
-    return plain_password == ADMIN_PASSWORD
+    # Load admin password dynamically to ensure .env is loaded
+    admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+    return plain_password == admin_password
 
 def create_access_token(data: dict):
     to_encode = data.copy()

@@ -28,6 +28,7 @@ class BlogAPITester:
             'auth_tests': [],
             'blog_posts_tests': [],
             'about_tests': [],
+            'comments_tests': [],
             'total_tests': 0,
             'passed_tests': 0,
             'failed_tests': 0
@@ -57,7 +58,7 @@ class BlogAPITester:
         # Test 1: Login with correct password
         try:
             response = requests.post(f"{API_BASE}/auth/login", 
-                json={"password": "admin123"},
+                json={"password": "tapuhero@123"},
                 headers={"Content-Type": "application/json"})
             
             if response.status_code == 200:
@@ -394,6 +395,339 @@ class BlogAPITester:
         except Exception as e:
             self.log_test('about_tests', 'Update about without auth (should fail)', False, str(e))
 
+    def test_comments_api(self):
+        """Test comments API endpoints"""
+        print("\n=== COMMENTS API TESTS ===")
+        
+        # First, create a test blog post to use for comments
+        test_post_id = None
+        if self.auth_token:
+            try:
+                test_post = {
+                    "title": "Test Post for Comments",
+                    "slug": f"test-post-comments-{uuid.uuid4().hex[:8]}",
+                    "content": "# Test Post\n\nThis post is for testing comments functionality.",
+                    "excerpt": "A test post for comments",
+                    "featuredImage": "",
+                    "contentType": "markdown"
+                }
+                
+                response = requests.post(f"{API_BASE}/posts", 
+                    json=test_post,
+                    headers={
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {self.auth_token}"
+                    })
+                
+                if response.status_code == 200:
+                    created_post = response.json()
+                    test_post_id = created_post['id']
+                    self.log_test('comments_tests', 'Create test post for comments', True, 
+                                f"Test post created with ID: {test_post_id}")
+                else:
+                    self.log_test('comments_tests', 'Create test post for comments', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+                    return  # Can't continue without a test post
+            except Exception as e:
+                self.log_test('comments_tests', 'Create test post for comments', False, str(e))
+                return
+        else:
+            self.log_test('comments_tests', 'Create test post for comments', False, 
+                        "No auth token available")
+            return
+
+        # Test 1: Get comments for post (should be empty initially)
+        try:
+            response = requests.get(f"{API_BASE}/posts/{test_post_id}/comments")
+            
+            if response.status_code == 200:
+                comments = response.json()
+                if isinstance(comments, list) and len(comments) == 0:
+                    self.log_test('comments_tests', 'Get comments for post (empty)', True, 
+                                "No comments initially, as expected")
+                else:
+                    self.log_test('comments_tests', 'Get comments for post (empty)', False, 
+                                f"Expected empty list, got {len(comments) if isinstance(comments, list) else 'non-list'}")
+            else:
+                self.log_test('comments_tests', 'Get comments for post (empty)', False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Get comments for post (empty)', False, str(e))
+
+        # Test 2: Create top-level comment
+        top_level_comment_id = None
+        try:
+            comment_data = {
+                "post_id": test_post_id,
+                "author_name": "Alice Johnson",
+                "author_email": "alice@example.com",
+                "content": "This is a great article! Thanks for sharing."
+            }
+            
+            response = requests.post(f"{API_BASE}/posts/{test_post_id}/comments", 
+                json=comment_data,
+                headers={"Content-Type": "application/json"})
+            
+            if response.status_code == 200:
+                created_comment = response.json()
+                top_level_comment_id = created_comment['id']
+                if (created_comment['author_name'] == comment_data['author_name'] and 
+                    created_comment['content'] == comment_data['content'] and
+                    created_comment['parent_id'] is None):
+                    self.log_test('comments_tests', 'Create top-level comment', True, 
+                                f"Comment created with ID: {top_level_comment_id}")
+                else:
+                    self.log_test('comments_tests', 'Create top-level comment', False, 
+                                "Comment data doesn't match expected values")
+            else:
+                self.log_test('comments_tests', 'Create top-level comment', False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Create top-level comment', False, str(e))
+
+        # Test 3: Create nested reply
+        nested_comment_id = None
+        if top_level_comment_id:
+            try:
+                reply_data = {
+                    "post_id": test_post_id,
+                    "parent_id": top_level_comment_id,
+                    "author_name": "Bob Smith",
+                    "author_email": "bob@example.com",
+                    "content": "I completely agree with Alice! Well said."
+                }
+                
+                response = requests.post(f"{API_BASE}/posts/{test_post_id}/comments", 
+                    json=reply_data,
+                    headers={"Content-Type": "application/json"})
+                
+                if response.status_code == 200:
+                    created_reply = response.json()
+                    nested_comment_id = created_reply['id']
+                    if (created_reply['parent_id'] == top_level_comment_id and
+                        created_reply['author_name'] == reply_data['author_name']):
+                        self.log_test('comments_tests', 'Create nested reply', True, 
+                                    f"Reply created with ID: {nested_comment_id}")
+                    else:
+                        self.log_test('comments_tests', 'Create nested reply', False, 
+                                    "Reply data doesn't match expected values")
+                else:
+                    self.log_test('comments_tests', 'Create nested reply', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                self.log_test('comments_tests', 'Create nested reply', False, str(e))
+
+        # Test 4: Get comments for post (should have 2 comments now, sorted by created_at)
+        try:
+            response = requests.get(f"{API_BASE}/posts/{test_post_id}/comments")
+            
+            if response.status_code == 200:
+                comments = response.json()
+                if isinstance(comments, list) and len(comments) == 2:
+                    # Check if sorted by created_at (oldest first)
+                    if len(comments) > 1:
+                        dates_sorted = all(
+                            comments[i]['created_at'] <= comments[i+1]['created_at'] 
+                            for i in range(len(comments)-1)
+                        )
+                        if dates_sorted:
+                            self.log_test('comments_tests', 'Get comments sorted by created_at', True, 
+                                        f"Retrieved {len(comments)} comments, correctly sorted")
+                        else:
+                            self.log_test('comments_tests', 'Get comments sorted by created_at', False, 
+                                        "Comments not sorted by created_at (oldest first)")
+                    else:
+                        self.log_test('comments_tests', 'Get comments sorted by created_at', True, 
+                                    f"Retrieved {len(comments)} comments")
+                else:
+                    self.log_test('comments_tests', 'Get comments for post (with data)', False, 
+                                f"Expected 2 comments, got {len(comments) if isinstance(comments, list) else 'non-list'}")
+            else:
+                self.log_test('comments_tests', 'Get comments for post (with data)', False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Get comments for post (with data)', False, str(e))
+
+        # Test 5: Get comments for non-existent post
+        try:
+            fake_post_id = str(uuid.uuid4())
+            response = requests.get(f"{API_BASE}/posts/{fake_post_id}/comments")
+            
+            if response.status_code == 200:
+                comments = response.json()
+                if isinstance(comments, list) and len(comments) == 0:
+                    self.log_test('comments_tests', 'Get comments for non-existent post', True, 
+                                "Correctly returned empty list for non-existent post")
+                else:
+                    self.log_test('comments_tests', 'Get comments for non-existent post', False, 
+                                f"Expected empty list, got {len(comments) if isinstance(comments, list) else 'non-list'}")
+            else:
+                self.log_test('comments_tests', 'Get comments for non-existent post', False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Get comments for non-existent post', False, str(e))
+
+        # Test 6: Create comment with invalid email
+        try:
+            invalid_comment = {
+                "post_id": test_post_id,
+                "author_name": "Invalid User",
+                "author_email": "not-an-email",
+                "content": "This should fail due to invalid email"
+            }
+            
+            response = requests.post(f"{API_BASE}/posts/{test_post_id}/comments", 
+                json=invalid_comment,
+                headers={"Content-Type": "application/json"})
+            
+            if response.status_code == 422:  # Validation error
+                self.log_test('comments_tests', 'Create comment with invalid email (should fail)', True, 
+                            "Correctly returned 422 for invalid email format")
+            else:
+                self.log_test('comments_tests', 'Create comment with invalid email (should fail)', False, 
+                            f"Expected 422, got {response.status_code}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Create comment with invalid email (should fail)', False, str(e))
+
+        # Test 7: Create comment with missing fields
+        try:
+            incomplete_comment = {
+                "post_id": test_post_id,
+                "author_name": "Incomplete User"
+                # Missing author_email and content
+            }
+            
+            response = requests.post(f"{API_BASE}/posts/{test_post_id}/comments", 
+                json=incomplete_comment,
+                headers={"Content-Type": "application/json"})
+            
+            if response.status_code == 422:  # Validation error
+                self.log_test('comments_tests', 'Create comment with missing fields (should fail)', True, 
+                            "Correctly returned 422 for missing required fields")
+            else:
+                self.log_test('comments_tests', 'Create comment with missing fields (should fail)', False, 
+                            f"Expected 422, got {response.status_code}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Create comment with missing fields (should fail)', False, str(e))
+
+        # Test 8: Create comment with non-existent parent_id
+        try:
+            fake_parent_id = str(uuid.uuid4())
+            invalid_reply = {
+                "post_id": test_post_id,
+                "parent_id": fake_parent_id,
+                "author_name": "Reply User",
+                "author_email": "reply@example.com",
+                "content": "This should fail due to non-existent parent"
+            }
+            
+            response = requests.post(f"{API_BASE}/posts/{test_post_id}/comments", 
+                json=invalid_reply,
+                headers={"Content-Type": "application/json"})
+            
+            if response.status_code == 404:
+                self.log_test('comments_tests', 'Create comment with non-existent parent (should fail)', True, 
+                            "Correctly returned 404 for non-existent parent comment")
+            else:
+                self.log_test('comments_tests', 'Create comment with non-existent parent (should fail)', False, 
+                            f"Expected 404, got {response.status_code}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Create comment with non-existent parent (should fail)', False, str(e))
+
+        # Test 9: Create comment with post_id mismatch
+        try:
+            fake_post_id = str(uuid.uuid4())
+            mismatched_comment = {
+                "post_id": fake_post_id,  # Different from URL parameter
+                "author_name": "Mismatch User",
+                "author_email": "mismatch@example.com",
+                "content": "This should fail due to post_id mismatch"
+            }
+            
+            response = requests.post(f"{API_BASE}/posts/{test_post_id}/comments", 
+                json=mismatched_comment,
+                headers={"Content-Type": "application/json"})
+            
+            if response.status_code == 400:
+                self.log_test('comments_tests', 'Create comment with post_id mismatch (should fail)', True, 
+                            "Correctly returned 400 for post_id mismatch")
+            else:
+                self.log_test('comments_tests', 'Create comment with post_id mismatch (should fail)', False, 
+                            f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_test('comments_tests', 'Create comment with post_id mismatch (should fail)', False, str(e))
+
+        # Test 10: Delete comment without authentication (should fail)
+        if top_level_comment_id:
+            try:
+                response = requests.delete(f"{API_BASE}/comments/{top_level_comment_id}")
+                
+                if response.status_code == 403:
+                    self.log_test('comments_tests', 'Delete comment without auth (should fail)', True, 
+                                "Correctly returned 403 for unauthorized delete")
+                else:
+                    self.log_test('comments_tests', 'Delete comment without auth (should fail)', False, 
+                                f"Expected 403, got {response.status_code}")
+            except Exception as e:
+                self.log_test('comments_tests', 'Delete comment without auth (should fail)', False, str(e))
+
+        # Test 11: Delete comment with authentication (should succeed and delete replies)
+        if top_level_comment_id and self.auth_token:
+            try:
+                response = requests.delete(f"{API_BASE}/comments/{top_level_comment_id}",
+                    headers={"Authorization": f"Bearer {self.auth_token}"})
+                
+                if response.status_code == 200:
+                    self.log_test('comments_tests', 'Delete comment with auth', True, 
+                                "Comment deleted successfully")
+                    
+                    # Verify that both the comment and its reply were deleted
+                    verify_response = requests.get(f"{API_BASE}/posts/{test_post_id}/comments")
+                    if verify_response.status_code == 200:
+                        remaining_comments = verify_response.json()
+                        if len(remaining_comments) == 0:
+                            self.log_test('comments_tests', 'Verify comment and replies deleted', True, 
+                                        "Both comment and its reply were deleted")
+                        else:
+                            self.log_test('comments_tests', 'Verify comment and replies deleted', False, 
+                                        f"Expected 0 comments, found {len(remaining_comments)}")
+                else:
+                    self.log_test('comments_tests', 'Delete comment with auth', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                self.log_test('comments_tests', 'Delete comment with auth', False, str(e))
+
+        # Test 12: Delete non-existent comment (should fail)
+        if self.auth_token:
+            try:
+                fake_comment_id = str(uuid.uuid4())
+                response = requests.delete(f"{API_BASE}/comments/{fake_comment_id}",
+                    headers={"Authorization": f"Bearer {self.auth_token}"})
+                
+                if response.status_code == 404:
+                    self.log_test('comments_tests', 'Delete non-existent comment (should fail)', True, 
+                                "Correctly returned 404 for non-existent comment")
+                else:
+                    self.log_test('comments_tests', 'Delete non-existent comment (should fail)', False, 
+                                f"Expected 404, got {response.status_code}")
+            except Exception as e:
+                self.log_test('comments_tests', 'Delete non-existent comment (should fail)', False, str(e))
+
+        # Clean up: Delete the test post
+        if test_post_id and self.auth_token:
+            try:
+                response = requests.delete(f"{API_BASE}/posts/{test_post_id}", 
+                    headers={"Authorization": f"Bearer {self.auth_token}"})
+                
+                if response.status_code == 200:
+                    self.log_test('comments_tests', 'Clean up test post', True, 
+                                "Test post deleted successfully")
+                else:
+                    self.log_test('comments_tests', 'Clean up test post', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                self.log_test('comments_tests', 'Clean up test post', False, str(e))
+
     def run_all_tests(self):
         """Run all backend API tests"""
         print("🚀 Starting Backend API Tests for Dinmay's Blog")
@@ -404,6 +738,7 @@ class BlogAPITester:
         self.test_authentication()
         self.test_blog_posts_crud()
         self.test_about_api()
+        self.test_comments_api()
         
         # Print summary
         print("\n" + "=" * 60)
@@ -417,7 +752,7 @@ class BlogAPITester:
         # Print failed tests details
         if self.test_results['failed_tests'] > 0:
             print("\n🔍 FAILED TESTS DETAILS:")
-            for category in ['auth_tests', 'blog_posts_tests', 'about_tests']:
+            for category in ['auth_tests', 'blog_posts_tests', 'about_tests', 'comments_tests']:
                 failed_in_category = [t for t in self.test_results[category] if not t['passed']]
                 if failed_in_category:
                     print(f"\n{category.upper().replace('_', ' ')}:")

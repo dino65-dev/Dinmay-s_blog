@@ -7,10 +7,12 @@ import logging
 from pathlib import Path
 
 # Import routes
-from routes import blog_posts, auth, about
+from routes import blog_posts, auth, about, comments, github
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+# Ensure environment variables are loaded
+load_dotenv('/app/backend/.env')
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -32,6 +34,8 @@ async def root():
 api_router.include_router(blog_posts.router, tags=["blog"])
 api_router.include_router(auth.router, tags=["auth"])
 api_router.include_router(about.router, tags=["about"])
+api_router.include_router(comments.router, tags=["comments"])
+api_router.include_router(github.router, tags=["github"])
 
 # Include the router in the main app
 app.include_router(api_router)
