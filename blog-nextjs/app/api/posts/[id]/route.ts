@@ -4,7 +4,7 @@ import { requireAuth } from '@/lib/appwrite/auth'
 
 export async function PUT(
   request: Request,
-  context: { params: Promise&lt;{ id: string }&gt; }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await requireAuth()
@@ -27,7 +27,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  context: { params: Promise&lt;{ id: string }&gt; }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await requireAuth()

@@ -16,40 +16,40 @@ interface MarkdownRendererProps {
 }
 
 export function MarkdownRenderer({ content, contentType }: MarkdownRendererProps) {
-  useEffect(() =&gt; {
+  useEffect(() => {
     Prism.highlightAll()
   }, [content])
 
   if (contentType === 'html') {
     return (
-      &lt;div
+      <div
         className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-pre:bg-gray-900 prose-pre:text-gray-100"
         dangerouslySetInnerHTML={{ __html: content }}
-      /&gt;
+      />
     )
   }
 
   return (
-    &lt;ReactMarkdown
+    <ReactMarkdown
       className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-pre:bg-gray-900 prose-pre:text-gray-100"
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeKatex, rehypeRaw]}
       components={{
         code({ node, inline, className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '')
-          return !inline &amp;&amp; match ? (
-            &lt;code className={className} {...props}&gt;
+          return !inline && match ? (
+            <code className={className} {...props}>
               {children}
-            &lt;/code&gt;
+            </code>
           ) : (
-            &lt;code className={className} {...props}&gt;
+            <code className={className} {...props}>
               {children}
-            &lt;/code&gt;
+            </code>
           )
         }
       }}
-    &gt;
+    >
       {content}
-    &lt;/ReactMarkdown&gt;
+    </ReactMarkdown>
   )
 }

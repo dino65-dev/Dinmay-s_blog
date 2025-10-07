@@ -8,46 +8,46 @@ async function PostsList() {
 
   if (posts.length === 0) {
     return (
-      &lt;div className="text-center py-12"&gt;
-        &lt;p className="text-gray-500 dark:text-gray-400 text-lg"&gt;
+      <div className="text-center py-12">
+        <p className="text-gray-500 dark:text-gray-400 text-lg">
           No blog posts yet.
-        &lt;/p&gt;
-      &lt;/div&gt;
+        </p>
+      </div>
     )
   }
 
   return (
-    &lt;div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"&gt;
-      {posts.map((post, index) =&gt; (
-        &lt;BlogCard key={post.$id} post={post} index={index} /&gt;
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {posts.map((post, index) => (
+        <BlogCard key={post.$id} post={post} index={index} />
       ))}
-    &lt;/div&gt;
+    </div>
   )
 }
 
 export default function AllPostsPage() {
   return (
-    &lt;div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16"&gt;
-      &lt;div className="mb-12 text-center"&gt;
-        &lt;h1 className="text-4xl md:text-5xl font-bold mb-4"&gt;All Posts&lt;/h1&gt;
-        &lt;p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto"&gt;
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">All Posts</h1>
+        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
           Browse through all our articles and tutorials
-        &lt;/p&gt;
-      &lt;/div&gt;
+        </p>
+      </div>
 
-      &lt;Suspense fallback={
-        &lt;div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"&gt;
-          {[...Array(6)].map((_, i) =&gt; (
-            &lt;div key={i} className="space-y-4"&gt;
-              &lt;Skeleton className="h-48 w-full" /&gt;
-              &lt;Skeleton className="h-6 w-3/4" /&gt;
-              &lt;Skeleton className="h-4 w-full" /&gt;
-            &lt;/div&gt;
+      <Suspense fallback={
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="space-y-4">
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+            </div>
           ))}
-        &lt;/div&gt;
-      }&gt;
-        &lt;PostsList /&gt;
-      &lt;/Suspense&gt;
-    &lt;/div&gt;
+        </div>
+      }>
+        <PostsList />
+      </Suspense>
+    </div>
   )
 }
