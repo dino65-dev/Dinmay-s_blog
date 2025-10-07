@@ -31,3 +31,22 @@ export interface CreatePostData {
 export interface UpdatePostData extends Partial<CreatePostData> {
   publishedDate?: string
 }
+
+export interface Comment {
+  $id: string
+  postId: string
+  parentId?: string
+  authorName: string
+  authorEmail: string
+  content: string
+  $createdAt: string
+  $updatedAt: string
+}
+
+export interface CreateCommentData {
+  postId: string
+  parentId?: string
+  authorName: string
+  authorEmail: string
+  content: string
+}
