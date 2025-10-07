@@ -346,11 +346,11 @@ const AdminPage = () => {
                 <h2 className="text-xl font-bold mb-6">Live Preview</h2>
                 {mdTitle && <h1 className="text-3xl font-bold mb-4">{mdTitle}</h1>}
                 {mdImage && !mdImageError && (
-                  <div className="mb-4">
+                  <div className="mb-4 w-full h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded">
                     <img 
                       src={mdImage} 
                       alt="Preview" 
-                      className="w-full h-48 object-cover rounded" 
+                      className="max-w-full max-h-full object-contain rounded" 
                       onError={(e) => {
                         e.target.style.display = 'none';
                         setMdImageError('❌ Image failed to load. Check if URL is a direct image link');
