@@ -38,6 +38,15 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound()
   }
 
+  // Get all posts for related posts (excluding current)
+  const allPosts = await getAllPosts()
+  const relatedPosts = allPosts
+    .filter(p => p.$id !== post.$id)
+    .slice(0, 3)
+
+  // Get current URL for social sharing
+  const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dinmay-blog.appwrite.io'}/post/${post.slug}`
+
   return (
     <>
       <ReadingProgress />
@@ -49,62 +58,87 @@ export default async function BlogPostPage({ params }: PageProps) {
           Back to Home
         </Link>
 
-        {/* Header */}
-        <header className="mb-12 max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            {post.title}
-          </h1>
+        <div className="flex gap-8">
+          {/* Main Content */}
+          <div className="flex-1 min-w-0">
+            {/* Header */}
+            <header className="mb-12 max-w-3xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                {post.title}
+              </h1>
 
-          <div className="flex items-center justify-center gap-6 text-gray-600 dark:text-gray-400 mb-6">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <span>{formatDate(post.publishedDate)}</span>
+              <div className="flex items-center justify-center gap-6 text-gray-600 dark:text-gray-400 mb-6">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{formatDate(post.publishedDate)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>{calculateReadingTime(post.content)} min read</span>
+                </div>
+              </div>
+
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 text-sm rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </header>
+
+            {/* Featured Image */}
+            {post.featuredImage && (
+              <div className="mb-12 max-w-4xl mx-auto rounded-xl overflow-hidden">
+                <img
+                  src={post.featuredImage}
+                  alt={post.title}
+                  className="w-full h-auto"
+                />
+              </div>
+            )}
+
+            {/* Content */}
+            <div className="max-w-3xl mx-auto">
+              <MarkdownRenderer content={post.content} contentType={post.contentType} />
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{calculateReadingTime(post.content)} min read</span>
+
+            {/* Social Share */}
+            <div className="max-w-3xl mx-auto">
+              <SocialShare title={post.title} url={currentUrl} />
+            </div>
+
+            {/* Admin Actions */}
+            {authenticated && (
+              <div className="mt-12 max-w-3xl mx-auto flex gap-4 justify-end border-t border-gray-200 dark:border-gray-800 pt-8">
+                <Link href={`/admin/edit/${post.$id}`}>
+                  <Button variant="outline">Edit Post</Button>
+                </Link>
+                <DeleteButton postId={post.$id} />
+              </div>
+            )}
+
+            {/* Comments Section */}
+            <div className="max-w-3xl mx-auto">
+              <Comments postId={post.$id} isAdmin={authenticated} />
+            </div>
+
+            {/* Related Posts */}
+            <div className="max-w-3xl mx-auto">
+              <RelatedPosts posts={relatedPosts} />
             </div>
           </div>
 
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 text-sm rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </header>
-
-        {/* Featured Image */}
-        {post.featuredImage && (
-          <div className="mb-12 max-w-4xl mx-auto rounded-xl overflow-hidden">
-            <img
-              src={post.featuredImage}
-              alt={post.title}
-              className="w-full h-auto"
-            />
-          </div>
-        )}
-
-        {/* Content */}
-        <div className="max-w-3xl mx-auto">
-          <MarkdownRenderer content={post.content} contentType={post.contentType} />
+          {/* Sidebar - Table of Contents */}
+          <aside className="w-80 flex-shrink-0">
+            <TableOfContents content={post.content} />
+          </aside>
         </div>
-
-        {/* Admin Actions */}
-        {authenticated && (
-          <div className="mt-12 max-w-3xl mx-auto flex gap-4 justify-end border-t border-gray-200 dark:border-gray-800 pt-8">
-            <Link href={`/admin/edit/${post.$id}`}>
-              <Button variant="outline">Edit Post</Button>
-            </Link>
-            <DeleteButton postId={post.$id} />
-          </div>
-        )}
       </article>
     </>
   )
