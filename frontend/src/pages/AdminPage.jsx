@@ -38,26 +38,31 @@ const AdminPage = () => {
   // Validate if URL is a direct image URL
   const isDirectImageUrl = (url) => {
     if (!url) return true; // Empty is okay
-    // Allow URLs with query parameters that still contain image extensions
+    
+    // Check for image extensions
     const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|avif)/i;
-    return imageExtensions.test(url);
+    if (imageExtensions.test(url)) return true;
+    
+    // Allow known image hosting services that serve images without extensions
+    const imageHosts = ['unsplash.com', 'imgur.com', 'cloudinary.com', 'imagekit.io', 'images.pexels.com'];
+    return imageHosts.some(host => url.includes(host));
   };
 
   // Validate image URL on change
   const validateImageUrl = (url) => {
     if (!url) return '';
     
-    // Check for common non-image link patterns
-    if (url.includes('pin.it') || url.includes('pinterest.com')) {
+    // Check for common non-image link patterns that definitely won't work
+    if (url.includes('pin.it') || url.includes('pinterest.com/pin/')) {
       return '⚠️ Pinterest links don\'t work. Right-click the image on Pinterest and select "Copy Image Address"';
     }
     if (url.includes('instagram.com') || url.includes('facebook.com') || url.includes('twitter.com')) {
       return '⚠️ Social media page links don\'t work. You need the direct image URL';
     }
     
-    // Check if it looks like a direct image URL
+    // Check if it looks like a direct image URL or from known image hosts
     if (!isDirectImageUrl(url)) {
-      return '⚠️ URL should end with image extension (.jpg, .png, .webp, etc.)';
+      return '⚠️ URL should end with image extension (.jpg, .png, .webp, etc.) or be from a known image host';
     }
     
     return '';
