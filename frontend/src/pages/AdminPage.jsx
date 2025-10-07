@@ -339,8 +339,34 @@ const AdminPage = () => {
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h2 className="text-xl font-bold mb-6">Live Preview</h2>
                 {mdTitle && <h1 className="text-3xl font-bold mb-4">{mdTitle}</h1>}
-                {mdImage && (
-                  <img src={mdImage} alt="Preview" className="w-full h-48 object-cover rounded mb-4" />
+                {mdImage && !mdImageError && (
+                  <div className="mb-4">
+                    <img 
+                      src={mdImage} 
+                      alt="Preview" 
+                      className="w-full h-48 object-cover rounded" 
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        setMdImageError('❌ Image failed to load. Check if URL is a direct image link');
+                      }}
+                      onLoad={() => {
+                        setMdImageError('');
+                      }}
+                    />
+                  </div>
+                )}
+                {mdImage && mdImageError && (
+                  <div className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                      {mdImageError}
+                    </p>
+                    <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-2">
+                      <strong>How to get direct image URLs:</strong><br/>
+                      • Pinterest: Right-click image → "Copy Image Address"<br/>
+                      • Or use free image hosts: unsplash.com, imgur.com<br/>
+                      • URL should end with .jpg, .png, .webp, etc.
+                    </p>
+                  </div>
                 )}
                 {mdContent && <MarkdownRenderer content={mdContent} />}
               </div>
