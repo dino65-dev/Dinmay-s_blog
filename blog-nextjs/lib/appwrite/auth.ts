@@ -7,6 +7,16 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'tapuhero@123'
 const SESSION_COOKIE = 'admin_session'
 
 export async function loginAdmin(email: string, password: string): Promise<{ success: boolean; message: string }> {
+  // Debug logging
+  console.log('Login attempt:', {
+    providedEmail: email,
+    expectedEmail: ADMIN_EMAIL,
+    emailMatch: email === ADMIN_EMAIL,
+    providedPassword: password,
+    expectedPassword: ADMIN_PASSWORD,
+    passwordMatch: password === ADMIN_PASSWORD
+  })
+
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
     const cookieStore = await cookies()
     const sessionToken = Buffer.from(`${email}:${Date.now()}`).toString('base64')
