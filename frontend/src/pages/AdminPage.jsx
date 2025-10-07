@@ -424,11 +424,11 @@ const AdminPage = () => {
                     💡 Use direct image URLs from Unsplash, Imgur, or your own hosting
                   </p>
                   {adminImage && !adminImageError && (
-                    <div className="mt-2">
+                    <div className="mt-2 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded border">
                       <img 
                         src={adminImage} 
                         alt="Preview" 
-                        className="w-full h-32 object-cover rounded border"
+                        className="max-w-full max-h-full object-contain rounded"
                         onError={(e) => {
                           setAdminImageError('❌ Image failed to load. Please check the URL');
                         }}
