@@ -106,6 +106,12 @@ export const api = {
     });
     return response.data;
   },
+
+  // GitHub API
+  getGitHubProfile: async (username) => {
+    const response = await axios.get(`${API}/github/profile/${username}`);
+    return response.data;
+  },
 };
 
 export default api;
