@@ -44,7 +44,7 @@ const AdminPage = () => {
     if (imageExtensions.test(url)) return true;
     
     // Allow known image hosting services that serve images without extensions
-    const imageHosts = ['unsplash.com', 'imgur.com', 'cloudinary.com', 'imagekit.io', 'images.pexels.com'];
+    const imageHosts = ['unsplash.com', 'imgur.com', 'ibb.co', 'cloudinary.com', 'imagekit.io', 'images.pexels.com'];
     return imageHosts.some(host => url.includes(host));
   };
 
