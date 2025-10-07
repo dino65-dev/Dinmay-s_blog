@@ -112,7 +112,7 @@ const BlogPostPage = () => {
                   <img 
                     src={post.featuredImage} 
                     alt={post.title}
-                    className="w-full h-64 md:h-96 lg:h-[500px] object-cover rounded-lg mb-8"
+                    className="w-full h-auto max-h-[500px] object-contain rounded-lg mb-8 bg-gray-100 dark:bg-gray-800"
                   />
                 )}
                 <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
