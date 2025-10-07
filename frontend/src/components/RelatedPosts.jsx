@@ -54,11 +54,13 @@ const RelatedPosts = ({ currentPostId }) => {
           >
             <div className="flex gap-4">
               {post.featuredImage && (
-                <img
-                  src={post.featuredImage}
-                  alt={post.title}
-                  className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
-                />
+                <div className="w-24 h-24 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg flex-shrink-0">
+                  <img
+                    src={post.featuredImage}
+                    alt={post.title}
+                    className="max-w-full max-h-full object-contain rounded-lg"
+                  />
+                </div>
               )}
               <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 mb-1">
