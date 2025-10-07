@@ -403,10 +403,33 @@ const AdminPage = () => {
                   <Input
                     id="admin-image"
                     value={adminImage}
-                    onChange={(e) => setAdminImage(e.target.value)}
+                    onChange={(e) => {
+                      const url = e.target.value;
+                      setAdminImage(url);
+                      setAdminImageError(validateImageUrl(url));
+                    }}
                     placeholder="https://example.com/image.jpg"
-                    className="mt-2"
+                    className={`mt-2 ${adminImageError ? 'border-yellow-500' : ''}`}
                   />
+                  {adminImageError && (
+                    <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">{adminImageError}</p>
+                  )}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    💡 Use direct image URLs from Unsplash, Imgur, or your own hosting
+                  </p>
+                  {adminImage && !adminImageError && (
+                    <div className="mt-2">
+                      <img 
+                        src={adminImage} 
+                        alt="Preview" 
+                        className="w-full h-32 object-cover rounded border"
+                        onError={(e) => {
+                          setAdminImageError('❌ Image failed to load. Please check the URL');
+                        }}
+                        onLoad={() => setAdminImageError('')}
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="mb-4">
                   <Label htmlFor="admin-content">Content (HTML/Markdown)</Label>
