@@ -305,10 +305,20 @@ const AdminPage = () => {
                     <Input
                       id="md-image"
                       value={mdImage}
-                      onChange={(e) => setMdImage(e.target.value)}
+                      onChange={(e) => {
+                        const url = e.target.value;
+                        setMdImage(url);
+                        setMdImageError(validateImageUrl(url));
+                      }}
                       placeholder="https://example.com/image.jpg"
-                      className="mt-2"
+                      className={`mt-2 ${mdImageError ? 'border-yellow-500' : ''}`}
                     />
+                    {mdImageError && (
+                      <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">{mdImageError}</p>
+                    )}
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      💡 Use direct image URLs from Unsplash, Imgur, or your own hosting
+                    </p>
                   </div>
                   <div className="mb-4">
                     <Label htmlFor="md-content">Content (Markdown)</Label>
