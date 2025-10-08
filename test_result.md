@@ -394,6 +394,18 @@ frontend:
         agent: "main"
         comment: "Updated all components and pages with mobile-first responsive design using Tailwind breakpoints (sm:, md:, lg:). Features: responsive grid layouts, proper padding/gap adjustments, stack layouts on mobile, flex wrapping for navigation, responsive image sizes, touch-friendly buttons and forms."
 
+  - task: "Render deployment - SPA routing fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/public/index.html, /app/frontend/public/404.html, /app/frontend/public/_redirects, /app/frontend/public/netlify.toml"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed 404 errors for /admin and other routes on Render static site deployment. Issue: Direct URL access or page refresh returned 404 because static server didn't know about React Router routes. Solution: Triple-layer fallback - 1) _redirects file serves index.html for all routes (200 status), 2) 404.html with redirect script as fallback, 3) index.html handler restores original URL. All files verified in build output. Created RENDER_DEPLOYMENT_FIX.md guide with deployment instructions. User needs to commit changes and redeploy on Render."
+
 metadata:
   created_by: "main_agent"
   version: "1.1"
