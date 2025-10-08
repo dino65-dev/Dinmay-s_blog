@@ -1,4 +1,4 @@
-import { getAllPosts } from '@/lib/appwrite/posts'
+import { getAllPosts } from '@/lib/mongodb/posts'
 import { BlogCard } from '@/components/blog/blog-card'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'

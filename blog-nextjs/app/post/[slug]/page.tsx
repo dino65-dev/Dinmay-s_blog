@@ -1,4 +1,4 @@
-import { getPostBySlug, deletePost, getAllPosts } from '@/lib/appwrite/posts'
+import { getPostBySlug, getAllPosts } from '@/lib/mongodb/posts'
 import { MarkdownRenderer } from '@/components/blog/markdown-renderer'
 import { ReadingProgress } from '@/components/reading-progress'
 import { Comments } from '@/components/blog/comments'
@@ -10,7 +10,7 @@ import { Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { isAuthenticated } from '@/lib/appwrite/auth'
+import { isAuthenticated } from '@/lib/mongodb/auth'
 import DeleteButton from './delete-button'
 
 interface PageProps {
@@ -45,7 +45,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     .slice(0, 3)
 
   // Get current URL for social sharing
-  const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dinmay-blog.appwrite.io'}/post/${post.slug}`
+  const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dinmay-blog.com'}/post/${post.slug}`
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { HeroSection } from '@/components/blog/hero-section'
 import { BlogCard } from '@/components/blog/blog-card'
-import { getAllPosts } from '@/lib/appwrite/posts'
+import { getAllPosts } from '@/lib/mongodb/posts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Suspense } from 'react'
 
