@@ -30,7 +30,7 @@ First, ensure your backend is accessible from the internet:
 **Option A: Deploy backend on Emergent**
 ```bash
 # Your backend is already running on Emergent
-# Current URL: https://appwrite-to-mongodb.preview.emergentagent.com
+# Current URL: https://blog-deployment.preview.emergentagent.com
 # This URL should be your production backend URL
 ```
 
