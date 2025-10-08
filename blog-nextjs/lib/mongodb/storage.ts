@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 export async function uploadImage(file: File): Promise<string> {
   const bucket = await getGridFSBucket()
   const fileId = uuidv4()
+  const filename = `${fileId}_${file.name}`
   
   // Convert File to Buffer
   const arrayBuffer = await file.arrayBuffer()
@@ -14,13 +15,13 @@ export async function uploadImage(file: File): Promise<string> {
   const readableStream = Readable.from(buffer)
   
   return new Promise((resolve, reject) => {
-    const uploadStream = bucket.openUploadStreamWithId(
-      fileId,
-      file.name,
+    const uploadStream = bucket.openUploadStream(
+      filename,
       {
         metadata: {
           contentType: file.type,
           size: file.size,
+          fileId: fileId,
         }
       }
     )
@@ -28,8 +29,8 @@ export async function uploadImage(file: File): Promise<string> {
     readableStream.pipe(uploadStream)
       .on('error', reject)
       .on('finish', () => {
-        // Return the file ID that can be used to retrieve the image
-        resolve(fileId)
+        // Return the filename that can be used to retrieve the image
+        resolve(filename)
       })
   })
 }
