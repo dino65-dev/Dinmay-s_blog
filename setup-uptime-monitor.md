@@ -113,7 +113,7 @@ After setup, you'll see:
 ### Monitor shows "Down" status
 
 **Check 1:** Verify URL
-- Must be: `https://dinmay-blog-backend.onrender.com/api/`
+- Must be: `https://dinmay-blog-backend.onrender.com/api/health`
 - Note the `/api/` at the end!
 
 **Check 2:** Visit URL in browser
