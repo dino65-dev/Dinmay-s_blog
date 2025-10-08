@@ -48,7 +48,7 @@ export async function getImageStream(filename: string): Promise<Readable> {
   return bucket.openDownloadStreamByName(filename)
 }
 
-export function getImageUrl(fileId: string): string {
+export function getImageUrl(filename: string): string {
   // Return URL to API route that will serve the image
-  return `/api/images/${fileId}`
+  return `/api/images/${encodeURIComponent(filename)}`
 }
