@@ -117,7 +117,7 @@ After setup, you'll see:
 - Note the `/api/health` endpoint!
 
 **Check 2:** Visit URL in browser
-- Go to: https://dinmay-blog-backend.onrender.com/api/
+- Go to: https://dinmay-blog-backend.onrender.com/api/health
 - Should see: `{"message": "Dinmay's Blog API"}`
 
 **Check 3:** Check Render status
