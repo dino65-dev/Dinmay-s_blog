@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { loginAdmin } from '@/lib/appwrite/auth'
+import { loginAdmin } from '@/lib/mongodb/auth'
 
 export async function POST(request: Request) {
   try {

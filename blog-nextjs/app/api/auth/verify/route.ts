@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { isAuthenticated } from '@/lib/appwrite/auth'
+import { isAuthenticated } from '@/lib/mongodb/auth'
 
 export async function GET() {
   try {
