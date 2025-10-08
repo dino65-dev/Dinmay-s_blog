@@ -15,7 +15,7 @@ export async function GET(
     
     // Get the bucket to check file metadata
     const bucket = await getGridFSBucket()
-    const files = await bucket.find({ _id: id }).toArray()
+    const files = await bucket.find({ filename: id }).toArray()
     
     if (files.length === 0) {
       return NextResponse.json(
