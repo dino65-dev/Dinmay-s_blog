@@ -32,6 +32,12 @@ api_router = APIRouter(prefix="/api")
 async def root():
     return {"message": "Dinmay's Blog API"}
 
+# Dedicated health check endpoint for monitoring services
+@api_router.get("/health")
+@api_router.head("/health")
+async def health_check():
+    return {"status": "ok", "message": "Backend is healthy"}
+
 # Include all route modules
 api_router.include_router(blog_posts.router, tags=["blog"])
 api_router.include_router(auth.router, tags=["auth"])
