@@ -30,7 +30,7 @@ First, ensure your backend is accessible from the internet:
 **Option A: Deploy backend on Emergent**
 ```bash
 # Your backend is already running on Emergent
-# Current URL: https://auth-solution-3.preview.emergentagent.com
+# Current URL: https://cosmos-blog-connect.preview.emergentagent.com
 # This URL should be your production backend URL
 ```
 
