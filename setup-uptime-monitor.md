@@ -23,7 +23,7 @@ Fill in these **exact values**:
 ├─────────────────────────────────────────────────────┤
 │ Friendly Name: Dinmay Blog Backend                  │
 ├─────────────────────────────────────────────────────┤
-│ URL (or IP): https://dinmay-blog-backend.onrender.com/api/ │
+│ URL (or IP): https://dinmay-blog-backend.onrender.com/api/health │
 ├─────────────────────────────────────────────────────┤
 │ Monitoring Interval: 5 minutes                      │
 └─────────────────────────────────────────────────────┘
