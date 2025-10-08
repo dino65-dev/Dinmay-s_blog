@@ -1,7 +1,7 @@
 import { getDatabase, COLLECTIONS } from './config'
 import { BlogPost, CreatePostData, UpdatePostData } from '@/types'
 import { generateSlug } from '@/lib/utils'
-import { v4 as uuidv4 } from 'uuid'
+import { ObjectId } from 'mongodb'
 
 export async function getAllPosts(): Promise<BlogPost[]> {
   try {
@@ -61,7 +61,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
 export async function getPostById(id: string): Promise<BlogPost | null> {
   try {
     const db = await getDatabase()
-    const post = await db.collection(COLLECTIONS.POSTS).findOne({ _id: id })
+    const post = await db.collection(COLLECTIONS.POSTS).findOne({ _id: new ObjectId(id) })
     
     if (!post) return null
     
@@ -88,10 +88,8 @@ export async function createPost(data: CreatePostData): Promise<BlogPost> {
   const db = await getDatabase()
   const slug = generateSlug(data.title)
   const now = new Date().toISOString()
-  const id = uuidv4()
   
-  const postData = {
-    _id: id,
+  const postData: any = {
     ...data,
     slug,
     publishedDate: now,
@@ -100,10 +98,10 @@ export async function createPost(data: CreatePostData): Promise<BlogPost> {
     updatedAt: now,
   }
   
-  await db.collection(COLLECTIONS.POSTS).insertOne(postData)
+  const result = await db.collection(COLLECTIONS.POSTS).insertOne(postData)
   
   return {
-    $id: id,
+    $id: result.insertedId.toString(),
     title: postData.title,
     slug: postData.slug,
     content: postData.content,
@@ -126,7 +124,7 @@ export async function updatePost(id: string, data: UpdatePostData): Promise<Blog
   }
   
   await db.collection(COLLECTIONS.POSTS).updateOne(
-    { _id: id },
+    { _id: new ObjectId(id) },
     { $set: updateData }
   )
   
@@ -140,7 +138,7 @@ export async function updatePost(id: string, data: UpdatePostData): Promise<Blog
 
 export async function deletePost(id: string): Promise<void> {
   const db = await getDatabase()
-  await db.collection(COLLECTIONS.POSTS).deleteOne({ _id: id })
+  await db.collection(COLLECTIONS.POSTS).deleteOne({ _id: new ObjectId(id) })
 }
 
 export async function searchPosts(query: string): Promise<BlogPost[]> {

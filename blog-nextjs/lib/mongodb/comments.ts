@@ -1,6 +1,6 @@
 import { getDatabase, COLLECTIONS } from './config'
 import type { Comment, CreateCommentData } from '@/types'
-import { v4 as uuidv4 } from 'uuid'
+import { ObjectId } from 'mongodb'
 
 export async function getCommentsByPostId(postId: string): Promise<Comment[]> {
   try {
@@ -30,19 +30,17 @@ export async function getCommentsByPostId(postId: string): Promise<Comment[]> {
 export async function createComment(data: CreateCommentData): Promise<Comment> {
   const db = await getDatabase()
   const now = new Date().toISOString()
-  const id = uuidv4()
   
-  const commentData = {
-    _id: id,
+  const commentData: any = {
     ...data,
     createdAt: now,
     updatedAt: now,
   }
   
-  await db.collection(COLLECTIONS.COMMENTS).insertOne(commentData)
+  const result = await db.collection(COLLECTIONS.COMMENTS).insertOne(commentData)
   
   return {
-    $id: id,
+    $id: result.insertedId.toString(),
     postId: commentData.postId,
     parentId: commentData.parentId,
     authorName: commentData.authorName,
@@ -55,7 +53,7 @@ export async function createComment(data: CreateCommentData): Promise<Comment> {
 
 export async function deleteComment(commentId: string): Promise<void> {
   const db = await getDatabase()
-  await db.collection(COLLECTIONS.COMMENTS).deleteOne({ _id: commentId })
+  await db.collection(COLLECTIONS.COMMENTS).deleteOne({ _id: new ObjectId(commentId) })
 }
 
 export async function deleteCommentAndReplies(commentId: string): Promise<void> {
@@ -69,9 +67,9 @@ export async function deleteCommentAndReplies(commentId: string): Promise<void> 
   
   // Delete all replies recursively
   for (const reply of replies) {
-    await deleteCommentAndReplies(reply._id)
+    await deleteCommentAndReplies(reply._id.toString())
   }
   
   // Delete the comment itself
-  await db.collection(COLLECTIONS.COMMENTS).deleteOne({ _id: commentId })
+  await db.collection(COLLECTIONS.COMMENTS).deleteOne({ _id: new ObjectId(commentId) })
 }

@@ -1,6 +1,5 @@
 import { getDatabase, COLLECTIONS } from './config'
 import { AboutContent } from '@/types'
-import { v4 as uuidv4 } from 'uuid'
 
 export async function getAboutContent(): Promise<AboutContent | null> {
   try {
@@ -43,9 +42,7 @@ export async function updateAboutContent(content: string): Promise<AboutContent>
     } as AboutContent
   } else {
     // Create new
-    const id = uuidv4()
     const aboutData: any = {
-      id: id,
       content,
       createdAt: now,
       updatedAt: now,
