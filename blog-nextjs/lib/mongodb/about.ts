@@ -44,17 +44,17 @@ export async function updateAboutContent(content: string): Promise<AboutContent>
   } else {
     // Create new
     const id = uuidv4()
-    const aboutData = {
-      _id: id,
+    const aboutData: any = {
+      id: id,
       content,
       createdAt: now,
       updatedAt: now,
     }
     
-    await db.collection(COLLECTIONS.ABOUT).insertOne(aboutData)
+    const result = await db.collection(COLLECTIONS.ABOUT).insertOne(aboutData)
     
     return {
-      $id: id,
+      $id: result.insertedId.toString(),
       content,
       $createdAt: now,
       $updatedAt: now,
