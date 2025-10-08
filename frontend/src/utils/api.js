@@ -3,6 +3,11 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Configure axios timeout and retry settings
+const TIMEOUT = 60000; // 60 seconds for cold starts
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2 seconds between retries
+
 // Helper function to get auth token
 const getAuthToken = () => {
   return localStorage.getItem('authToken');
@@ -13,6 +18,43 @@ const getAuthHeaders = () => {
   const token = getAuthToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
+
+// Helper function to check if backend is waking up
+const isWakeUpError = (error) => {
+  if (!error.response) {
+    // Network error - likely backend is sleeping
+    return true;
+  }
+  // 502/503 errors often indicate backend is starting up
+  return error.response.status === 502 || error.response.status === 503;
+};
+
+// Enhanced axios request with retry logic for cold starts
+const makeRequest = async (requestFn, retries = MAX_RETRIES) => {
+  try {
+    const response = await requestFn();
+    return response;
+  } catch (error) {
+    // Check if this is a wake-up error and we have retries left
+    if (isWakeUpError(error) && retries > 0) {
+      console.log(`Backend waking up... Retrying in ${RETRY_DELAY/1000}s (${retries} attempts left)`);
+      
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+      
+      // Retry the request
+      return makeRequest(requestFn, retries - 1);
+    }
+    
+    // If not a wake-up error or out of retries, throw the error
+    throw error;
+  }
+};
+
+// Create axios instance with timeout
+const axiosInstance = axios.create({
+  timeout: TIMEOUT,
+});
 
 // Blog Posts API
 export const api = {
