@@ -35,14 +35,17 @@ export async function uploadImage(file: File): Promise<string> {
   })
 }
 
-export async function deleteImage(fileId: string): Promise<void> {
+export async function deleteImage(filename: string): Promise<void> {
   const bucket = await getGridFSBucket()
-  await bucket.delete(fileId)
+  const files = await bucket.find({ filename }).toArray()
+  if (files.length > 0) {
+    await bucket.delete(files[0]._id)
+  }
 }
 
-export async function getImageStream(fileId: string): Promise<Readable> {
+export async function getImageStream(filename: string): Promise<Readable> {
   const bucket = await getGridFSBucket()
-  return bucket.openDownloadStream(fileId)
+  return bucket.openDownloadStreamByName(filename)
 }
 
 export function getImageUrl(fileId: string): string {
