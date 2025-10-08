@@ -29,7 +29,7 @@ Fill in these **exact values**:
 └─────────────────────────────────────────────────────┘
 ```
 
-⚠️ **Important:** Make sure URL ends with `/api/`
+⚠️ **Important:** Use `/api/health` endpoint (supports HEAD requests)
 
 Click **"Create Monitor"** button
 
