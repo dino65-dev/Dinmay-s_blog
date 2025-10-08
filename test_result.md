@@ -406,6 +406,18 @@ frontend:
         agent: "main"
         comment: "Fixed 404 errors for /admin and other routes on Render static site deployment. Issue: Direct URL access or page refresh returned 404 because static server didn't know about React Router routes. Solution: Triple-layer fallback - 1) _redirects file serves index.html for all routes (200 status), 2) 404.html with redirect script as fallback, 3) index.html handler restores original URL. All files verified in build output. Created RENDER_DEPLOYMENT_FIX.md guide with deployment instructions. User needs to commit changes and redeploy on Render."
 
+  - task: "Render backend cold start optimization"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/utils/api.js, /app/frontend/src/components/BackendWakeUp.jsx, /app/frontend/src/hooks/useBackendStatus.js, .github/workflows/keep-alive.yml"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Solved Render free tier cold start problem (backend sleeps after 15min, takes 30-60s to wake). Frontend solution: Enhanced API utility with automatic retry logic (3 attempts, 60s timeout, detects 502/503 errors), BackendWakeUp component with friendly loading UI, useBackendStatus hook for wake tracking. Keep-alive solutions documented: UptimeRobot (recommended, free, 5min setup), GitHub Actions workflow (free, auto-ping every 10min), Render paid tier ($7/mo, no sleep). Created comprehensive guides: RENDER_KEEP_ALIVE_SOLUTIONS.md (full guide), setup-uptime-monitor.md (quick UptimeRobot setup). User should: 1) Deploy frontend changes, 2) Set up UptimeRobot (5 minutes, free) to keep backend awake 24/7."
+
 metadata:
   created_by: "main_agent"
   version: "1.1"
