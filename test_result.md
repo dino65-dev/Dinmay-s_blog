@@ -194,6 +194,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: Database configuration working properly. MongoDB connection established successfully. All CRUD operations on blog_posts and about collections functioning correctly."
+      - working: true
+        agent: "testing"
+        comment: "✅ AZURE COSMOS DB MIGRATION VERIFIED: Successfully migrated from local MongoDB to Azure Cosmos DB for MongoDB. Connection string updated to Azure Cosmos DB cluster (dinmaysblog.global.mongocluster.cosmos.azure.com). All backend APIs tested with 100% success rate (36/36 tests passed). Database operations (CRUD, authentication, comments) working perfectly with Azure Cosmos DB. Admin password updated to tapuhero@123."
 
   - task: "Comments API - MongoDB models and endpoints"
     implemented: true
