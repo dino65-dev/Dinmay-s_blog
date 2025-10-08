@@ -26,7 +26,9 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 # Add your routes to the router instead of directly to app
+# Health check endpoint - supports both GET and HEAD requests
 @api_router.get("/")
+@api_router.head("/")
 async def root():
     return {"message": "Dinmay's Blog API"}
 
