@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { searchPosts } from '@/lib/appwrite/posts'
+import { searchPosts } from '@/lib/mongodb/posts'
 
 export async function GET(request: Request) {
   try {

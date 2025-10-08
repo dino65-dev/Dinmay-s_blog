@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createPost } from '@/lib/appwrite/posts'
-import { requireAuth } from '@/lib/appwrite/auth'
+import { createPost } from '@/lib/mongodb/posts'
+import { requireAuth } from '@/lib/mongodb/auth'
 
 export async function POST(request: Request) {
   try {

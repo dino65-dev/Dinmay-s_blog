@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { updatePost, deletePost } from '@/lib/appwrite/posts'
-import { requireAuth } from '@/lib/appwrite/auth'
+import { updatePost, deletePost } from '@/lib/mongodb/posts'
+import { requireAuth } from '@/lib/mongodb/auth'
 
 export async function PUT(
   request: Request,
