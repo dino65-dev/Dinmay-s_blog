@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getCommentsByPostId, createComment } from '@/lib/appwrite/comments'
+import { getCommentsByPostId, createComment } from '@/lib/mongodb/comments'
 import { CreateCommentData } from '@/types'
 
 export async function GET(request: NextRequest) {

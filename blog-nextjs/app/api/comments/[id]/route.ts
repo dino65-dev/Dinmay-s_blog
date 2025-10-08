@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { deleteCommentAndReplies } from '@/lib/appwrite/comments'
-import { isAuthenticated } from '@/lib/appwrite/auth'
+import { deleteCommentAndReplies } from '@/lib/mongodb/comments'
+import { isAuthenticated } from '@/lib/mongodb/auth'
 
 interface RouteParams {
   params: Promise<{ id: string }>
