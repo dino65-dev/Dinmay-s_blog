@@ -60,7 +60,9 @@ const axiosInstance = axios.create({
 export const api = {
   // Get all posts
   getPosts: async () => {
-    const response = await axios.get(`${API}/posts`);
+    const response = await makeRequest(() => 
+      axiosInstance.get(`${API}/posts`)
+    );
     return response.data;
   },
 
@@ -74,85 +76,122 @@ export const api = {
     if (filters.sortBy) params.append('sort_by', filters.sortBy);
     if (filters.order) params.append('order', filters.order);
     
-    const response = await axios.get(`${API}/search/posts?${params.toString()}`);
+    const response = await makeRequest(() => 
+      axiosInstance.get(`${API}/search/posts?${params.toString()}`)
+    );
     return response.data;
   },
 
   // Get post by slug
   getPostBySlug: async (slug) => {
-    const response = await axios.get(`${API}/posts/${slug}`);
+    const response = await makeRequest(() => 
+      axiosInstance.get(`${API}/posts/${slug}`)
+    );
     return response.data;
   },
 
   // Create a new post (requires auth)
   createPost: async (postData) => {
-    const response = await axios.post(`${API}/posts`, postData, {
-      headers: getAuthHeaders(),
-    });
+    const response = await makeRequest(() => 
+      axiosInstance.post(`${API}/posts`, postData, {
+        headers: getAuthHeaders(),
+      })
+    );
     return response.data;
   },
 
   // Update a post (requires auth)
   updatePost: async (postId, postData) => {
-    const response = await axios.put(`${API}/posts/${postId}`, postData, {
-      headers: getAuthHeaders(),
-    });
+    const response = await makeRequest(() => 
+      axiosInstance.put(`${API}/posts/${postId}`, postData, {
+        headers: getAuthHeaders(),
+      })
+    );
     return response.data;
   },
 
   // Delete a post (requires auth)
   deletePost: async (postId) => {
-    const response = await axios.delete(`${API}/posts/${postId}`, {
-      headers: getAuthHeaders(),
-    });
+    const response = await makeRequest(() => 
+      axiosInstance.delete(`${API}/posts/${postId}`, {
+        headers: getAuthHeaders(),
+      })
+    );
     return response.data;
   },
 
   // Auth API
   login: async (password) => {
-    const response = await axios.post(`${API}/auth/login`, { password });
+    const response = await makeRequest(() => 
+      axiosInstance.post(`${API}/auth/login`, { password })
+    );
     return response.data;
   },
 
   // About API
   getAbout: async () => {
-    const response = await axios.get(`${API}/about`);
+    const response = await makeRequest(() => 
+      axiosInstance.get(`${API}/about`)
+    );
     return response.data;
   },
 
   // Update about (requires auth)
   updateAbout: async (content) => {
-    const response = await axios.put(`${API}/about`, { content }, {
-      headers: getAuthHeaders(),
-    });
+    const response = await makeRequest(() => 
+      axiosInstance.put(`${API}/about`, { content }, {
+        headers: getAuthHeaders(),
+      })
+    );
     return response.data;
   },
 
   // Comments API
   // Get all comments for a post
   getComments: async (postId) => {
-    const response = await axios.get(`${API}/posts/${postId}/comments`);
+    const response = await makeRequest(() => 
+      axiosInstance.get(`${API}/posts/${postId}/comments`)
+    );
     return response.data;
   },
 
   // Create a comment (no auth required)
   createComment: async (postId, commentData) => {
-    const response = await axios.post(`${API}/posts/${postId}/comments`, commentData);
+    const response = await makeRequest(() => 
+      axiosInstance.post(`${API}/posts/${postId}/comments`, commentData)
+    );
     return response.data;
   },
 
   // Delete a comment (requires auth)
   deleteComment: async (commentId) => {
-    const response = await axios.delete(`${API}/comments/${commentId}`, {
-      headers: getAuthHeaders(),
-    });
+    const response = await makeRequest(() => 
+      axiosInstance.delete(`${API}/comments/${commentId}`, {
+        headers: getAuthHeaders(),
+      })
+    );
     return response.data;
   },
 
   // GitHub API
   getGitHubProfile: async (username) => {
-    const response = await axios.get(`${API}/github/profile/${username}`);
+    const response = await makeRequest(() => 
+      axiosInstance.get(`${API}/github/profile/${username}`)
+    );
     return response.data;
+  },
+
+  // Ping endpoint to wake up backend
+  ping: async () => {
+    try {
+      const response = await makeRequest(() => 
+        axiosInstance.get(`${API}/`, { timeout: 30000 })
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Ping failed:', error);
+      return null;
+    }
   },
 };
 
