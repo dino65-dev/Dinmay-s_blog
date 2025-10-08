@@ -114,7 +114,7 @@ After setup, you'll see:
 
 **Check 1:** Verify URL
 - Must be: `https://dinmay-blog-backend.onrender.com/api/health`
-- Note the `/api/` at the end!
+- Note the `/api/health` endpoint!
 
 **Check 2:** Visit URL in browser
 - Go to: https://dinmay-blog-backend.onrender.com/api/
