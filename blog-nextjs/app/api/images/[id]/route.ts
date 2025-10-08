@@ -12,10 +12,11 @@ export async function GET(
 ) {
   try {
     const { id } = await params
+    const filename = decodeURIComponent(id)
     
     // Get the bucket to check file metadata
     const bucket = await getGridFSBucket()
-    const files = await bucket.find({ filename: id }).toArray()
+    const files = await bucket.find({ filename }).toArray()
     
     if (files.length === 0) {
       return NextResponse.json(
@@ -25,7 +26,7 @@ export async function GET(
     }
     
     const file = files[0]
-    const stream = await getImageStream(id)
+    const stream = await getImageStream(filename)
     
     // Convert stream to buffer
     const chunks: Buffer[] = []
