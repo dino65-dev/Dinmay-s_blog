@@ -108,13 +108,6 @@ const BlogPostPage = () => {
             {/* Main content - MUCH WIDER NOW */}
             <div className="flex-1 w-full">
               <article className="w-full">
-                {post.featuredImage && (
-                  <img 
-                    src={post.featuredImage} 
-                    alt={post.title}
-                    className="w-full h-auto max-h-[500px] object-contain rounded-lg mb-8"
-                  />
-                )}
                 <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
                   <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black dark:text-white flex-1">{post.title}</h1>
                   {isAuthenticated && (
@@ -129,6 +122,14 @@ const BlogPostPage = () => {
                   )}
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">Published: {formatDate(post.publishedDate)}</p>
+                
+                {post.featuredImage && (
+                  <img 
+                    src={post.featuredImage} 
+                    alt={post.title}
+                    className="w-full h-auto max-h-[500px] object-contain rounded-lg mb-8"
+                  />
+                )}
 
                 <div className="blog-content w-full">
                   <MarkdownRenderer content={post.content} />
