@@ -1,17 +1,21 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 import os
-import uuid
+import cloudinary
+import cloudinary.uploader
 from datetime import datetime
-import shutil
 from pathlib import Path
+import io
 
 router = APIRouter()
 
-# Create uploads directory if it doesn't exist
-# Use environment variable for flexibility, default to backend/uploads
-UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "./uploads"))
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+# Configure Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 # Allowed image extensions
 ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.avif', '.bmp'}
