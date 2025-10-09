@@ -94,7 +94,7 @@ This gives you full CSS control over the image styling.
 
 ## Code Example
 
-Here's how you write these images in markdown:
+Here's how you write these images in markdown (notice the copy button!):
 
 ```markdown
 # Default image
@@ -117,6 +117,22 @@ Here's how you write these images in markdown:
 
 # Responsive with percentage
 ![Alt text](https://example.com/image.jpg "max-width:80%")
+```
+
+And here's a Python example to test the copy button:
+
+```python
+def process_image(url, width=None, height=None):
+    """Process an image with optional dimensions"""
+    if width and height:
+        return f'![Image]({url} "{width}x{height}")'
+    elif width:
+        return f'![Image]({url} "width:{width}px")'
+    return f'![Image]({url})'
+
+# Usage
+markdown = process_image("https://example.com/pic.jpg", 600, 400)
+print(markdown)
 ```
 
 ---
