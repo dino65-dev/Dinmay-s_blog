@@ -288,6 +288,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Already implemented with markdown rendering, KaTeX, and Prism.js. Now includes delete button for admins"
+      - working: true
+        agent: "main"
+        comment: "Improved blog post layout: Moved featured image to render AFTER the title and published date. New order: Title → Delete button (if admin) → Published date → Featured image → Content. This provides better reading flow and visual hierarchy."
   
   - task: "All posts page"
     implemented: true
