@@ -15,6 +15,9 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 # Allowed image extensions
 ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.avif', '.bmp'}
 
+# Maximum file size (10MB)
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB in bytes
+
 def get_file_extension(filename: str) -> str:
     """Get file extension in lowercase"""
     return Path(filename).suffix.lower()
