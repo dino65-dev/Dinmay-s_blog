@@ -71,6 +71,50 @@ const AdminPage = () => {
     return '';
   };
 
+  // Handle image file upload
+  const handleImageUpload = async (file, setImageUrl, setImageError, setImageUploading) => {
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/avif', 'image/bmp'];
+    if (!allowedTypes.includes(file.type)) {
+      setImageError('❌ Invalid file type. Please upload an image file (JPG, PNG, GIF, WEBP, SVG, AVIF, BMP)');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setImageError('❌ File size too large. Maximum size is 10MB');
+      return;
+    }
+
+    setImageUploading(true);
+    setImageError('');
+
+    try {
+      const result = await api.uploadImage(file);
+      if (result.success) {
+        setImageUrl(result.url);
+        toast({
+          title: "Success",
+          description: "Image uploaded successfully!",
+        });
+      } else {
+        setImageError('❌ Upload failed. Please try again.');
+      }
+    } catch (error) {
+      setImageError(`❌ Upload failed: ${error.message}`);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to upload image",
+        variant: "destructive",
+      });
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const result = await login(password);
