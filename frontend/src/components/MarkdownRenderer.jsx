@@ -501,12 +501,53 @@ const MarkdownRenderer = ({ content }) => {
         .dark .markdown-content blockquote {
           border-left-color: #4b5563;
         }
+        
+        /* Image styling */
+        .markdown-content img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 8px;
+          margin: 1rem 0;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .markdown-content img:hover {
+          transform: scale(1.02);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark .markdown-content img {
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dark .markdown-content img:hover {
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Image captions (using alt text or figcaption) */
+        .markdown-content figure {
+          margin: 1.5rem 0;
+          text-align: center;
+        }
+        
+        .markdown-content figcaption {
+          font-size: 0.875rem;
+          color: #6b7280;
+          margin-top: 0.5rem;
+          font-style: italic;
+        }
+        
+        .dark .markdown-content figcaption {
+          color: #9ca3af;
+        }
       `}</style>
       <ReactMarkdown
         remarkPlugins={[remarkMath, remarkGfm]}
         rehypePlugins={[rehypeKatex, rehypeRaw]}
         components={{
           code: CodeBlock,
+          img: ImageComponent,
         }}
       >
         {content}
