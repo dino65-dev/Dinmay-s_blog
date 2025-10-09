@@ -9,7 +9,8 @@ from pathlib import Path
 router = APIRouter()
 
 # Create uploads directory if it doesn't exist
-UPLOAD_DIR = Path("/app/frontend/public/uploads")
+# Use environment variable for flexibility, default to backend/uploads
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "./uploads"))
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # Allowed image extensions
