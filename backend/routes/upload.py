@@ -97,7 +97,7 @@ async def list_uploaded_images():
                 if file_path.is_file() and get_file_extension(file_path.name) in ALLOWED_EXTENSIONS:
                     images.append({
                         "filename": file_path.name,
-                        "url": f"/uploads/{file_path.name}",
+                        "url": f"/api/static/uploads/{file_path.name}",
                         "size": file_path.stat().st_size,
                         "created_at": datetime.fromtimestamp(file_path.stat().st_ctime).isoformat()
                     })
