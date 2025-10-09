@@ -98,6 +98,14 @@ async def list_uploaded_images():
     List all uploaded images from Cloudinary
     """
     try:
+        # Ensure Cloudinary is configured (for API calls)
+        cloudinary.config(
+            cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+            api_key=os.getenv("CLOUDINARY_API_KEY"),
+            api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+            secure=True
+        )
+        
         # Get resources from Cloudinary folder
         result = cloudinary.api.resources(
             type="upload",
