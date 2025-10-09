@@ -381,6 +381,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "Enhanced TOC animations significantly. Added: 1) Fade-in & slide-up animation on mount, 2) Container hover scale (1.02x) & shadow enhancement, 3) Staggered slide-in animation for heading items (50ms delay each), 4) Smooth expand/collapse with max-height transition, 5) Toggle button rotation (90° on hover, 180° on state change), 6) Heading items translate-x on hover, 7) Gradient backgrounds for active/hover states, 8) Ripple effect on button interactions, 9) Active section with animated slide-down border, 10) Rounded corners enhanced to rounded-xl. All transitions use proper easing functions (ease-out, ease-in-out) for smooth, professional feel."
+      - working: true
+        agent: "main"
+        comment: "Fixed TOC scrolling issue when filled with many contents. Added overflow-y-auto to nav container with max-height of 550px, enabling smooth scrolling for long TOCs. Implemented custom scrollbar styling with subtle appearance that matches light/dark themes. Scrollbar is 6px wide with rounded corners and smooth hover transitions."
 
   - task: "Mobile-responsive design"
     implemented: true
