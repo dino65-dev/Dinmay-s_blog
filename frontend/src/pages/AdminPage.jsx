@@ -292,8 +292,40 @@ const AdminPage = () => {
 
           <TabsContent value="markdown">
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-bold mb-6">Write in Markdown</h2>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Write in Markdown</h2>
+                
+                {/* Image Help Section */}
+                <details className="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <summary className="cursor-pointer p-3 font-medium text-blue-900 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors">
+                    📸 Image Syntax Guide
+                  </summary>
+                  <div className="p-4 pt-2 text-sm space-y-2 text-gray-700 dark:text-gray-300">
+                    <p className="font-semibold text-blue-900 dark:text-blue-100">Basic Image:</p>
+                    <code className="block bg-white dark:bg-gray-900 p-2 rounded border border-blue-200 dark:border-blue-800 text-xs">
+                      ![Alt text](https://example.com/image.jpg)
+                    </code>
+                    
+                    <p className="font-semibold text-blue-900 dark:text-blue-100 pt-2">With Size:</p>
+                    <code className="block bg-white dark:bg-gray-900 p-2 rounded border border-blue-200 dark:border-blue-800 text-xs">
+                      ![Alt](url "width:600px")<br/>
+                      ![Alt](url "600x400")<br/>
+                      ![Alt](url "max-w:80%")
+                    </code>
+                    
+                    <p className="font-semibold text-blue-900 dark:text-blue-100 pt-2">With Alignment:</p>
+                    <code className="block bg-white dark:bg-gray-900 p-2 rounded border border-blue-200 dark:border-blue-800 text-xs">
+                      ![Alt](url "width:500px center")<br/>
+                      ![Alt](url "width:300px left")<br/>
+                      ![Alt](url "width:300px right")
+                    </code>
+                    
+                    <p className="text-xs text-blue-800 dark:text-blue-200 pt-2">
+                      💡 Left/right alignment makes text wrap around images!
+                    </p>
+                  </div>
+                </details>
+                
                 <form onSubmit={handleMarkdownSubmit}>
                   <div className="mb-4">
                     <Label htmlFor="md-title">Title</Label>
