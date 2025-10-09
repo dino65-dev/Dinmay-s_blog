@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 import os
 import cloudinary
 import cloudinary.uploader
+import cloudinary.api
 from datetime import datetime
 from pathlib import Path
 import io
