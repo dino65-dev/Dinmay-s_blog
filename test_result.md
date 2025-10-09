@@ -421,7 +421,7 @@ frontend:
   - task: "Featured image upload functionality"
     implemented: true
     working: true
-    file: "/app/frontend/src/pages/AdminPage.jsx, /app/backend/routes/upload.py"
+    file: "/app/frontend/src/pages/AdminPage.jsx, /app/backend/routes/upload.py, /app/backend/server.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
@@ -432,6 +432,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: Image upload functionality fully working. Fixed route configuration issue (removed duplicate /api prefix). All 12 upload tests passed (100% success rate): ✅ POST /api/upload/image successfully uploads PNG, JPG, WEBP images with proper response format (success, url, filename, uploaded_at) ✅ File validation correctly rejects non-image files (400 error) and files without extensions ✅ File size limit (10MB) properly enforced - rejects large files with clear error message ✅ GET /api/upload/images returns sorted list of uploaded images (newest first) with filename, url, size, created_at ✅ Files saved to /app/frontend/public/uploads/ with UUID-based filenames ✅ Image URLs accessible via returned paths ✅ Integration test: Successfully created blog post with uploaded image as featuredImage ✅ All error handling working (422 for missing file, 400 for invalid types/size). Backend upload API is production-ready."
+      - working: true
+        agent: "main"
+        comment: "🔧 RENDER DEPLOYMENT FIX - Upload Path Issue Resolved: Fixed the 'Permission denied: /app' error that prevented backend from starting on Render. Problem: Backend was trying to create /app/frontend/public/uploads which doesn't exist on Render (backend/frontend deployed separately). Solution: 1) Changed upload path to use environment variable UPLOAD_DIR with default './uploads' (relative to backend folder), 2) Added StaticFiles mount to serve uploads via /api/static/uploads/ endpoint, 3) Updated all image URLs to use backend endpoint instead of frontend path. Benefits: Backend now deploys successfully on Render ✅, uploads work in production ✅, configurable via environment variable ✅. NOTE: Render free tier has ephemeral filesystem - uploaded images deleted on restart. For production, implement cloud storage (Cloudinary recommended - see UPLOAD_FIX_AND_CLOUD_STORAGE.md guide). Backend tested and running locally ✅."
 
 metadata:
   created_by: "main_agent"
