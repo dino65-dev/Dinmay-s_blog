@@ -63,9 +63,9 @@ async def upload_image(file: UploadFile = File(...)):
         unique_filename = f"{uuid.uuid4()}{file_extension}"
         file_path = UPLOAD_DIR / unique_filename
         
-        # Save file
+        # Save file (use the content we already read)
         with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+            buffer.write(file_content)
         
         # Return the URL path (relative to frontend public directory)
         file_url = f"/uploads/{unique_filename}"
