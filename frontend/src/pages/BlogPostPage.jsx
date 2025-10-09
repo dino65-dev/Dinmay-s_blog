@@ -106,6 +106,113 @@ const BlogPostPage = () => {
     }
   };
 
+  const handleEditClick = () => {
+    setIsEditMode(true);
+  };
+
+  const handleCancelEdit = () => {
+    // Reset edit form to original post data
+    setEditTitle(post.title);
+    setEditContent(post.content);
+    setEditImage(post.featuredImage || '');
+    setEditExcerpt(post.excerpt || '');
+    setEditContentType(post.contentType || 'markdown');
+    setIsEditMode(false);
+    setImageError('');
+  };
+
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/avif', 'image/bmp'];
+    if (!allowedTypes.includes(file.type)) {
+      setImageError('❌ Invalid file type. Please upload an image file (JPG, PNG, GIF, WEBP, SVG, AVIF, BMP)');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setImageError('❌ File size too large. Maximum size is 10MB');
+      return;
+    }
+
+    setImageUploading(true);
+    setImageError('');
+
+    try {
+      const result = await api.uploadImage(file);
+      if (result.success) {
+        setEditImage(result.url);
+        toast({
+          title: "Success",
+          description: "Image uploaded successfully!",
+        });
+      } else {
+        setImageError('❌ Upload failed. Please try again.');
+      }
+    } catch (error) {
+      setImageError(`❌ Upload failed: ${error.message}`);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to upload image",
+        variant: "destructive",
+      });
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    
+    if (!editTitle.trim()) {
+      toast({
+        title: "Error",
+        description: "Title is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!editContent.trim()) {
+      toast({
+        title: "Error",
+        description: "Content is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const updatedPost = await api.updatePost(post.id, {
+        title: editTitle,
+        content: editContent,
+        featuredImage: editImage,
+        excerpt: editExcerpt,
+        contentType: editContentType,
+      });
+      
+      setPost(updatedPost);
+      setIsEditMode(false);
+      
+      toast({
+        title: "Success",
+        description: "Post updated successfully!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update post",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <Header />
