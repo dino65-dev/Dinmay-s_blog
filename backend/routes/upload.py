@@ -94,22 +94,30 @@ async def upload_image(file: UploadFile = File(...)):
 @router.get("/upload/images")
 async def list_uploaded_images():
     """
-    List all uploaded images
+    List all uploaded images from Cloudinary
     """
     try:
-        images = []
-        if UPLOAD_DIR.exists():
-            for file_path in UPLOAD_DIR.iterdir():
-                if file_path.is_file() and get_file_extension(file_path.name) in ALLOWED_EXTENSIONS:
-                    images.append({
-                        "filename": file_path.name,
-                        "url": f"/api/static/uploads/{file_path.name}",
-                        "size": file_path.stat().st_size,
-                        "created_at": datetime.fromtimestamp(file_path.stat().st_ctime).isoformat()
-                    })
+        # Get resources from Cloudinary folder
+        result = cloudinary.api.resources(
+            type="upload",
+            prefix="dinmay_blog/",  # Only get images from our folder
+            max_results=100  # Adjust as needed
+        )
         
-        # Sort by creation time (newest first)
-        images.sort(key=lambda x: x['created_at'], reverse=True)
+        images = []
+        for resource in result.get('resources', []):
+            images.append({
+                "public_id": resource['public_id'],
+                "filename": resource['public_id'].split('/')[-1],
+                "url": resource['secure_url'],
+                "size": resource.get('bytes', 0),
+                "width": resource.get('width'),
+                "height": resource.get('height'),
+                "format": resource.get('format'),
+                "created_at": resource['created_at']
+            })
+        
+        # Already sorted by creation time (newest first) from Cloudinary
         
         return JSONResponse(
             status_code=200,
