@@ -9,6 +9,9 @@ import Comments from '../components/Comments';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Label } from '../components/ui/label';
 import { useToast } from '../hooks/use-toast';
 
 const BlogPostPage = () => {
@@ -20,6 +23,17 @@ const BlogPostPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  
+  // Edit mode states
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [editImage, setEditImage] = useState('');
+  const [editExcerpt, setEditExcerpt] = useState('');
+  const [editContentType, setEditContentType] = useState('markdown');
+  const [saving, setSaving] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   useEffect(() => {
     const fetchPost = async () => {
