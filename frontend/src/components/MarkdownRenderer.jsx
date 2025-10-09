@@ -78,6 +78,124 @@ const CodeBlock = ({ inline, className, children, ...props }) => {
   );
 };
 
+const ImageComponent = ({ src, alt, title }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  
+  // Parse dimensions from title attribute
+  // Supports: "width:500px height:300px" or "w:500 h:300" or "500x300"
+  const parseDimensions = (title) => {
+    if (!title) return {};
+    
+    const dimensions = {};
+    
+    // Pattern 1: "width:500px height:300px" or "width:500 height:300"
+    const widthMatch = title.match(/(?:width|w):?\s*(\d+)(?:px)?/i);
+    const heightMatch = title.match(/(?:height|h):?\s*(\d+)(?:px)?/i);
+    
+    if (widthMatch) dimensions.width = widthMatch[1] + 'px';
+    if (heightMatch) dimensions.height = heightMatch[1] + 'px';
+    
+    // Pattern 2: "500x300" (widthxheight)
+    if (!widthMatch && !heightMatch) {
+      const dimensionMatch = title.match(/^(\d+)x(\d+)$/);
+      if (dimensionMatch) {
+        dimensions.width = dimensionMatch[1] + 'px';
+        dimensions.height = dimensionMatch[2] + 'px';
+      }
+    }
+    
+    // Check for max-width
+    const maxWidthMatch = title.match(/(?:max-width|max-w):?\s*(\d+)(?:px|%)?/i);
+    if (maxWidthMatch) {
+      dimensions.maxWidth = maxWidthMatch[1] + (title.includes('%') ? '%' : 'px');
+    }
+    
+    // Check for alignment
+    if (title.match(/\b(?:center|centre)\b/i)) {
+      dimensions.margin = '0 auto';
+      dimensions.display = 'block';
+    } else if (title.match(/\bleft\b/i)) {
+      dimensions.float = 'left';
+      dimensions.marginRight = '1rem';
+      dimensions.marginBottom = '0.5rem';
+    } else if (title.match(/\bright\b/i)) {
+      dimensions.float = 'right';
+      dimensions.marginLeft = '1rem';
+      dimensions.marginBottom = '0.5rem';
+    }
+    
+    return dimensions;
+  };
+  
+  const dimensions = parseDimensions(title);
+  
+  const defaultStyle = {
+    maxWidth: '100%',
+    height: 'auto',
+    borderRadius: '8px',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+    ...dimensions
+  };
+
+  return (
+    <span style={{ display: dimensions.display || 'inline-block', textAlign: dimensions.margin ? 'center' : 'left' }}>
+      {isLoading && !hasError && (
+        <div 
+          style={{ 
+            ...defaultStyle, 
+            background: 'rgba(156, 163, 175, 0.2)',
+            minHeight: dimensions.height || '200px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      )}
+      {hasError && (
+        <div 
+          style={{ 
+            ...defaultStyle,
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px dashed rgba(239, 68, 68, 0.5)',
+            padding: '2rem',
+            textAlign: 'center',
+            color: 'rgb(239, 68, 68)',
+            minHeight: dimensions.height || '200px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column'
+          }}
+        >
+          <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <p>Failed to load image</p>
+          <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>{alt || 'Image'}</p>
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt || 'Image'}
+        title={title}
+        style={{ 
+          ...defaultStyle,
+          display: hasError ? 'none' : (dimensions.display || 'block')
+        }}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false);
+          setHasError(true);
+        }}
+      />
+    </span>
+  );
+};
+
 const MarkdownRenderer = ({ content }) => {
   const containerRef = useRef(null);
 
