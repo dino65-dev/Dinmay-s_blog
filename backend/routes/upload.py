@@ -46,6 +46,17 @@ async def upload_image(file: UploadFile = File(...)):
             detail=f"File type not allowed. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
         )
     
+    # Check file size
+    file_content = await file.read()
+    if len(file_content) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"File too large. Maximum size allowed: {MAX_FILE_SIZE // (1024*1024)}MB"
+        )
+    
+    # Reset file pointer for saving
+    await file.seek(0)
+    
     try:
         # Generate unique filename
         file_extension = get_file_extension(file.filename)
