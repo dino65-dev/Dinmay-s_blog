@@ -983,6 +983,7 @@ class BlogAPITester:
         self.test_blog_posts_crud()
         self.test_about_api()
         self.test_comments_api()
+        self.test_image_upload_api()
         
         # Print summary
         print("\n" + "=" * 60)
