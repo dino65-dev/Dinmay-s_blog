@@ -418,6 +418,18 @@ frontend:
         agent: "main"
         comment: "Solved Render free tier cold start problem (backend sleeps after 15min, takes 30-60s to wake). Frontend solution: Enhanced API utility with automatic retry logic (3 attempts, 60s timeout, detects 502/503 errors), BackendWakeUp component with friendly loading UI, useBackendStatus hook for wake tracking. Keep-alive solutions documented: UptimeRobot (recommended, free, 5min setup), GitHub Actions workflow (free, auto-ping every 10min), Render paid tier ($7/mo, no sleep). Created comprehensive guides: RENDER_KEEP_ALIVE_SOLUTIONS.md (full guide), setup-uptime-monitor.md (quick UptimeRobot setup). User should: 1) Deploy frontend changes, 2) Set up UptimeRobot (5 minutes, free) to keep backend awake 24/7."
 
+  - task: "Featured image upload functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminPage.jsx, /app/backend/routes/upload.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added image upload functionality to all three tabs (HTML Editor, Markdown Editor, Quick Upload) in AdminPage. Users can now either upload images from their computer OR paste image URLs. Features: File type validation (JPG, PNG, GIF, WEBP, SVG, AVIF, BMP), file size validation (max 10MB), upload progress indication, toast notifications for success/error, image preview after upload. Backend upload endpoint already existed at /api/upload/image. Uploads are saved to /app/frontend/public/uploads/ directory. UI includes beautiful drag-and-drop style upload button with 'OR' divider and URL input option."
+
 metadata:
   created_by: "main_agent"
   version: "1.1"
