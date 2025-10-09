@@ -39,7 +39,7 @@ const HomePage = () => {
         {posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 dark:text-gray-400 mb-4">No blog posts yet.</p>
-            <p className="text-sm text-gray-500 dark:text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Visit <a href="/admin" className="underline hover:text-blue-600 dark:hover:text-blue-400">admin panel</a> to create your first post.
             </p>
           </div>
