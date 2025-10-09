@@ -44,7 +44,7 @@ const BlogPostCard = ({ post }) => {
             <img 
               src={post.featuredImage} 
               alt={post.title}
-              className="w-full h-full object-cover rounded-lg"
+              className="w-full h-full object-contain rounded-lg"
             />
           </div>
         )}
