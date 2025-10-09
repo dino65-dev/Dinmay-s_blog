@@ -508,21 +508,20 @@ const MarkdownRenderer = ({ content }) => {
           height: auto;
           border-radius: 8px;
           margin: 1rem 0;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          transition: box-shadow 0.3s ease;
         }
         
         .markdown-content img:hover {
-          transform: scale(1.02);
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
         .dark .markdown-content img {
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         
         .dark .markdown-content img:hover {
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
         
         /* Image captions (using alt text or figcaption) */
