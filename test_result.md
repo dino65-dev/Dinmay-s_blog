@@ -265,6 +265,18 @@ frontend:
         agent: "main"
         comment: "Added delete button on blog post page that only appears for authenticated users. Confirmation dialog before delete. Redirects to homepage after successful deletion."
   
+  - task: "Edit functionality for admins"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/BlogPostPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added comprehensive edit mode for authenticated admins. Features: Edit button next to Delete button, toggle between view/edit modes, editable fields (title, content, featured image, excerpt, content type), image upload or URL input, live markdown preview, save/cancel actions. Uses existing PUT /api/posts/{post_id} endpoint. Edit form pre-populated with current post data. After saving, post refreshes with updated content without page reload."
+  
   - task: "Homepage with blog posts"
     implemented: true
     working: "NA"
