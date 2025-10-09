@@ -21,6 +21,7 @@ const AdminPage = () => {
   const [htmlContent, setHtmlContent] = useState('');
   const [htmlImage, setHtmlImage] = useState('');
   const [htmlImageError, setHtmlImageError] = useState('');
+  const [htmlImageUploading, setHtmlImageUploading] = useState(false);
 
   // Markdown Editor State
   const [mdTitle, setMdTitle] = useState('');
@@ -35,6 +36,7 @@ const AdminPage = () => {
   const [adminImage, setAdminImage] = useState('');
   const [adminExcerpt, setAdminExcerpt] = useState('');
   const [adminImageError, setAdminImageError] = useState('');
+  const [adminImageUploading, setAdminImageUploading] = useState(false);
 
   // Validate if URL is a direct image URL
   const isDirectImageUrl = (url) => {
