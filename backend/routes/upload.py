@@ -23,7 +23,7 @@ def is_allowed_file(filename: str) -> bool:
     """Check if file has an allowed extension"""
     return get_file_extension(filename) in ALLOWED_EXTENSIONS
 
-@router.post("/api/upload/image")
+@router.post("/upload/image")
 async def upload_image(file: UploadFile = File(...)):
     """
     Upload an image file and return its URL
