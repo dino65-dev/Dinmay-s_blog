@@ -27,6 +27,7 @@ const AdminPage = () => {
   const [mdContent, setMdContent] = useState('');
   const [mdImage, setMdImage] = useState('');
   const [mdImageError, setMdImageError] = useState('');
+  const [mdImageUploading, setMdImageUploading] = useState(false);
 
   // Admin Panel State
   const [adminTitle, setAdminTitle] = useState('');
