@@ -997,7 +997,7 @@ class BlogAPITester:
         # Print failed tests details
         if self.test_results['failed_tests'] > 0:
             print("\n🔍 FAILED TESTS DETAILS:")
-            for category in ['auth_tests', 'blog_posts_tests', 'about_tests', 'comments_tests']:
+            for category in ['auth_tests', 'blog_posts_tests', 'about_tests', 'comments_tests', 'upload_tests']:
                 failed_in_category = [t for t in self.test_results[category] if not t['passed']]
                 if failed_in_category:
                     print(f"\n{category.upper().replace('_', ' ')}:")
