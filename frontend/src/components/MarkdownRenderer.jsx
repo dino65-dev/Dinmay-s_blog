@@ -310,30 +310,37 @@ const MarkdownRenderer = ({ content }) => {
           display: flex;
           align-items: center;
           gap: 0.375rem;
-          padding: 0.25rem 0.625rem;
+          padding: 0.375rem 0.75rem;
           font-size: 0.75rem;
-          font-weight: 500;
+          font-weight: 600;
           color: #4b5563;
           background: #fff;
           border: 1px solid #d1d5db;
-          border-radius: 4px;
+          border-radius: 6px;
           cursor: pointer;
           transition: all 0.2s;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         .markdown-content .copy-button:hover {
-          background: #f9fafb;
-          border-color: #9ca3af;
-          color: #1f2937;
+          background: #3b82f6;
+          border-color: #3b82f6;
+          color: #fff;
+          box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+          transform: translateY(-1px);
+        }
+        .markdown-content .copy-button:active {
+          transform: translateY(0);
         }
         .dark .markdown-content .copy-button {
-          color: #d1d5db;
+          color: #e5e7eb;
           background: #374151;
           border-color: #4b5563;
         }
         .dark .markdown-content .copy-button:hover {
-          background: #4b5563;
-          border-color: #6b7280;
-          color: #f3f4f6;
+          background: #3b82f6;
+          border-color: #3b82f6;
+          color: #fff;
+          box-shadow: 0 2px 4px rgba(59, 130, 246, 0.4);
         }
         
         /* Code block pre */
