@@ -234,49 +234,209 @@ const BlogPostPage = () => {
 
             {/* Main content - MUCH WIDER NOW */}
             <div className="flex-1 w-full">
-              <article className="w-full">
-                <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black dark:text-white flex-1">{post.title}</h1>
-                  {isAuthenticated && (
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      onClick={handleDelete}
-                      disabled={deleting}
-                    >
-                      {deleting ? 'Deleting...' : 'Delete'}
-                    </Button>
-                  )}
+              {isEditMode ? (
+                /* Edit Mode */
+                <div className="w-full bg-white dark:bg-gray-800 rounded-lg border-2 border-blue-500 dark:border-blue-600 p-6 shadow-lg">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">✏️ Edit Post</h2>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={handleCancelEdit}
+                        disabled={saving}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        onClick={handleSaveEdit}
+                        disabled={saving}
+                      >
+                        {saving ? 'Saving...' : 'Save Changes'}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSaveEdit} className="space-y-6">
+                    {/* Title */}
+                    <div>
+                      <Label htmlFor="edit-title" className="text-gray-900 dark:text-white">Title *</Label>
+                      <Input
+                        id="edit-title"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        placeholder="Enter post title"
+                        className="mt-2"
+                        required
+                      />
+                    </div>
+
+                    {/* Content Type */}
+                    <div>
+                      <Label className="text-gray-900 dark:text-white">Content Type</Label>
+                      <div className="flex gap-4 mt-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            value="markdown"
+                            checked={editContentType === 'markdown'}
+                            onChange={(e) => setEditContentType(e.target.value)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-gray-900 dark:text-white">Markdown</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            value="html"
+                            checked={editContentType === 'html'}
+                            onChange={(e) => setEditContentType(e.target.value)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-gray-900 dark:text-white">HTML</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Featured Image */}
+                    <div>
+                      <Label className="text-gray-900 dark:text-white">Featured Image</Label>
+                      <div className="space-y-3 mt-2">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e.target.files[0])}
+                            className="hidden"
+                            id="edit-image-upload"
+                            disabled={imageUploading}
+                          />
+                          <label
+                            htmlFor="edit-image-upload"
+                            className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer ${
+                              imageUploading ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                          >
+                            {imageUploading ? 'Uploading...' : '📁 Upload Image'}
+                          </label>
+                          <span className="text-gray-500 dark:text-gray-400">OR</span>
+                          <Input
+                            type="url"
+                            value={editImage}
+                            onChange={(e) => setEditImage(e.target.value)}
+                            placeholder="Paste image URL"
+                            className="flex-1"
+                          />
+                        </div>
+                        {imageError && (
+                          <p className="text-sm text-red-500">{imageError}</p>
+                        )}
+                        {editImage && !imageError && (
+                          <div className="border-2 border-gray-200 dark:border-gray-600 rounded-lg p-2">
+                            <img 
+                              src={editImage} 
+                              alt="Preview" 
+                              className="max-h-48 mx-auto rounded"
+                              onError={() => setImageError('❌ Failed to load image. Please check the URL.')}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Excerpt */}
+                    <div>
+                      <Label htmlFor="edit-excerpt" className="text-gray-900 dark:text-white">Excerpt (Optional)</Label>
+                      <Textarea
+                        id="edit-excerpt"
+                        value={editExcerpt}
+                        onChange={(e) => setEditExcerpt(e.target.value)}
+                        placeholder="Brief summary for post preview"
+                        rows={3}
+                        className="mt-2"
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div>
+                      <Label htmlFor="edit-content" className="text-gray-900 dark:text-white">Content *</Label>
+                      <Textarea
+                        id="edit-content"
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        placeholder={editContentType === 'markdown' ? 'Write your content in Markdown...' : 'Write your content in HTML...'}
+                        rows={20}
+                        className="mt-2 font-mono text-sm"
+                        required
+                      />
+                    </div>
+
+                    {/* Preview */}
+                    <div>
+                      <Label className="text-gray-900 dark:text-white">Preview</Label>
+                      <div className="mt-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-gray-50 dark:bg-gray-900 max-h-96 overflow-y-auto">
+                        <MarkdownRenderer content={editContent} />
+                      </div>
+                    </div>
+                  </form>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">Published: {formatDate(post.publishedDate)}</p>
-                
-                {post.featuredImage && (
-                  <img 
-                    src={post.featuredImage} 
-                    alt={post.title}
-                    className="w-full h-auto max-h-[500px] object-contain rounded-lg mb-8"
-                  />
-                )}
+              ) : (
+                /* View Mode */
+                <>
+                  <article className="w-full">
+                    <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
+                      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black dark:text-white flex-1">{post.title}</h1>
+                      {isAuthenticated && (
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline"
+                            size="sm"
+                            onClick={handleEditClick}
+                            className="border-blue-500 text-blue-600 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                          >
+                            ✏️ Edit
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            onClick={handleDelete}
+                            disabled={deleting}
+                          >
+                            {deleting ? 'Deleting...' : 'Delete'}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">Published: {formatDate(post.publishedDate)}</p>
+                    
+                    {post.featuredImage && (
+                      <img 
+                        src={post.featuredImage} 
+                        alt={post.title}
+                        className="w-full h-auto max-h-[500px] object-contain rounded-lg mb-8"
+                      />
+                    )}
 
-                <div className="blog-content w-full">
-                  <MarkdownRenderer content={post.content} />
-                </div>
-              </article>
+                    <div className="blog-content w-full">
+                      <MarkdownRenderer content={post.content} />
+                    </div>
+                  </article>
 
-              {/* Social Share */}
-              <div className="mt-12">
-                <SocialShare title={post.title} url={window.location.href} />
-              </div>
+                  {/* Social Share */}
+                  <div className="mt-12">
+                    <SocialShare title={post.title} url={window.location.href} />
+                  </div>
 
-              {/* Comments */}
-              <div className="mt-12">
-                <Comments postId={post.id} />
-              </div>
+                  {/* Comments */}
+                  <div className="mt-12">
+                    <Comments postId={post.id} />
+                  </div>
 
-              {/* Related Posts - Show below content on all screens */}
-              <div className="mt-12">
-                <RelatedPosts currentPostId={post.id} />
-              </div>
+                  {/* Related Posts - Show below content on all screens */}
+                  <div className="mt-12">
+                    <RelatedPosts currentPostId={post.id} />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
