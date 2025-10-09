@@ -40,11 +40,11 @@ const BlogPostCard = ({ post }) => {
     >
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 p-6 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300">
         {post.featuredImage && (
-          <div className="flex-shrink-0 w-full lg:w-80 h-56 lg:h-48 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 overflow-hidden">
+          <div className="flex-shrink-0 w-full lg:w-80 h-56 lg:h-48 flex items-center justify-center rounded-lg overflow-hidden">
             <img 
               src={post.featuredImage} 
               alt={post.title}
-              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover rounded-lg"
             />
           </div>
         )}
