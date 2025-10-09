@@ -29,6 +29,7 @@ class BlogAPITester:
             'blog_posts_tests': [],
             'about_tests': [],
             'comments_tests': [],
+            'upload_tests': [],
             'total_tests': 0,
             'passed_tests': 0,
             'failed_tests': 0
