@@ -84,6 +84,34 @@ const TableOfContents = ({ content }) => {
       mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
     }`}>
       <style>{`
+        /* Custom Scrollbar */
+        nav::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        nav::-webkit-scrollbar-track {
+          background: transparent;
+          border-radius: 10px;
+        }
+        
+        nav::-webkit-scrollbar-thumb {
+          background: rgba(156, 163, 175, 0.5);
+          border-radius: 10px;
+          transition: background 0.2s;
+        }
+        
+        nav::-webkit-scrollbar-thumb:hover {
+          background: rgba(156, 163, 175, 0.8);
+        }
+        
+        .dark nav::-webkit-scrollbar-thumb {
+          background: rgba(75, 85, 99, 0.5);
+        }
+        
+        .dark nav::-webkit-scrollbar-thumb:hover {
+          background: rgba(75, 85, 99, 0.8);
+        }
+        
         @keyframes slideIn {
           from {
             opacity: 0;
