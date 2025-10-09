@@ -438,12 +438,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Dark/Light mode functionality"
-    - "Comments section with nested replies"
-    - "Social sharing buttons"
-    - "Related posts component"
-    - "Table of Contents"
-    - "Mobile responsiveness"
+    - "Featured image upload functionality"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
