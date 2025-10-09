@@ -30,7 +30,7 @@ First, ensure your backend is accessible from the internet:
 **Option A: Deploy backend on Emergent**
 ```bash
 # Your backend is already running on Emergent
-# Current URL: https://footer-cleanup-3.preview.emergentagent.com
+# Current URL: https://image-upload-plus.preview.emergentagent.com
 # This URL should be your production backend URL
 ```
 
