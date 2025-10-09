@@ -68,8 +68,8 @@ async def upload_image(file: UploadFile = File(...)):
         with file_path.open("wb") as buffer:
             buffer.write(file_content)
         
-        # Return the URL path (relative to frontend public directory)
-        file_url = f"/uploads/{unique_filename}"
+        # Return the URL path (via backend static files endpoint)
+        file_url = f"/api/static/uploads/{unique_filename}"
         
         return JSONResponse(
             status_code=200,
