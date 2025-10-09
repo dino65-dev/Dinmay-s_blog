@@ -25,7 +25,7 @@ const HomePage = () => {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
         <Header />
-        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <p className="text-center text-gray-600 dark:text-gray-400">Loading posts...</p>
         </main>
       </div>
@@ -35,7 +35,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <Header />
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 dark:text-gray-400 mb-4">No blog posts yet.</p>
@@ -44,9 +44,11 @@ const HomePage = () => {
             </p>
           </div>
         ) : (
-          posts.map((post) => (
-            <BlogPostCard key={post.id} post={post} />
-          ))
+          <div className="space-y-8">
+            {posts.map((post) => (
+              <BlogPostCard key={post.id} post={post} />
+            ))}
+          </div>
         )}
       </main>
     </div>
