@@ -40,6 +40,12 @@ const BlogPostPage = () => {
       try {
         const data = await api.getPostBySlug(slug);
         setPost(data);
+        // Initialize edit form with current post data
+        setEditTitle(data.title);
+        setEditContent(data.content);
+        setEditImage(data.featuredImage || '');
+        setEditExcerpt(data.excerpt || '');
+        setEditContentType(data.contentType || 'markdown');
       } catch (err) {
         setError('Post not found');
       } finally {
