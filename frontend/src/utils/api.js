@@ -193,6 +193,29 @@ export const api = {
       return null;
     }
   },
+
+  // Upload API
+  uploadImage: async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await makeRequest(() => 
+      axiosInstance.post(`${API}/upload/image`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    );
+    return response.data;
+  },
+
+  // List uploaded images
+  listUploadedImages: async () => {
+    const response = await makeRequest(() => 
+      axiosInstance.get(`${API}/upload/images`)
+    );
+    return response.data;
+  },
 };
 
 export default api;
