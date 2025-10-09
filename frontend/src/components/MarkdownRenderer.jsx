@@ -343,6 +343,12 @@ const MarkdownRenderer = ({ content }) => {
           box-shadow: 0 2px 4px rgba(59, 130, 246, 0.4);
         }
         
+        /* Copy button text */
+        .markdown-content .copy-text {
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+        
         /* Code block pre */
         .markdown-content .code-block-wrapper pre {
           margin: 0;
