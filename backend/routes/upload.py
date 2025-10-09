@@ -34,7 +34,7 @@ def is_allowed_file(filename: str) -> bool:
 @router.post("/upload/image")
 async def upload_image(file: UploadFile = File(...)):
     """
-    Upload an image file and return its URL
+    Upload an image file to Cloudinary and return its URL
     """
     # Check if file is provided
     if not file:
@@ -59,29 +59,31 @@ async def upload_image(file: UploadFile = File(...)):
             detail=f"File too large. Maximum size allowed: {MAX_FILE_SIZE // (1024*1024)}MB"
         )
     
-    # Reset file pointer for saving
-    await file.seek(0)
-    
     try:
-        # Generate unique filename
-        file_extension = get_file_extension(file.filename)
-        unique_filename = f"{uuid.uuid4()}{file_extension}"
-        file_path = UPLOAD_DIR / unique_filename
+        # Upload to Cloudinary
+        # Create a file-like object from bytes
+        file_like = io.BytesIO(file_content)
         
-        # Save file (use the content we already read)
-        with file_path.open("wb") as buffer:
-            buffer.write(file_content)
-        
-        # Return the URL path (via backend static files endpoint)
-        file_url = f"/api/static/uploads/{unique_filename}"
+        # Upload to Cloudinary with folder organization
+        result = cloudinary.uploader.upload(
+            file_like,
+            folder="dinmay_blog",  # Organize in folder
+            resource_type="image",
+            use_filename=True,
+            unique_filename=True
+        )
         
         return JSONResponse(
             status_code=200,
             content={
                 "success": True,
-                "url": file_url,
-                "filename": unique_filename,
+                "url": result['secure_url'],  # Direct HTTPS URL from Cloudinary CDN
+                "public_id": result['public_id'],
+                "filename": result.get('original_filename', file.filename),
                 "original_filename": file.filename,
+                "width": result.get('width'),
+                "height": result.get('height'),
+                "format": result.get('format'),
                 "uploaded_at": datetime.now().isoformat()
             }
         )
