@@ -970,6 +970,26 @@ class BlogAPITester:
             except Exception as e:
                 self.log_test('upload_tests', 'Verify images sorted by date (newest first)', False, str(e))
 
+        # Test 11: Upload file exceeding size limit (should fail)
+        try:
+            with open('/tmp/test_images/large_image.png', 'rb') as f:
+                files = {'file': ('large_image.png', f, 'image/png')}
+                response = requests.post(f"{API_BASE}/upload/image", files=files)
+                
+                if response.status_code == 400:
+                    response_data = response.json()
+                    if "File too large" in response_data.get('detail', ''):
+                        self.log_test('upload_tests', 'Upload file exceeding size limit (should fail)', True, 
+                                    "Correctly rejected large file with size limit error")
+                    else:
+                        self.log_test('upload_tests', 'Upload file exceeding size limit (should fail)', False, 
+                                    f"Wrong error message: {response_data.get('detail', '')}")
+                else:
+                    self.log_test('upload_tests', 'Upload file exceeding size limit (should fail)', False, 
+                                f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_test('upload_tests', 'Upload file exceeding size limit (should fail)', False, str(e))
+
         print(f"\n📁 Uploaded {len(uploaded_files)} test files during testing")
 
     def run_all_tests(self):
