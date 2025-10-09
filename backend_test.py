@@ -729,6 +729,249 @@ class BlogAPITester:
             except Exception as e:
                 self.log_test('comments_tests', 'Clean up test post', False, str(e))
 
+    def test_image_upload_api(self):
+        """Test image upload API endpoints"""
+        print("\n=== IMAGE UPLOAD API TESTS ===")
+        
+        uploaded_files = []  # Track uploaded files for cleanup
+        
+        # Test 1: Upload valid PNG image
+        try:
+            with open('/tmp/test_images/test_image.png', 'rb') as f:
+                files = {'file': ('test_image.png', f, 'image/png')}
+                response = requests.post(f"{API_BASE}/upload/image", files=files)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if (data.get('success') == True and 
+                        'url' in data and 
+                        'filename' in data and 
+                        'uploaded_at' in data and
+                        data['url'].startswith('/uploads/')):
+                        uploaded_files.append(data['filename'])
+                        self.log_test('upload_tests', 'Upload valid PNG image', True, 
+                                    f"Image uploaded: {data['url']}")
+                    else:
+                        self.log_test('upload_tests', 'Upload valid PNG image', False, 
+                                    f"Invalid response format: {data}")
+                else:
+                    self.log_test('upload_tests', 'Upload valid PNG image', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('upload_tests', 'Upload valid PNG image', False, str(e))
+
+        # Test 2: Upload valid JPG image
+        try:
+            with open('/tmp/test_images/test_image.jpg', 'rb') as f:
+                files = {'file': ('test_image.jpg', f, 'image/jpeg')}
+                response = requests.post(f"{API_BASE}/upload/image", files=files)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if (data.get('success') == True and 
+                        'url' in data and 
+                        data['original_filename'] == 'test_image.jpg'):
+                        uploaded_files.append(data['filename'])
+                        self.log_test('upload_tests', 'Upload valid JPG image', True, 
+                                    f"JPG uploaded: {data['url']}")
+                    else:
+                        self.log_test('upload_tests', 'Upload valid JPG image', False, 
+                                    f"Invalid response format: {data}")
+                else:
+                    self.log_test('upload_tests', 'Upload valid JPG image', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('upload_tests', 'Upload valid JPG image', False, str(e))
+
+        # Test 3: Upload valid WEBP image
+        try:
+            with open('/tmp/test_images/test_image.webp', 'rb') as f:
+                files = {'file': ('test_image.webp', f, 'image/webp')}
+                response = requests.post(f"{API_BASE}/upload/image", files=files)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('success') == True and 'url' in data:
+                        uploaded_files.append(data['filename'])
+                        self.log_test('upload_tests', 'Upload valid WEBP image', True, 
+                                    f"WEBP uploaded: {data['url']}")
+                    else:
+                        self.log_test('upload_tests', 'Upload valid WEBP image', False, 
+                                    f"Invalid response format: {data}")
+                else:
+                    self.log_test('upload_tests', 'Upload valid WEBP image', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('upload_tests', 'Upload valid WEBP image', False, str(e))
+
+        # Test 4: Upload invalid file type (should fail)
+        try:
+            with open('/tmp/test_images/test_file.txt', 'rb') as f:
+                files = {'file': ('test_file.txt', f, 'text/plain')}
+                response = requests.post(f"{API_BASE}/upload/image", files=files)
+                
+                if response.status_code == 400:
+                    self.log_test('upload_tests', 'Upload invalid file type (should fail)', True, 
+                                "Correctly rejected non-image file with 400 error")
+                else:
+                    self.log_test('upload_tests', 'Upload invalid file type (should fail)', False, 
+                                f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_test('upload_tests', 'Upload invalid file type (should fail)', False, str(e))
+
+        # Test 5: Upload file without extension (should fail)
+        try:
+            with open('/tmp/test_images/test_image.png', 'rb') as f:
+                files = {'file': ('no_extension', f, 'image/png')}
+                response = requests.post(f"{API_BASE}/upload/image", files=files)
+                
+                if response.status_code == 400:
+                    self.log_test('upload_tests', 'Upload file without extension (should fail)', True, 
+                                "Correctly rejected file without extension")
+                else:
+                    self.log_test('upload_tests', 'Upload file without extension (should fail)', False, 
+                                f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_test('upload_tests', 'Upload file without extension (should fail)', False, str(e))
+
+        # Test 6: Upload without file (should fail)
+        try:
+            response = requests.post(f"{API_BASE}/upload/image")
+            
+            if response.status_code == 422:  # FastAPI validation error
+                self.log_test('upload_tests', 'Upload without file (should fail)', True, 
+                            "Correctly returned 422 for missing file")
+            else:
+                self.log_test('upload_tests', 'Upload without file (should fail)', False, 
+                            f"Expected 422, got {response.status_code}")
+        except Exception as e:
+            self.log_test('upload_tests', 'Upload without file (should fail)', False, str(e))
+
+        # Test 7: List uploaded images
+        try:
+            response = requests.get(f"{API_BASE}/upload/images")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get('success') == True and 
+                    'images' in data and 
+                    'count' in data and
+                    isinstance(data['images'], list)):
+                    
+                    # Check if our uploaded files are in the list
+                    found_files = 0
+                    for uploaded_file in uploaded_files:
+                        for image in data['images']:
+                            if image['filename'] == uploaded_file:
+                                found_files += 1
+                                break
+                    
+                    if found_files == len(uploaded_files):
+                        self.log_test('upload_tests', 'List uploaded images', True, 
+                                    f"Found {data['count']} images, including all uploaded test files")
+                    else:
+                        self.log_test('upload_tests', 'List uploaded images', False, 
+                                    f"Missing some uploaded files. Found {found_files}/{len(uploaded_files)}")
+                else:
+                    self.log_test('upload_tests', 'List uploaded images', False, 
+                                f"Invalid response format: {data}")
+            else:
+                self.log_test('upload_tests', 'List uploaded images', False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_test('upload_tests', 'List uploaded images', False, str(e))
+
+        # Test 8: Verify uploaded files are accessible
+        if uploaded_files:
+            try:
+                # Check if the first uploaded file exists in the filesystem
+                first_file = uploaded_files[0]
+                file_path = f"/app/frontend/public/uploads/{first_file}"
+                
+                if os.path.exists(file_path):
+                    self.log_test('upload_tests', 'Verify file saved to filesystem', True, 
+                                f"File exists at {file_path}")
+                else:
+                    self.log_test('upload_tests', 'Verify file saved to filesystem', False, 
+                                f"File not found at {file_path}")
+            except Exception as e:
+                self.log_test('upload_tests', 'Verify file saved to filesystem', False, str(e))
+
+        # Test 9: Integration test - Upload image and create blog post with it
+        if uploaded_files and self.auth_token:
+            try:
+                # Use the first uploaded image URL
+                image_url = f"/uploads/{uploaded_files[0]}"
+                
+                test_post = {
+                    "title": "Blog Post with Uploaded Image",
+                    "slug": f"post-with-image-{uuid.uuid4().hex[:8]}",
+                    "content": "# Post with Featured Image\n\nThis post uses an uploaded image as featured image.",
+                    "excerpt": "A test post with uploaded featured image",
+                    "featuredImage": image_url,
+                    "contentType": "markdown"
+                }
+                
+                response = requests.post(f"{API_BASE}/posts", 
+                    json=test_post,
+                    headers={
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {self.auth_token}"
+                    })
+                
+                if response.status_code == 200:
+                    created_post = response.json()
+                    if created_post.get('featuredImage') == image_url:
+                        self.log_test('upload_tests', 'Integration test - Create post with uploaded image', True, 
+                                    f"Post created with uploaded image: {image_url}")
+                        
+                        # Clean up the test post
+                        cleanup_response = requests.delete(f"{API_BASE}/posts/{created_post['id']}", 
+                            headers={"Authorization": f"Bearer {self.auth_token}"})
+                        if cleanup_response.status_code == 200:
+                            self.log_test('upload_tests', 'Clean up integration test post', True, 
+                                        "Test post cleaned up successfully")
+                    else:
+                        self.log_test('upload_tests', 'Integration test - Create post with uploaded image', False, 
+                                    f"Featured image URL mismatch. Expected: {image_url}, Got: {created_post.get('featuredImage')}")
+                else:
+                    self.log_test('upload_tests', 'Integration test - Create post with uploaded image', False, 
+                                f"Status: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                self.log_test('upload_tests', 'Integration test - Create post with uploaded image', False, str(e))
+
+        # Test 10: Check image list sorting (newest first)
+        if len(uploaded_files) >= 2:
+            try:
+                response = requests.get(f"{API_BASE}/upload/images")
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    images = data.get('images', [])
+                    
+                    if len(images) >= 2:
+                        # Check if sorted by created_at (newest first)
+                        dates_sorted = all(
+                            images[i]['created_at'] >= images[i+1]['created_at'] 
+                            for i in range(len(images)-1)
+                        )
+                        if dates_sorted:
+                            self.log_test('upload_tests', 'Verify images sorted by date (newest first)', True, 
+                                        f"Images correctly sorted by creation time")
+                        else:
+                            self.log_test('upload_tests', 'Verify images sorted by date (newest first)', False, 
+                                        "Images not sorted by creation time")
+                    else:
+                        self.log_test('upload_tests', 'Verify images sorted by date (newest first)', True, 
+                                    f"Only {len(images)} images, sorting test skipped")
+                else:
+                    self.log_test('upload_tests', 'Verify images sorted by date (newest first)', False, 
+                                f"Failed to get images list: {response.status_code}")
+            except Exception as e:
+                self.log_test('upload_tests', 'Verify images sorted by date (newest first)', False, str(e))
+
+        print(f"\n📁 Uploaded {len(uploaded_files)} test files during testing")
+
     def run_all_tests(self):
         """Run all backend API tests"""
         print("🚀 Starting Backend API Tests for Dinmay's Blog")
