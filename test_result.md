@@ -436,6 +436,18 @@ frontend:
         agent: "main"
         comment: "🔧 RENDER DEPLOYMENT FIX - Upload Path Issue Resolved: Fixed the 'Permission denied: /app' error that prevented backend from starting on Render. Problem: Backend was trying to create /app/frontend/public/uploads which doesn't exist on Render (backend/frontend deployed separately). Solution: 1) Changed upload path to use environment variable UPLOAD_DIR with default './uploads' (relative to backend folder), 2) Added StaticFiles mount to serve uploads via /api/static/uploads/ endpoint, 3) Updated all image URLs to use backend endpoint instead of frontend path. Benefits: Backend now deploys successfully on Render ✅, uploads work in production ✅, configurable via environment variable ✅. NOTE: Render free tier has ephemeral filesystem - uploaded images deleted on restart. For production, implement cloud storage (Cloudinary recommended - see UPLOAD_FIX_AND_CLOUD_STORAGE.md guide). Backend tested and running locally ✅."
 
+  - task: "Cloudinary image upload integration"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/upload.py, /app/backend/.env"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🌤️ CLOUDINARY INTEGRATION FULLY TESTED - ALL TESTS PASSED (14/14 - 100% success rate). Comprehensive testing performed on Cloudinary image storage integration: ✅ POST /api/upload/image successfully uploads PNG, JPG, WEBP images to Cloudinary with proper response format (success, url, public_id, width, height, format) ✅ All uploaded images return permanent Cloudinary CDN URLs (https://res.cloudinary.com/) ✅ Images organized in dinmay_blog folder on Cloudinary ✅ GET /api/upload/images returns all uploaded images from Cloudinary with complete metadata ✅ File validation correctly rejects non-image files (400 error) ✅ File size limit (10MB) properly enforced - rejects large files with clear error message ✅ All Cloudinary URLs are accessible and return correct image content-types ✅ Images persist after backend restart (verified) ✅ Integration test: Successfully created blog post with Cloudinary-hosted featured image ✅ Cloudinary credentials configured correctly (cloud_name: dldkejdtw, folder: dinmay_blog). Cloudinary integration is production-ready and provides permanent image storage solution."
+
 metadata:
   created_by: "main_agent"
   version: "1.1"
