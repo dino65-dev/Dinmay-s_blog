@@ -287,26 +287,69 @@ const AdminPage = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <Label htmlFor="html-image">Featured Image URL</Label>
-                  <Input
-                    id="html-image"
-                    value={htmlImage}
-                    onChange={(e) => {
-                      const url = e.target.value;
-                      setHtmlImage(url);
-                      setHtmlImageError(validateImageUrl(url));
-                    }}
-                    placeholder="https://example.com/image.jpg"
-                    className={`mt-2 ${htmlImageError ? 'border-yellow-500' : ''}`}
-                  />
+                  <Label htmlFor="html-image">Featured Image</Label>
+                  
+                  {/* File Upload Option */}
+                  <div className="mt-2 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Label 
+                        htmlFor="html-image-file" 
+                        className="flex-1 cursor-pointer"
+                      >
+                        <div className="flex items-center justify-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 transition-colors bg-gray-50 dark:bg-gray-800">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-sm font-medium">
+                            {htmlImageUploading ? 'Uploading...' : 'Upload Image from Computer'}
+                          </span>
+                        </div>
+                      </Label>
+                      <input
+                        id="html-image-file"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleImageUpload(file, setHtmlImage, setHtmlImageError, setHtmlImageUploading);
+                          }
+                        }}
+                        disabled={htmlImageUploading}
+                      />
+                    </div>
+                    
+                    {/* OR divider */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">OR</span>
+                      <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+                    </div>
+                    
+                    {/* URL Input Option */}
+                    <Input
+                      id="html-image"
+                      value={htmlImage}
+                      onChange={(e) => {
+                        const url = e.target.value;
+                        setHtmlImage(url);
+                        setHtmlImageError(validateImageUrl(url));
+                      }}
+                      placeholder="Or paste image URL: https://example.com/image.jpg"
+                      className={`${htmlImageError ? 'border-yellow-500' : ''}`}
+                      disabled={htmlImageUploading}
+                    />
+                  </div>
+                  
                   {htmlImageError && (
                     <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">{htmlImageError}</p>
                   )}
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    💡 Use direct image URLs from Unsplash, Imgur, or your own hosting
+                    💡 Upload from your computer or use direct image URLs from Unsplash, Imgur
                   </p>
                   {htmlImage && !htmlImageError && (
-                    <div className="mt-2 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded border">
+                    <div className="mt-2 w-full h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded border">
                       <img 
                         src={htmlImage} 
                         alt="Preview" 
