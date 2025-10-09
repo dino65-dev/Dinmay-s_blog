@@ -70,7 +70,7 @@ async def upload_image(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to upload file: {str(e)}")
 
-@router.get("/api/upload/images")
+@router.get("/upload/images")
 async def list_uploaded_images():
     """
     List all uploaded images
