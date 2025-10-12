@@ -247,19 +247,28 @@ const MarkdownRenderer = ({ content }) => {
           margin: 1rem 0;
           line-height: 1.7;
           color: inherit;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
         }
         .markdown-content ul, .markdown-content ol {
           margin: 1rem 0;
           padding-left: 2rem;
           color: inherit;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
         }
         .markdown-content li {
           margin: 0.5rem 0;
           color: inherit;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
         }
         .markdown-content a {
           color: #3b82f6;
           text-decoration: underline;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          word-break: break-all;
         }
         .dark .markdown-content a {
           color: #60a5fa;
