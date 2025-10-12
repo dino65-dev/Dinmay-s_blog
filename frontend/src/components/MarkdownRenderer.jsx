@@ -206,7 +206,7 @@ const MarkdownRenderer = ({ content }) => {
   }, [content]);
 
   return (
-    <div ref={containerRef} className="markdown-content prose prose-xl dark:prose-invert max-w-none w-full text-gray-900 dark:text-gray-100">
+    <div ref={containerRef} className="markdown-content prose prose-xl dark:prose-invert w-full text-gray-900 dark:text-gray-100" style={{maxWidth: '100%'}}>
       <style>{`
         /* Overflow and text wrapping controls */
         .markdown-content {
