@@ -215,6 +215,13 @@ const MarkdownRenderer = ({ content }) => {
           word-break: break-word;
           max-width: 100%;
           overflow-x: hidden;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        
+        .markdown-content * {
+          max-width: 100%;
+          box-sizing: border-box;
         }
         
         .markdown-content h1,
