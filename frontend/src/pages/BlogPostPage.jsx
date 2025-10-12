@@ -416,7 +416,7 @@ const BlogPostPage = () => {
                       />
                     )}
 
-                    <div className="blog-content w-full">
+                    <div className="blog-content w-full max-w-full overflow-hidden">
                       <MarkdownRenderer content={post.content} />
                     </div>
                   </article>
