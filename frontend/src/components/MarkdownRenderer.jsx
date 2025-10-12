@@ -208,6 +208,15 @@ const MarkdownRenderer = ({ content }) => {
   return (
     <div ref={containerRef} className="markdown-content prose prose-xl dark:prose-invert max-w-none w-full text-gray-900 dark:text-gray-100">
       <style>{`
+        /* Overflow and text wrapping controls */
+        .markdown-content {
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          word-break: break-word;
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+        
         .markdown-content h1,
         .markdown-content h2,
         .markdown-content h3,
@@ -216,6 +225,8 @@ const MarkdownRenderer = ({ content }) => {
         .markdown-content h6 {
           font-weight: bold;
           color: inherit;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
         }
         .markdown-content h1 {
           font-size: 2.5rem;
