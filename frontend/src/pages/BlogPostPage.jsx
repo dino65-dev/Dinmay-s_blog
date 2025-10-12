@@ -382,7 +382,7 @@ const BlogPostPage = () => {
               ) : (
                 /* View Mode */
                 <>
-                  <article className="w-full">
+                  <article className="w-full max-w-full overflow-hidden">
                     <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
                       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black dark:text-white flex-1">{post.title}</h1>
                       {isAuthenticated && (
