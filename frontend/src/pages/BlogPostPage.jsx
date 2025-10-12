@@ -233,7 +233,7 @@ const BlogPostPage = () => {
             </aside>
 
             {/* Main content - MUCH WIDER NOW */}
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full min-w-0">
               {isEditMode ? (
                 /* Edit Mode */
                 <div className="w-full bg-white dark:bg-gray-800 rounded-lg border-2 border-blue-500 dark:border-blue-600 p-6 shadow-lg">
