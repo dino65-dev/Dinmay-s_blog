@@ -530,9 +530,25 @@ const MarkdownRenderer = ({ content }) => {
           padding-left: 1rem;
           color: inherit;
           font-style: italic;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          max-width: 100%;
         }
         .dark .markdown-content blockquote {
           border-left-color: #4b5563;
+        }
+        
+        /* Table overflow handling */
+        .markdown-content table {
+          display: block;
+          max-width: 100%;
+          overflow-x: auto;
+          border-collapse: collapse;
+        }
+        
+        .markdown-content pre {
+          max-width: 100%;
+          overflow-x: auto;
         }
         
         /* Image styling */
