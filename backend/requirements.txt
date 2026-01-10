@@ -70,4 +70,4 @@ uvicorn==0.25.0
 watchfiles==1.1.0
 cloudinary==1.36.0
 aiofiles==23.2.1
-Pillow==10.2.0
+Pillow==10.3.0
