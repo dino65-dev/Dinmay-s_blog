@@ -24,12 +24,22 @@ import {
   DialogFooter,
   DialogClose,
 } from './ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from './ui/dropdown-menu';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 
 // Icons as SVG components
 const ImageIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
     <circle cx="9" cy="9" r="2"/>
     <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
@@ -37,37 +47,28 @@ const ImageIcon = () => (
 );
 
 const LinkIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
     <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
   </svg>
 );
 
 const VideoIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/>
     <rect x="2" y="6" width="14" height="12" rx="2"/>
   </svg>
 );
 
 const CodeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="16 18 22 12 16 6"/>
     <polyline points="8 6 2 12 8 18"/>
   </svg>
 );
 
-const CodeBlockIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 7V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/>
-    <polyline points="14 2 14 8 20 8"/>
-    <path d="m10 13-2 2 2 2"/>
-    <path d="m14 17 2-2-2-2"/>
-  </svg>
-);
-
 const ListIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="8" x2="21" y1="6" y2="6"/>
     <line x1="8" x2="21" y1="12" y2="12"/>
     <line x1="8" x2="21" y1="18" y2="18"/>
@@ -78,7 +79,7 @@ const ListIcon = () => (
 );
 
 const HeadingIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 12h8"/>
     <path d="M4 18V6"/>
     <path d="M12 18V6"/>
@@ -87,13 +88,13 @@ const HeadingIcon = () => (
 );
 
 const BoldIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/>
   </svg>
 );
 
 const ItalicIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="19" x2="10" y1="4" y2="4"/>
     <line x1="14" x2="5" y1="20" y2="20"/>
     <line x1="15" x2="9" y1="4" y2="20"/>
@@ -101,14 +102,14 @@ const ItalicIcon = () => (
 );
 
 const QuoteIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/>
     <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
   </svg>
 );
 
 const TableIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 3v18"/>
     <rect width="18" height="18" x="3" y="3" rx="2"/>
     <path d="M3 9h18"/>
@@ -117,23 +118,29 @@ const TableIcon = () => (
 );
 
 const PlusIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M5 12h14"/>
     <path d="M12 5v14"/>
   </svg>
 );
 
 const UndoIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 7v6h6"/>
     <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
   </svg>
 );
 
 const RedoIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 7v6h-6"/>
     <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/>
+  </svg>
+);
+
+const ChevronDownIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m6 9 6 6 6-6"/>
   </svg>
 );
 
@@ -152,6 +159,7 @@ const AdvancedMarkdownEditor = ({
   const [showBlockMenu, setShowBlockMenu] = useState(false);
   const [blockMenuPosition, setBlockMenuPosition] = useState({ top: 0, left: 0 });
   const [cursorLine, setCursorLine] = useState(1);
+  const [cursorCol, setCursorCol] = useState(1);
   const textareaRef = useRef(null);
   const editorContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
@@ -198,7 +206,9 @@ const AdvancedMarkdownEditor = ({
       const cursorPos = textareaRef.current.selectionStart;
       const textBeforeCursor = (value || '').substring(0, cursorPos);
       const lineNumber = textBeforeCursor.split('\n').length;
+      const currentLine = textBeforeCursor.split('\n').pop() || '';
       setCursorLine(lineNumber);
+      setCursorCol(currentLine.length + 1);
     }
   }, [value]);
 
@@ -325,6 +335,9 @@ const AdvancedMarkdownEditor = ({
     bulletList: () => insertAtLineStart('- '),
     numberedList: () => insertAtLineStart('1. '),
     inlineCode: () => wrapSelection('`', '`'),
+    strikethrough: () => wrapSelection('~~', '~~'),
+    horizontalRule: () => insertAtCursor('\n---\n'),
+    checkbox: () => insertAtLineStart('- [ ] '),
   };
 
   // Insert image
@@ -352,7 +365,6 @@ const AdvancedMarkdownEditor = ({
   // Insert video embed
   const handleInsertVideo = () => {
     if (videoUrl) {
-      // Extract video ID for YouTube
       let embedCode = '';
       if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
         let videoId = '';
@@ -387,11 +399,8 @@ const AdvancedMarkdownEditor = ({
     const cols = parseInt(tableCols) || 3;
     
     let table = '\n';
-    // Header row
     table += '| ' + Array(cols).fill('Header').map((h, i) => `${h} ${i + 1}`).join(' | ') + ' |\n';
-    // Separator
     table += '| ' + Array(cols).fill('---').join(' | ') + ' |\n';
-    // Data rows
     for (let i = 0; i < rows - 1; i++) {
       table += '| ' + Array(cols).fill('Cell').join(' | ') + ' |\n';
     }
@@ -443,19 +452,18 @@ const AdvancedMarkdownEditor = ({
     const newValue = e.target.value;
     onChange(newValue);
     
-    // Check if user typed / at the start of a line
     const cursorPos = e.target.selectionStart;
     const textBeforeCursor = newValue.substring(0, cursorPos);
     const currentLine = textBeforeCursor.split('\n').pop();
     
     if (currentLine === '/') {
       const rect = e.target.getBoundingClientRect();
-      const lineHeight = 24; // Approximate line height
+      const lineHeight = 22;
       const linesAbove = textBeforeCursor.split('\n').length - 1;
       
       setBlockMenuPosition({
-        top: linesAbove * lineHeight,
-        left: 60
+        top: linesAbove * lineHeight + 40,
+        left: 70
       });
       setShowBlockMenu(true);
     } else {
@@ -465,224 +473,453 @@ const AdvancedMarkdownEditor = ({
 
   // Block menu items
   const blockMenuItems = [
-    { icon: <HeadingIcon />, label: 'Heading 1', action: () => { insertAtCursor('# ', 2, 0); setShowBlockMenu(false); } },
-    { icon: <HeadingIcon />, label: 'Heading 2', action: () => { insertAtCursor('## ', 3, 0); setShowBlockMenu(false); } },
-    { icon: <ImageIcon />, label: 'Image', action: () => { setImageDialogOpen(true); setShowBlockMenu(false); } },
-    { icon: <CodeBlockIcon />, label: 'Code Block', action: () => { setCodeBlockDialogOpen(true); setShowBlockMenu(false); } },
-    { icon: <QuoteIcon />, label: 'Quote', action: () => { insertAtCursor('> ', 2, 0); setShowBlockMenu(false); } },
-    { icon: <ListIcon />, label: 'Bullet List', action: () => { insertAtCursor('- ', 2, 0); setShowBlockMenu(false); } },
-    { icon: <TableIcon />, label: 'Table', action: () => { setTableDialogOpen(true); setShowBlockMenu(false); } },
+    { icon: <HeadingIcon />, label: 'Heading 1', shortcut: '#', action: () => { insertAtCursor('# ', 2, 0); setShowBlockMenu(false); } },
+    { icon: <HeadingIcon />, label: 'Heading 2', shortcut: '##', action: () => { insertAtCursor('## ', 3, 0); setShowBlockMenu(false); } },
+    { icon: <HeadingIcon />, label: 'Heading 3', shortcut: '###', action: () => { insertAtCursor('### ', 4, 0); setShowBlockMenu(false); } },
+    { icon: <ImageIcon />, label: 'Image', shortcut: '![]', action: () => { setImageDialogOpen(true); setShowBlockMenu(false); } },
+    { icon: <CodeIcon />, label: 'Code Block', shortcut: '```', action: () => { setCodeBlockDialogOpen(true); setShowBlockMenu(false); } },
+    { icon: <QuoteIcon />, label: 'Quote', shortcut: '>', action: () => { insertAtCursor('> ', 2, 0); setShowBlockMenu(false); } },
+    { icon: <ListIcon />, label: 'Bullet List', shortcut: '-', action: () => { insertAtCursor('- ', 2, 0); setShowBlockMenu(false); } },
+    { icon: <TableIcon />, label: 'Table', shortcut: '||', action: () => { setTableDialogOpen(true); setShowBlockMenu(false); } },
   ];
-
-  // Toolbar button component
-  const ToolbarButton = ({ icon, tooltip, onClick, active = false }) => (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button
-            type="button"
-            onClick={onClick}
-            className={`w-8 h-8 flex items-center justify-center rounded-full border transition-all duration-200 hover:scale-110
-              ${active 
-                ? 'bg-emerald-500 border-emerald-500 text-white' 
-                : 'border-emerald-500 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30'
-              }`}
-          >
-            {icon}
-          </button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{tooltip}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
 
   return (
     <div className={`flex flex-col h-full ${className}`}>
       {/* Title Input */}
       {onTitleChange && (
-        <div className="mb-4">
+        <div className="mb-6">
           <input
             type="text"
             value={title || ''}
             onChange={(e) => onTitleChange(e.target.value)}
             placeholder="Title"
-            className="w-full text-4xl font-serif text-gray-300 bg-transparent border-none outline-none placeholder-gray-500 dark:placeholder-gray-600"
+            className="w-full text-4xl font-serif text-gray-800 dark:text-gray-200 bg-transparent border-none outline-none placeholder-gray-400 dark:placeholder-gray-500 focus:ring-0"
           />
         </div>
       )}
 
-      {/* Insert Block Button & Toolbar */}
-      <div className="flex items-center gap-2 mb-4 flex-wrap">
-        {/* Add Block Button */}
+      {/* Main Editor Container */}
+      <div className="flex-1 rounded-lg overflow-hidden border border-gray-700 shadow-xl">
+        {/* Editor Header with Tabs and Settings */}
+        <div className="flex items-center justify-between bg-[#0d1117] px-1 py-1">
+          {/* Edit/Preview Tabs */}
+          <div className="flex">
+            <button
+              type="button"
+              onClick={() => setActiveTab('edit')}
+              className={`px-4 py-1.5 text-sm font-medium rounded transition-all ${
+                activeTab === 'edit'
+                  ? 'text-white bg-[#21262d]'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('preview')}
+              className={`px-4 py-1.5 text-sm font-medium rounded transition-all ${
+                activeTab === 'preview'
+                  ? 'text-white bg-[#21262d]'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              Preview
+            </button>
+          </div>
+
+          {/* Settings */}
+          <div className="flex items-center gap-1 pr-2">
+            <Select value={indentType} onValueChange={setIndentType}>
+              <SelectTrigger className="h-7 w-[80px] text-xs bg-transparent border-[#30363d] text-gray-300 hover:bg-[#21262d] focus:ring-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[#161b22] border-[#30363d]">
+                <SelectItem value="spaces" className="text-gray-300 hover:bg-[#21262d]">Spaces</SelectItem>
+                <SelectItem value="tabs" className="text-gray-300 hover:bg-[#21262d]">Tabs</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={indentSize} onValueChange={setIndentSize}>
+              <SelectTrigger className="h-7 w-[50px] text-xs bg-transparent border-[#30363d] text-gray-300 hover:bg-[#21262d] focus:ring-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[#161b22] border-[#30363d]">
+                <SelectItem value="2" className="text-gray-300 hover:bg-[#21262d]">2</SelectItem>
+                <SelectItem value="4" className="text-gray-300 hover:bg-[#21262d]">4</SelectItem>
+                <SelectItem value="8" className="text-gray-300 hover:bg-[#21262d]">8</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={softWrap} onValueChange={setSoftWrap}>
+              <SelectTrigger className="h-7 w-[90px] text-xs bg-transparent border-[#30363d] text-gray-300 hover:bg-[#21262d] focus:ring-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[#161b22] border-[#30363d]">
+                <SelectItem value="soft" className="text-gray-300 hover:bg-[#21262d]">Soft wrap</SelectItem>
+                <SelectItem value="none" className="text-gray-300 hover:bg-[#21262d]">No wrap</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Editor Content Area */}
+        <div 
+          ref={editorContainerRef}
+          className="min-h-[500px] max-h-[600px] bg-[#0d1117] overflow-hidden relative"
+        >
+          {activeTab === 'edit' ? (
+            <div className="flex h-full">
+              {/* Line Numbers */}
+              <div 
+                ref={lineNumbersRef}
+                className="w-14 bg-[#0d1117] text-[#484f58] text-right pr-4 py-3 select-none overflow-hidden border-r border-[#21262d]"
+                style={{ fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace', fontSize: '14px', lineHeight: '22px' }}
+              >
+                {Array.from({ length: Math.max(lineCount, 20) }, (_, i) => (
+                  <div 
+                    key={i + 1} 
+                    className={`h-[22px] transition-colors ${cursorLine === i + 1 ? 'text-[#c9d1d9]' : ''}`}
+                  >
+                    {i + 1}
+                  </div>
+                ))}
+              </div>
+
+              {/* Text Editor */}
+              <div className="flex-1 relative">
+                <textarea
+                  ref={textareaRef}
+                  value={value || ''}
+                  onChange={handleContentChange}
+                  onKeyDown={handleKeyDown}
+                  onScroll={handleScroll}
+                  placeholder={placeholder}
+                  className={`w-full h-full min-h-[500px] max-h-[600px] p-3 bg-transparent text-[#c9d1d9] resize-none outline-none
+                    placeholder-[#484f58]
+                    ${softWrap === 'none' ? 'whitespace-pre overflow-x-auto' : 'whitespace-pre-wrap'}`}
+                  style={{ 
+                    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+                    fontSize: '14px',
+                    lineHeight: '22px',
+                    tabSize: parseInt(indentSize),
+                    caretColor: '#58a6ff'
+                  }}
+                  spellCheck={false}
+                />
+
+                {/* Block Menu */}
+                {showBlockMenu && (
+                  <div 
+                    className="absolute z-20 bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl py-1 w-56"
+                    style={{ top: blockMenuPosition.top, left: blockMenuPosition.left }}
+                  >
+                    <div className="px-3 py-1.5 text-xs text-[#484f58] font-medium uppercase tracking-wider">
+                      Insert block
+                    </div>
+                    {blockMenuItems.map((item, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={item.action}
+                        className="w-full flex items-center justify-between gap-3 px-3 py-2 text-sm text-[#c9d1d9] hover:bg-[#21262d] transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-[#58a6ff]">{item.icon}</span>
+                          <span>{item.label}</span>
+                        </div>
+                        <span className="text-xs text-[#484f58] font-mono">{item.shortcut}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="h-full min-h-[500px] max-h-[600px] overflow-auto p-6 bg-white dark:bg-[#0d1117]">
+              {value ? (
+                <div className="prose dark:prose-invert max-w-none">
+                  <MarkdownRenderer content={value} />
+                </div>
+              ) : (
+                <p className="text-[#484f58] italic">Nothing to preview yet...</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Editor Footer */}
+        <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-t border-[#21262d] text-xs text-[#484f58]">
+          <div className="flex items-center gap-4">
+            <span>
+              Use <kbd className="px-1.5 py-0.5 bg-[#21262d] rounded text-[10px] font-mono">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-[#21262d] rounded text-[10px] font-mono">Shift</kbd> + <kbd className="px-1.5 py-0.5 bg-[#21262d] rounded text-[10px] font-mono">M</kbd> to toggle the tab key moving focus. Alternatively, use <kbd className="px-1.5 py-0.5 bg-[#21262d] rounded text-[10px] font-mono">esc</kbd> then <kbd className="px-1.5 py-0.5 bg-[#21262d] rounded text-[10px] font-mono">tab</kbd> to move to the next interactive element on the page.
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span>Ln {cursorLine}, Col {cursorCol}</span>
+            <span className="text-[#30363d]">|</span>
+            <span>{lineCount} lines</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Insert Toolbar - Below Editor */}
+      <div className="flex items-center gap-1 mt-3 flex-wrap">
+        <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">Quick insert:</span>
+        
+        {/* Formatting */}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => setShowBlockMenu(!showBlockMenu)}
-                className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 dark:border-gray-600 text-gray-400 hover:border-emerald-500 hover:text-emerald-500 transition-all duration-200"
-              >
-                <PlusIcon />
+              <button type="button" onClick={toolbarActions.bold} className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                <BoldIcon />
               </button>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Add block (or type / )</p>
-            </TooltipContent>
+            <TooltipContent><p>Bold (Ctrl+B)</p></TooltipContent>
           </Tooltip>
         </TooltipProvider>
 
-        <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-1" />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button type="button" onClick={toolbarActions.italic} className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                <ItalicIcon />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent><p>Italic (Ctrl+I)</p></TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-        {/* Formatting Toolbar */}
-        <ToolbarButton icon={<BoldIcon />} tooltip="Bold (Ctrl+B)" onClick={toolbarActions.bold} />
-        <ToolbarButton icon={<ItalicIcon />} tooltip="Italic (Ctrl+I)" onClick={toolbarActions.italic} />
-        <ToolbarButton icon={<HeadingIcon />} tooltip="Heading" onClick={toolbarActions.heading2} />
-        
-        <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-1" />
+        <div className="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1" />
 
-        {/* Insert Toolbar */}
+        {/* Headings Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button type="button" className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors flex items-center gap-1">
+              <HeadingIcon />
+              <ChevronDownIcon />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
+            <DropdownMenuItem onClick={toolbarActions.heading1} className="text-gray-700 dark:text-gray-300">
+              <span className="font-bold text-lg">H1</span>
+              <span className="ml-2 text-gray-500">Heading 1</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={toolbarActions.heading2} className="text-gray-700 dark:text-gray-300">
+              <span className="font-bold text-base">H2</span>
+              <span className="ml-2 text-gray-500">Heading 2</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={toolbarActions.heading3} className="text-gray-700 dark:text-gray-300">
+              <span className="font-bold text-sm">H3</span>
+              <span className="ml-2 text-gray-500">Heading 3</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button type="button" onClick={toolbarActions.quote} className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                <QuoteIcon />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent><p>Quote</p></TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button type="button" onClick={toolbarActions.bulletList} className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                <ListIcon />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent><p>Bullet List</p></TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button type="button" onClick={toolbarActions.inlineCode} className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                <CodeIcon />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent><p>Inline Code</p></TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <div className="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1" />
+
+        {/* Insert Dialogs */}
         <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
-          <DialogTrigger asChild>
-            <div>
-              <ToolbarButton icon={<ImageIcon />} tooltip="Insert Image" onClick={() => setImageDialogOpen(true)} />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="bg-white dark:bg-gray-800">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button type="button" className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                    <ImageIcon />
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent><p>Insert Image</p></TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <DialogContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
             <DialogHeader>
-              <DialogTitle>Insert Image</DialogTitle>
-              <DialogDescription>Enter the image URL and optional alt text.</DialogDescription>
+              <DialogTitle className="text-gray-900 dark:text-white">Insert Image</DialogTitle>
+              <DialogDescription className="text-gray-500 dark:text-gray-400">Enter the image URL and optional alt text.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="imageUrl">Image URL</Label>
+                <Label htmlFor="imageUrl" className="text-gray-700 dark:text-gray-300">Image URL</Label>
                 <Input
                   id="imageUrl"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  className="mt-1"
+                  className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white"
                 />
               </div>
               <div>
-                <Label htmlFor="imageAlt">Alt Text</Label>
+                <Label htmlFor="imageAlt" className="text-gray-700 dark:text-gray-300">Alt Text</Label>
                 <Input
                   id="imageAlt"
                   value={imageAlt}
                   onChange={(e) => setImageAlt(e.target.value)}
                   placeholder="Description of image"
-                  className="mt-1"
+                  className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white"
                 />
               </div>
               {imageUrl && (
-                <div className="border rounded p-2 bg-gray-50 dark:bg-gray-700">
+                <div className="border border-gray-200 dark:border-[#30363d] rounded p-2 bg-gray-50 dark:bg-[#0d1117]">
                   <img src={imageUrl} alt="Preview" className="max-h-32 mx-auto" onError={(e) => e.target.style.display = 'none'} />
                 </div>
               )}
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="border-gray-300 dark:border-[#30363d] text-gray-700 dark:text-gray-300">Cancel</Button>
               </DialogClose>
-              <Button onClick={handleInsertImage}>Insert</Button>
+              <Button onClick={handleInsertImage} className="bg-[#238636] hover:bg-[#2ea043] text-white">Insert</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
         <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
-          <DialogTrigger asChild>
-            <div>
-              <ToolbarButton icon={<LinkIcon />} tooltip="Insert Link" onClick={() => setLinkDialogOpen(true)} />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="bg-white dark:bg-gray-800">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button type="button" className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                    <LinkIcon />
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent><p>Insert Link</p></TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <DialogContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
             <DialogHeader>
-              <DialogTitle>Insert Link</DialogTitle>
-              <DialogDescription>Enter the URL and optional link text.</DialogDescription>
+              <DialogTitle className="text-gray-900 dark:text-white">Insert Link</DialogTitle>
+              <DialogDescription className="text-gray-500 dark:text-gray-400">Enter the URL and optional link text.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="linkUrl">URL</Label>
+                <Label htmlFor="linkUrl" className="text-gray-700 dark:text-gray-300">URL</Label>
                 <Input
                   id="linkUrl"
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="https://example.com"
-                  className="mt-1"
+                  className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white"
                 />
               </div>
               <div>
-                <Label htmlFor="linkText">Link Text</Label>
+                <Label htmlFor="linkText" className="text-gray-700 dark:text-gray-300">Link Text</Label>
                 <Input
                   id="linkText"
                   value={linkText}
                   onChange={(e) => setLinkText(e.target.value)}
                   placeholder="Click here"
-                  className="mt-1"
+                  className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white"
                 />
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="border-gray-300 dark:border-[#30363d] text-gray-700 dark:text-gray-300">Cancel</Button>
               </DialogClose>
-              <Button onClick={handleInsertLink}>Insert</Button>
+              <Button onClick={handleInsertLink} className="bg-[#238636] hover:bg-[#2ea043] text-white">Insert</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
         <Dialog open={videoDialogOpen} onOpenChange={setVideoDialogOpen}>
-          <DialogTrigger asChild>
-            <div>
-              <ToolbarButton icon={<VideoIcon />} tooltip="Insert Video" onClick={() => setVideoDialogOpen(true)} />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="bg-white dark:bg-gray-800">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button type="button" className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                    <VideoIcon />
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent><p>Insert Video</p></TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <DialogContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
             <DialogHeader>
-              <DialogTitle>Insert Video</DialogTitle>
-              <DialogDescription>Enter a YouTube URL or direct video URL.</DialogDescription>
+              <DialogTitle className="text-gray-900 dark:text-white">Insert Video</DialogTitle>
+              <DialogDescription className="text-gray-500 dark:text-gray-400">Enter a YouTube URL or direct video URL.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="videoUrl">Video URL</Label>
+                <Label htmlFor="videoUrl" className="text-gray-700 dark:text-gray-300">Video URL</Label>
                 <Input
                   id="videoUrl"
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
                   placeholder="https://youtube.com/watch?v=..."
-                  className="mt-1"
+                  className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white"
                 />
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="border-gray-300 dark:border-[#30363d] text-gray-700 dark:text-gray-300">Cancel</Button>
               </DialogClose>
-              <Button onClick={handleInsertVideo}>Insert</Button>
+              <Button onClick={handleInsertVideo} className="bg-[#238636] hover:bg-[#2ea043] text-white">Insert</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
         <Dialog open={codeBlockDialogOpen} onOpenChange={setCodeBlockDialogOpen}>
-          <DialogTrigger asChild>
-            <div>
-              <ToolbarButton icon={<CodeIcon />} tooltip="Insert Code Block" onClick={() => setCodeBlockDialogOpen(true)} />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="bg-white dark:bg-gray-800">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button type="button" className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors font-mono text-xs">
+                    {'</>'}
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent><p>Insert Code Block</p></TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <DialogContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
             <DialogHeader>
-              <DialogTitle>Insert Code Block</DialogTitle>
-              <DialogDescription>Select the programming language for syntax highlighting.</DialogDescription>
+              <DialogTitle className="text-gray-900 dark:text-white">Insert Code Block</DialogTitle>
+              <DialogDescription className="text-gray-500 dark:text-gray-400">Select the programming language.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="codeLanguage">Language</Label>
+                <Label htmlFor="codeLanguage" className="text-gray-700 dark:text-gray-300">Language</Label>
                 <Select value={codeLanguage} onValueChange={setCodeLanguage}>
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
                     <SelectItem value="javascript">JavaScript</SelectItem>
                     <SelectItem value="typescript">TypeScript</SelectItem>
                     <SelectItem value="python">Python</SelectItem>
@@ -703,30 +940,35 @@ const AdvancedMarkdownEditor = ({
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="border-gray-300 dark:border-[#30363d] text-gray-700 dark:text-gray-300">Cancel</Button>
               </DialogClose>
-              <Button onClick={handleInsertCodeBlock}>Insert</Button>
+              <Button onClick={handleInsertCodeBlock} className="bg-[#238636] hover:bg-[#2ea043] text-white">Insert</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        <ToolbarButton icon={<CodeBlockIcon />} tooltip="Inline Code" onClick={toolbarActions.inlineCode} />
-
         <Dialog open={tableDialogOpen} onOpenChange={setTableDialogOpen}>
-          <DialogTrigger asChild>
-            <div>
-              <ToolbarButton icon={<TableIcon />} tooltip="Insert Table" onClick={() => setTableDialogOpen(true)} />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="bg-white dark:bg-gray-800">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button type="button" className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+                    <TableIcon />
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent><p>Insert Table</p></TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <DialogContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
             <DialogHeader>
-              <DialogTitle>Insert Table</DialogTitle>
-              <DialogDescription>Choose the table dimensions.</DialogDescription>
+              <DialogTitle className="text-gray-900 dark:text-white">Insert Table</DialogTitle>
+              <DialogDescription className="text-gray-500 dark:text-gray-400">Choose the table dimensions.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="tableRows">Rows</Label>
+                  <Label htmlFor="tableRows" className="text-gray-700 dark:text-gray-300">Rows</Label>
                   <Input
                     id="tableRows"
                     type="number"
@@ -734,11 +976,11 @@ const AdvancedMarkdownEditor = ({
                     max="20"
                     value={tableRows}
                     onChange={(e) => setTableRows(e.target.value)}
-                    className="mt-1"
+                    className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="tableCols">Columns</Label>
+                  <Label htmlFor="tableCols" className="text-gray-700 dark:text-gray-300">Columns</Label>
                   <Input
                     id="tableCols"
                     type="number"
@@ -746,24 +988,21 @@ const AdvancedMarkdownEditor = ({
                     max="10"
                     value={tableCols}
                     onChange={(e) => setTableCols(e.target.value)}
-                    className="mt-1"
+                    className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="border-gray-300 dark:border-[#30363d] text-gray-700 dark:text-gray-300">Cancel</Button>
               </DialogClose>
-              <Button onClick={handleInsertTable}>Insert</Button>
+              <Button onClick={handleInsertTable} className="bg-[#238636] hover:bg-[#2ea043] text-white">Insert</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        <ToolbarButton icon={<ListIcon />} tooltip="Bullet List" onClick={toolbarActions.bulletList} />
-        <ToolbarButton icon={<QuoteIcon />} tooltip="Quote" onClick={toolbarActions.quote} />
-
-        <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-1" />
+        <div className="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1" />
 
         {/* Undo/Redo */}
         <TooltipProvider>
@@ -773,16 +1012,15 @@ const AdvancedMarkdownEditor = ({
                 type="button"
                 onClick={handleUndo}
                 disabled={historyIndex <= 0}
-                className="w-8 h-8 flex items-center justify-center rounded text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-30 transition-colors"
+                className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
               >
                 <UndoIcon />
               </button>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Undo (Ctrl+Z)</p>
-            </TooltipContent>
+            <TooltipContent><p>Undo (Ctrl+Z)</p></TooltipContent>
           </Tooltip>
         </TooltipProvider>
+        
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -790,158 +1028,21 @@ const AdvancedMarkdownEditor = ({
                 type="button"
                 onClick={handleRedo}
                 disabled={historyIndex >= history.length - 1}
-                className="w-8 h-8 flex items-center justify-center rounded text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-30 transition-colors"
+                className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
               >
                 <RedoIcon />
               </button>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Redo (Ctrl+Y)</p>
-            </TooltipContent>
+            <TooltipContent><p>Redo (Ctrl+Y)</p></TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </div>
 
-      {/* Editor Header with Tabs and Settings */}
-      <div className="flex items-center justify-between bg-gray-900 dark:bg-gray-950 rounded-t-lg border border-b-0 border-gray-700">
-        {/* Edit/Preview Tabs */}
-        <div className="flex">
-          <button
-            type="button"
-            onClick={() => setActiveTab('edit')}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'edit'
-                ? 'text-white bg-gray-800'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-            }`}
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('preview')}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'preview'
-                ? 'text-white bg-gray-800'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-            }`}
-          >
-            Preview
-          </button>
-        </div>
-
-        {/* Settings */}
-        <div className="flex items-center gap-2 px-2">
-          <Select value={indentType} onValueChange={setIndentType}>
-            <SelectTrigger className="h-7 w-20 text-xs bg-transparent border-gray-600 text-gray-300">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="spaces">Spaces</SelectItem>
-              <SelectItem value="tabs">Tabs</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={indentSize} onValueChange={setIndentSize}>
-            <SelectTrigger className="h-7 w-14 text-xs bg-transparent border-gray-600 text-gray-300">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="2">2</SelectItem>
-              <SelectItem value="4">4</SelectItem>
-              <SelectItem value="8">8</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={softWrap} onValueChange={setSoftWrap}>
-            <SelectTrigger className="h-7 w-24 text-xs bg-transparent border-gray-600 text-gray-300">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="soft">Soft wrap</SelectItem>
-              <SelectItem value="none">No wrap</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {/* Editor Content Area */}
-      <div 
-        ref={editorContainerRef}
-        className="flex-1 min-h-[400px] bg-gray-900 dark:bg-gray-950 border border-gray-700 rounded-b-lg overflow-hidden relative"
-      >
-        {activeTab === 'edit' ? (
-          <div className="flex h-full relative">
-            {/* Line Numbers */}
-            <div 
-              ref={lineNumbersRef}
-              className="w-12 bg-gray-900 dark:bg-gray-950 text-gray-500 text-right pr-3 py-3 font-mono text-sm select-none overflow-hidden border-r border-gray-700"
-              style={{ fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace' }}
-            >
-              {Array.from({ length: lineCount }, (_, i) => (
-                <div 
-                  key={i + 1} 
-                  className={`leading-6 h-6 ${cursorLine === i + 1 ? 'text-emerald-400' : ''}`}
-                >
-                  {i + 1}
-                </div>
-              ))}
-            </div>
-
-            {/* Text Editor */}
-            <textarea
-              ref={textareaRef}
-              value={value || ''}
-              onChange={handleContentChange}
-              onKeyDown={handleKeyDown}
-              onScroll={handleScroll}
-              placeholder={placeholder}
-              className={`flex-1 h-full p-3 bg-transparent text-gray-100 font-mono text-sm resize-none outline-none leading-6
-                ${softWrap === 'none' ? 'whitespace-pre overflow-x-auto' : 'whitespace-pre-wrap'}`}
-              style={{ 
-                fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
-                tabSize: parseInt(indentSize)
-              }}
-              spellCheck={false}
-            />
-
-            {/* Block Menu */}
-            {showBlockMenu && (
-              <div 
-                className="absolute z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl py-2 w-48"
-                style={{ top: blockMenuPosition.top + 40, left: blockMenuPosition.left }}
-              >
-                {blockMenuItems.map((item, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={item.action}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <span className="text-emerald-500">{item.icon}</span>
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="h-full overflow-auto p-6 bg-white dark:bg-gray-800">
-            {value ? (
-              <MarkdownRenderer content={value} />
-            ) : (
-              <p className="text-gray-400 italic">Nothing to preview yet...</p>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Editor Footer */}
-      <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center justify-between">
-        <span>
-          Use <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs">Ctrl</kbd> + <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs">Shift</kbd> + <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs">M</kbd> to toggle tab focus. Type <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs">/</kbd> for block commands.
+        <div className="flex-1" />
+        
+        {/* File attachment hint */}
+        <span className="text-xs text-gray-400 dark:text-gray-500">
+          Attach files by dragging & dropping, selecting or pasting them.
         </span>
-        <span>{lineCount} lines</span>
       </div>
     </div>
   );
