@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const BlogPostCard = ({ post }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -33,18 +36,41 @@ const BlogPostCard = ({ post }) => {
     return cleaned || 'Read more...';
   };
 
+  // Optimize Cloudinary URLs for faster loading
+  const getOptimizedImageUrl = (url) => {
+    if (!url) return null;
+    
+    // If it's a Cloudinary URL, add optimization parameters
+    if (url.includes('cloudinary.com')) {
+      // Insert auto quality and format before the version/public_id
+      return url.replace('/upload/', '/upload/q_auto,f_auto,w_400,h_300,c_fill/');
+    }
+    return url;
+  };
+
   return (
     <Link 
       to={`/post/${post.slug}`}
       className="block group"
     >
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 p-6 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300">
-        {post.featuredImage && (
-          <div className="flex-shrink-0 w-full lg:w-80 h-56 lg:h-48 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 overflow-hidden">
+        {post.featuredImage && !imageError && (
+          <div className="flex-shrink-0 w-full lg:w-80 h-56 lg:h-48 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 overflow-hidden relative">
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-700 animate-pulse">
+                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
             <img 
-              src={post.featuredImage} 
+              src={getOptimizedImageUrl(post.featuredImage)} 
               alt={post.title}
-              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+              className={`w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             />
           </div>
         )}
