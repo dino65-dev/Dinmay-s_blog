@@ -112,6 +112,76 @@ export const api = {
     const response = await axios.get(`${API}/github/profile/${username}`);
     return response.data;
   },
+
+  // File Upload API
+  // Upload a single image file
+  uploadImage: async (file, onProgress = null) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await axios.post(`${API}/upload/image`, formData, {
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: onProgress ? (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        onProgress(percentCompleted);
+      } : undefined,
+    });
+    return response.data;
+  },
+
+  // Upload large file in chunks
+  uploadChunked: async (file, onProgress = null) => {
+    const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    let fileId = null;
+    
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * CHUNK_SIZE;
+      const end = Math.min(start + CHUNK_SIZE, file.size);
+      const chunk = file.slice(start, end);
+      
+      const formData = new FormData();
+      formData.append('file', new Blob([chunk]), file.name);
+      formData.append('chunk_number', i);
+      formData.append('total_chunks', totalChunks);
+      if (fileId) formData.append('file_id', fileId);
+      
+      const response = await axios.post(`${API}/upload/chunk`, formData, {
+        headers: {
+          ...getAuthHeaders(),
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      if (i === 0 && response.data.file_id) {
+        fileId = response.data.file_id;
+      }
+      
+      if (onProgress) {
+        onProgress(Math.round(((i + 1) / totalChunks) * 100));
+      }
+      
+      if (response.data.complete) {
+        return response.data;
+      }
+    }
+  },
+
+  // Get uploaded file URL
+  getUploadUrl: (filename) => {
+    return `${API}/uploads/${filename}`;
+  },
+
+  // Delete uploaded file (requires auth)
+  deleteUpload: async (filename) => {
+    const response = await axios.delete(`${API}/uploads/${filename}`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
 };
 
 export default api;
