@@ -36,6 +36,7 @@ api_router.include_router(auth.router, tags=["auth"])
 api_router.include_router(about.router, tags=["about"])
 api_router.include_router(comments.router, tags=["comments"])
 api_router.include_router(github.router, tags=["github"])
+api_router.include_router(upload.router, tags=["upload"])
 
 # Include the router in the main app
 app.include_router(api_router)
