@@ -292,91 +292,76 @@ const AdminPage = () => {
           </TabsContent>
 
           <TabsContent value="markdown">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-bold mb-6">Write in Markdown</h2>
-                <form onSubmit={handleMarkdownSubmit}>
-                  <div className="mb-4">
-                    <Label htmlFor="md-title">Title</Label>
-                    <Input
-                      id="md-title"
-                      value={mdTitle}
-                      onChange={(e) => setMdTitle(e.target.value)}
-                      placeholder="Enter post title"
-                      required
-                      className="mt-2"
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <Label htmlFor="md-image">Featured Image URL</Label>
-                    <Input
-                      id="md-image"
-                      value={mdImage}
-                      onChange={(e) => {
-                        const url = e.target.value;
-                        setMdImage(url);
-                        setMdImageError(validateImageUrl(url));
-                      }}
-                      placeholder="https://example.com/image.jpg"
-                      className={`mt-2 ${mdImageError ? 'border-yellow-500' : ''}`}
-                    />
-                    {mdImageError && (
-                      <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">{mdImageError}</p>
-                    )}
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      💡 Use direct image URLs from Unsplash, Imgur, or your own hosting
-                    </p>
-                  </div>
-                  <div className="mb-4">
-                    <Label htmlFor="md-content">Content (Markdown)</Label>
-                    <Textarea
-                      id="md-content"
-                      value={mdContent}
-                      onChange={(e) => setMdContent(e.target.value)}
-                      placeholder="# Your markdown content here..."
-                      className="mt-2 font-mono"
-                      rows={15}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full">
+            <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <form onSubmit={handleMarkdownSubmit}>
+                {/* Featured Image Section */}
+                <div className="mb-6 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <Label htmlFor="md-image" className="text-base font-semibold mb-2 block">Featured Image URL</Label>
+                  <Input
+                    id="md-image"
+                    value={mdImage}
+                    onChange={(e) => {
+                      const url = e.target.value;
+                      setMdImage(url);
+                      setMdImageError(validateImageUrl(url));
+                    }}
+                    placeholder="https://example.com/image.jpg"
+                    className={`${mdImageError ? 'border-yellow-500' : ''}`}
+                  />
+                  {mdImageError && (
+                    <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">{mdImageError}</p>
+                  )}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    💡 Use direct image URLs from Unsplash, Imgur, or your own hosting
+                  </p>
+                  {mdImage && !mdImageError && (
+                    <div className="mt-3 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded border">
+                      <img 
+                        src={mdImage} 
+                        alt="Preview" 
+                        className="max-w-full max-h-full object-contain rounded" 
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          setMdImageError('❌ Image failed to load. Check if URL is a direct image link');
+                        }}
+                        onLoad={() => {
+                          setMdImageError('');
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Advanced Markdown Editor */}
+                <div className="min-h-[600px]">
+                  <AdvancedMarkdownEditor
+                    value={mdContent}
+                    onChange={setMdContent}
+                    title={mdTitle}
+                    onTitleChange={setMdTitle}
+                    placeholder="Start writing your blog post... Type / for block commands"
+                  />
+                </div>
+
+                <div className="mt-6 flex gap-4">
+                  <Button type="submit" className="flex-1 py-6 text-lg" disabled={!mdTitle || !mdContent}>
                     Publish Post
                   </Button>
-                </form>
-              </div>
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-bold mb-6">Live Preview</h2>
-                {mdTitle && <h1 className="text-3xl font-bold mb-4">{mdTitle}</h1>}
-                {mdImage && !mdImageError && (
-                  <div className="mb-4 w-full h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded">
-                    <img 
-                      src={mdImage} 
-                      alt="Preview" 
-                      className="max-w-full max-h-full object-contain rounded" 
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        setMdImageError('❌ Image failed to load. Check if URL is a direct image link');
-                      }}
-                      onLoad={() => {
-                        setMdImageError('');
-                      }}
-                    />
-                  </div>
-                )}
-                {mdImage && mdImageError && (
-                  <div className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
-                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                      {mdImageError}
-                    </p>
-                    <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-2">
-                      <strong>How to get direct image URLs:</strong><br/>
-                      • Pinterest: Right-click image → "Copy Image Address"<br/>
-                      • Or use free image hosts: unsplash.com, imgur.com<br/>
-                      • URL should end with .jpg, .png, .webp, etc.
-                    </p>
-                  </div>
-                )}
-                {mdContent && <MarkdownRenderer content={mdContent} />}
-              </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="py-6"
+                    onClick={() => {
+                      setMdTitle('');
+                      setMdContent('');
+                      setMdImage('');
+                      setMdImageError('');
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </form>
             </div>
           </TabsContent>
 
