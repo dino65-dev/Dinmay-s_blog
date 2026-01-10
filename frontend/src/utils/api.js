@@ -3,6 +3,12 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Create axios instance with optimized settings
+const axiosInstance = axios.create({
+  baseURL: API,
+  timeout: 15000, // 15 second timeout
+});
+
 // Helper function to get auth token
 const getAuthToken = () => {
   return localStorage.getItem('authToken');
@@ -14,11 +20,25 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// Cloudinary URL optimizer utility
+export const optimizeCloudinaryUrl = (url, options = {}) => {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  
+  const { width, height, quality = 'auto', format = 'auto' } = options;
+  let transforms = `q_${quality},f_${format}`;
+  
+  if (width) transforms += `,w_${width}`;
+  if (height) transforms += `,h_${height}`;
+  if (width || height) transforms += ',c_fill';
+  
+  return url.replace('/upload/', `/upload/${transforms}/`);
+};
+
 // Blog Posts API
 export const api = {
   // Get all posts
   getPosts: async () => {
-    const response = await axios.get(`${API}/posts`);
+    const response = await axiosInstance.get('/posts');
     return response.data;
   },
 
@@ -32,19 +52,19 @@ export const api = {
     if (filters.sortBy) params.append('sort_by', filters.sortBy);
     if (filters.order) params.append('order', filters.order);
     
-    const response = await axios.get(`${API}/search/posts?${params.toString()}`);
+    const response = await axiosInstance.get(`/search/posts?${params.toString()}`);
     return response.data;
   },
 
   // Get post by slug
   getPostBySlug: async (slug) => {
-    const response = await axios.get(`${API}/posts/${slug}`);
+    const response = await axiosInstance.get(`/posts/${slug}`);
     return response.data;
   },
 
   // Create a new post (requires auth)
   createPost: async (postData) => {
-    const response = await axios.post(`${API}/posts`, postData, {
+    const response = await axiosInstance.post('/posts', postData, {
       headers: getAuthHeaders(),
     });
     return response.data;
@@ -52,7 +72,7 @@ export const api = {
 
   // Update a post (requires auth)
   updatePost: async (postId, postData) => {
-    const response = await axios.put(`${API}/posts/${postId}`, postData, {
+    const response = await axiosInstance.put(`/posts/${postId}`, postData, {
       headers: getAuthHeaders(),
     });
     return response.data;
@@ -60,7 +80,7 @@ export const api = {
 
   // Delete a post (requires auth)
   deletePost: async (postId) => {
-    const response = await axios.delete(`${API}/posts/${postId}`, {
+    const response = await axiosInstance.delete(`/posts/${postId}`, {
       headers: getAuthHeaders(),
     });
     return response.data;
@@ -68,19 +88,19 @@ export const api = {
 
   // Auth API
   login: async (password) => {
-    const response = await axios.post(`${API}/auth/login`, { password });
+    const response = await axiosInstance.post('/auth/login', { password });
     return response.data;
   },
 
   // About API
   getAbout: async () => {
-    const response = await axios.get(`${API}/about`);
+    const response = await axiosInstance.get('/about');
     return response.data;
   },
 
   // Update about (requires auth)
   updateAbout: async (content) => {
-    const response = await axios.put(`${API}/about`, { content }, {
+    const response = await axiosInstance.put('/about', { content }, {
       headers: getAuthHeaders(),
     });
     return response.data;
@@ -89,19 +109,19 @@ export const api = {
   // Comments API
   // Get all comments for a post
   getComments: async (postId) => {
-    const response = await axios.get(`${API}/posts/${postId}/comments`);
+    const response = await axiosInstance.get(`/posts/${postId}/comments`);
     return response.data;
   },
 
   // Create a comment (no auth required)
   createComment: async (postId, commentData) => {
-    const response = await axios.post(`${API}/posts/${postId}/comments`, commentData);
+    const response = await axiosInstance.post(`/posts/${postId}/comments`, commentData);
     return response.data;
   },
 
   // Delete a comment (requires auth)
   deleteComment: async (commentId) => {
-    const response = await axios.delete(`${API}/comments/${commentId}`, {
+    const response = await axiosInstance.delete(`/comments/${commentId}`, {
       headers: getAuthHeaders(),
     });
     return response.data;
@@ -109,7 +129,7 @@ export const api = {
 
   // GitHub API
   getGitHubProfile: async (username) => {
-    const response = await axios.get(`${API}/github/profile/${username}`);
+    const response = await axiosInstance.get(`/github/profile/${username}`);
     return response.data;
   },
 
@@ -119,11 +139,12 @@ export const api = {
     const formData = new FormData();
     formData.append('file', file);
     
-    const response = await axios.post(`${API}/upload/image`, formData, {
+    const response = await axiosInstance.post('/upload/image', formData, {
       headers: {
         ...getAuthHeaders(),
         'Content-Type': 'multipart/form-data',
       },
+      timeout: 60000, // 60 second timeout for uploads
       onUploadProgress: onProgress ? (progressEvent) => {
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         onProgress(percentCompleted);
@@ -149,11 +170,12 @@ export const api = {
       formData.append('total_chunks', totalChunks);
       if (fileId) formData.append('file_id', fileId);
       
-      const response = await axios.post(`${API}/upload/chunk`, formData, {
+      const response = await axiosInstance.post('/upload/chunk', formData, {
         headers: {
           ...getAuthHeaders(),
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 30000, // 30 second timeout per chunk
       });
       
       if (i === 0 && response.data.file_id) {
@@ -177,9 +199,21 @@ export const api = {
 
   // Delete uploaded file (requires auth)
   deleteUpload: async (filename) => {
-    const response = await axios.delete(`${API}/uploads/${filename}`, {
+    const response = await axiosInstance.delete(`/uploads/${filename}`, {
       headers: getAuthHeaders(),
     });
+    return response.data;
+  },
+
+  // Get upload status (check if Cloudinary is configured)
+  getUploadStatus: async () => {
+    const response = await axiosInstance.get('/upload/status');
+    return response.data;
+  },
+
+  // Health check
+  healthCheck: async () => {
+    const response = await axiosInstance.get('/health');
     return response.data;
   },
 };
