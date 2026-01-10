@@ -119,11 +119,12 @@ def test_authentication():
     wrong_login_data = {"password": "wrongpassword"}
     response = make_request('POST', '/auth/login', json=wrong_login_data)
     
-    if response and response.status_code == 401:
+    if response is None:
+        results.add_result("Authentication - Wrong Password", False, "Connection failed for wrong password test")
+    elif response.status_code == 401:
         results.add_result("Authentication - Wrong Password", True, "Correctly rejected wrong password")
     else:
-        status = response.status_code if response else "No response"
-        results.add_result("Authentication - Wrong Password", False, f"Expected 401, got {status}")
+        results.add_result("Authentication - Wrong Password", False, f"Expected 401, got {response.status_code}")
 
 def test_blog_posts_crud():
     """Test 3: Blog Posts CRUD Operations"""
