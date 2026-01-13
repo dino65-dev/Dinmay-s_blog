@@ -131,10 +131,10 @@ const BlogPostPage = () => {
       <div className="min-h-screen bg-cream dark:bg-gray-950 transition-colors duration-300">
         {/* Header */}
         <header className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-12 py-4 sm:py-6 transition-all duration-300 ${
-          scrolled ? 'bg-cream/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm' : ''
+          scrolled ? 'bg-[#F5F3EF]/95 dark:bg-[#030712]/95 backdrop-blur-md shadow-sm dark:shadow-gray-900/50' : ''
         }`}>
           <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+            <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-gray-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
               Dinmay's Blog
             </Link>
             <button
