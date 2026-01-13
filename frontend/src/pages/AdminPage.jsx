@@ -804,6 +804,233 @@ const AdminPage = () => {
               </div>
             </TabsContent>
 
+            {/* About Tab */}
+            <TabsContent value="about">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+                <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-white">Edit About Page</h2>
+                {loadingAbout ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="w-8 h-8 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin" />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm sm:text-base">About Content (Markdown supported)</Label>
+                      <Textarea
+                        value={aboutContent}
+                        onChange={(e) => setAboutContent(e.target.value)}
+                        placeholder="Write about yourself, your blog, and what readers can expect..."
+                        className="rounded-xl font-mono text-sm min-h-[300px]"
+                        rows={12}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      💡 Tip: You can use Markdown formatting like **bold**, *italic*, [links](url), and # headings
+                    </p>
+                    <Button
+                      onClick={handleSaveAbout}
+                      disabled={savingAbout}
+                      className="w-full py-5 sm:py-6 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium hover:bg-gray-800 dark:hover:bg-gray-100"
+                    >
+                      {savingAbout ? 'Saving...' : 'Save About Page'}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* Settings Tab */}
+            <TabsContent value="settings">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+                <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-white">Site Settings</h2>
+                {loadingSettings ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="w-8 h-8 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin" />
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Basic Settings */}
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Basic Info</h3>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">Blog Title</Label>
+                          <Input
+                            value={siteSettings.blog_title}
+                            onChange={(e) => setSiteSettings({...siteSettings, blog_title: e.target.value})}
+                            placeholder="My Blog"
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">Author Name</Label>
+                          <Input
+                            value={siteSettings.author_name}
+                            onChange={(e) => setSiteSettings({...siteSettings, author_name: e.target.value})}
+                            placeholder="Your Name"
+                            className="rounded-xl"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">Blog Description</Label>
+                        <Input
+                          value={siteSettings.blog_description}
+                          onChange={(e) => setSiteSettings({...siteSettings, blog_description: e.target.value})}
+                          placeholder="A short description of your blog"
+                          className="rounded-xl"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">Author Avatar URL</Label>
+                        <Input
+                          value={siteSettings.author_avatar}
+                          onChange={(e) => setSiteSettings({...siteSettings, author_avatar: e.target.value})}
+                          placeholder="https://example.com/avatar.jpg"
+                          className="rounded-xl"
+                        />
+                        {siteSettings.author_avatar && (
+                          <div className="mt-2 w-16 h-16 rounded-full overflow-hidden border-2 border-amber-400">
+                            <img src={siteSettings.author_avatar} alt="Avatar preview" className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">Author Bio</Label>
+                        <Textarea
+                          value={siteSettings.author_bio}
+                          onChange={(e) => setSiteSettings({...siteSettings, author_bio: e.target.value})}
+                          placeholder="A brief bio about yourself"
+                          className="rounded-xl"
+                          rows={3}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Social Links */}
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Social Links</h3>
+                      <div className="grid sm:grid-cols-3 gap-4">
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">Twitter/X</Label>
+                          <Input
+                            value={siteSettings.social_twitter}
+                            onChange={(e) => setSiteSettings({...siteSettings, social_twitter: e.target.value})}
+                            placeholder="@username"
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">GitHub</Label>
+                          <Input
+                            value={siteSettings.social_github}
+                            onChange={(e) => setSiteSettings({...siteSettings, social_github: e.target.value})}
+                            placeholder="username"
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">LinkedIn</Label>
+                          <Input
+                            value={siteSettings.social_linkedin}
+                            onChange={(e) => setSiteSettings({...siteSettings, social_linkedin: e.target.value})}
+                            placeholder="username"
+                            className="rounded-xl"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Footer</h3>
+                      <div>
+                        <Label className="text-gray-700 dark:text-gray-300 mb-2 block text-sm">Footer Text</Label>
+                        <Input
+                          value={siteSettings.footer_text}
+                          onChange={(e) => setSiteSettings({...siteSettings, footer_text: e.target.value})}
+                          placeholder="© 2025 My Blog. All Rights Reserved"
+                          className="rounded-xl"
+                        />
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={handleSaveSettings}
+                      disabled={savingSettings}
+                      className="w-full py-5 sm:py-6 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium hover:bg-gray-800 dark:hover:bg-gray-100"
+                    >
+                      {savingSettings ? 'Saving...' : 'Save Settings'}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* Tags Management Tab */}
+            <TabsContent value="tags">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Tags Management</h2>
+                  <button
+                    onClick={fetchAvailableTags}
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    title="Refresh tags"
+                  >
+                    <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    <strong>💡 Tip:</strong> Tags are added when creating or editing posts. This page shows all tags currently in use across your posts.
+                  </p>
+                </div>
+
+                {availableTags.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-500 dark:text-gray-400 mb-2">No tags yet</p>
+                    <p className="text-sm text-gray-400 dark:text-gray-500">Add tags when creating posts to categorize your content</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {availableTags.length} {availableTags.length === 1 ? 'tag' : 'tags'} in use
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {availableTags.map((tag) => (
+                        <div
+                          key={tag}
+                          className="flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                          </svg>
+                          <span className="font-medium">{tag}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tag Usage Tips</h3>
+                      <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Use lowercase tags for consistency (e.g., "ai" instead of "AI")</li>
+                        <li>• Keep tags short and descriptive</li>
+                        <li>• Use common tags across related posts for better filtering</li>
+                        <li>• Example tags: ai, ml, python, web-dev, tutorial</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
             <TabsContent value="messages">
               <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
