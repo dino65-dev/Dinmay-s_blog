@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../components/Header';
-import BlogPostCard from '../components/BlogPostCard';
+import { Link } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
 import api from '../utils/api';
 
 const AllPostsPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -26,38 +27,78 @@ const AllPostsPage = () => {
     ? posts 
     : posts.filter(p => p.contentType === filter);
 
+  const cleanExcerpt = (text) => {
+    if (!text) return '';
+    return text
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`[^`]+`/g, '')
+      .replace(/#{1,6}\s/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/[*_~]+/g, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\n+/g, ' ')
+      .trim()
+      .substring(0, 150);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen mesh-gradient transition-colors">
-        <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col items-center justify-center min-h-[60vh]">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-full border-4 border-indigo-200 dark:border-indigo-800 border-t-indigo-600 dark:border-t-indigo-400 animate-spin" />
-              <div className="absolute inset-0 w-16 h-16 rounded-full bg-indigo-500/20 blur-xl animate-pulse" />
-            </div>
-            <p className="mt-6 text-gray-600 dark:text-gray-400 font-medium">Loading posts...</p>
-          </div>
-        </main>
+      <div className="min-h-screen bg-cream dark:bg-gray-950 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen mesh-gradient transition-colors">
-      <Header />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header Section */}
-        <div className="mb-12">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+    <div className="min-h-screen bg-cream dark:bg-gray-950 transition-colors duration-300">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link to="/" className="font-script text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+            Dinmay's Blog
+          </Link>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={toggleTheme}
+              className="w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all shadow-sm"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              Available for work
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="pt-32 pb-32 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-3 h-3 rounded-full bg-amber-400" />
+            <span className="text-gray-600 dark:text-gray-400">Archive</span>
+          </div>
+          
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-1 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600" />
-                <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Archive</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold font-display">
-                <span className="gradient-text">All Posts</span>
+              <h1 className="text-4xl md:text-5xl font-semibold text-amber-500">
+                All Posts
               </h1>
               <p className="mt-3 text-gray-600 dark:text-gray-400">
                 {posts.length} {posts.length === 1 ? 'article' : 'articles'} and counting
@@ -70,10 +111,10 @@ const AllPostsPage = () => {
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                     filter === f
-                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -81,29 +122,106 @@ const AllPostsPage = () => {
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Posts Grid */}
-        {filteredPosts.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No posts found</h2>
-            <p className="text-gray-600 dark:text-gray-400">Try adjusting your filter or check back later.</p>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 stagger-children">
-            {filteredPosts.map((post, index) => (
-              <div key={post.id} style={{ animationDelay: `${index * 0.05}s` }}>
-                <BlogPostCard post={post} />
+          {/* Posts Grid */}
+          {filteredPosts.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-            ))}
-          </div>
-        )}
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No posts found</h2>
+              <p className="text-gray-600 dark:text-gray-400">Try adjusting your filter or check back later.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredPosts.map((post, index) => (
+                <Link
+                  key={post.id}
+                  to={`/post/${post.slug}`}
+                  className="group block bg-gray-100 dark:bg-gray-900 rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-800">
+                    {post.featuredImage ? (
+                      <img
+                        src={post.featuredImage}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {formatDate(post.publishedDate)}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-gray-400" />
+                      <span className="text-xs text-amber-500 font-medium">
+                        {post.contentType === 'markdown' ? 'Markdown' : 'HTML'}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-amber-500 transition-colors line-clamp-2 mb-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+                      {cleanExcerpt(post.excerpt || post.content)}
+                    </p>
+                    <div className="flex items-center gap-2 text-amber-500 text-sm font-medium group-hover:gap-3 transition-all">
+                      Read more
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 md:px-12 border-t border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-gray-500 dark:text-gray-500 text-sm">
+            © 2025 Dinmay's Blog. All Rights Reserved
+          </p>
+          <nav className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+            <Link to="/" className="hover:text-amber-500 transition-colors">Home</Link>
+            <Link to="/all-posts" className="hover:text-amber-500 transition-colors">Posts</Link>
+            <Link to="/about" className="hover:text-amber-500 transition-colors">About</Link>
+            <Link to="/admin" className="hover:text-amber-500 transition-colors">Admin</Link>
+          </nav>
+        </div>
+      </footer>
+
+      {/* Floating Bottom Navigation */}
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-center gap-1 px-2 py-2 bg-gray-900/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-full shadow-2xl">
+          <Link to="/" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">
+            Home
+          </Link>
+          <Link to="/all-posts" className="px-5 py-2.5 bg-amber-500 text-white text-sm font-medium rounded-full">
+            Posts
+          </Link>
+          <Link to="/about" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">
+            About
+          </Link>
+          <Link to="/search" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">
+            Search
+          </Link>
+          <Link to="/admin" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">
+            Admin
+          </Link>
+        </div>
+      </nav>
     </div>
   );
 };
