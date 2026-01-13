@@ -12,6 +12,7 @@ const HomePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { isAuthenticated } = useAuth();
+  const { settings } = useSiteSettings();
   const { toast } = useToast();
   const [scrolled, setScrolled] = useState(false);
   const [formData, setFormData] = useState({
