@@ -6,7 +6,6 @@ import api from '../utils/api';
 const AllPostsPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
   const [selectedTag, setSelectedTag] = useState(null);
   const [availableTags, setAvailableTags] = useState([]);
   const { theme, toggleTheme } = useTheme();
@@ -29,11 +28,9 @@ const AllPostsPage = () => {
     fetchData();
   }, []);
 
-  // Filter posts by content type and tag
+  // Filter posts by tag only
   const filteredPosts = posts.filter(p => {
-    const matchesType = filter === 'all' || p.contentType === filter;
-    const matchesTag = !selectedTag || (p.tags && p.tags.includes(selectedTag));
-    return matchesType && matchesTag;
+    return !selectedTag || (p.tags && p.tags.includes(selectedTag));
   });
 
   const cleanExcerpt = (text) => {
