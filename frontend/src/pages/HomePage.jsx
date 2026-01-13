@@ -141,9 +141,13 @@ const HomePage = () => {
                 loop
                 muted
                 playsInline
+                preload="auto"
                 className="w-full h-auto max-h-[600px] object-contain"
+                poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
+                onCanPlay={(e) => e.target.play()}
               >
                 <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
+                Your browser does not support the video tag.
               </video>
             </div>
           </div>
