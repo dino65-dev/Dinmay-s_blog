@@ -25,6 +25,7 @@ async def get_all_posts():
 async def search_posts(
     q: Optional[str] = Query(None, description="Search query for title and content"),
     content_type: Optional[str] = Query(None, description="Filter by content type (markdown/html)"),
+    tag: Optional[str] = Query(None, description="Filter by tag"),
     start_date: Optional[str] = Query(None, description="Filter posts from this date (YYYY-MM-DD)"),
     end_date: Optional[str] = Query(None, description="Filter posts until this date (YYYY-MM-DD)"),
     sort_by: Optional[str] = Query("date", description="Sort by: date, title"),
@@ -36,17 +37,22 @@ async def search_posts(
     # Build query filter
     query_filter = {}
     
-    # Text search in title and content
+    # Text search in title, content, and tags
     if q:
         query_filter["$or"] = [
             {"title": {"$regex": q, "$options": "i"}},
             {"content": {"$regex": q, "$options": "i"}},
-            {"excerpt": {"$regex": q, "$options": "i"}}
+            {"excerpt": {"$regex": q, "$options": "i"}},
+            {"tags": {"$regex": q, "$options": "i"}}
         ]
     
     # Filter by content type
     if content_type and content_type in ["markdown", "html"]:
         query_filter["contentType"] = content_type
+    
+    # Filter by tag
+    if tag:
+        query_filter["tags"] = {"$regex": tag, "$options": "i"}
     
     # Date range filter
     date_filter = {}
@@ -75,6 +81,17 @@ async def search_posts(
     # Execute query
     posts = await posts_collection.find(query_filter).sort(sort_field, sort_order).to_list(1000)
     return [BlogPost(**post) for post in posts]
+
+@router.get("/tags", response_model=List[str])
+async def get_all_tags():
+    """Get all unique tags from all posts"""
+    posts_collection = get_posts_collection()
+    posts = await posts_collection.find({}, {"tags": 1}).to_list(1000)
+    all_tags = set()
+    for post in posts:
+        if post.get("tags"):
+            all_tags.update(post["tags"])
+    return sorted(list(all_tags))
 
 @router.get("/posts/{slug}")
 async def get_post_by_slug(slug: str):
