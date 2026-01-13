@@ -104,32 +104,65 @@ const AllPostsPage = () => {
             <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Archive</span>
           </div>
           
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 sm:gap-6 mb-8 sm:mb-12">
-            <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500">
-                All Posts
-              </h1>
-              <p className="mt-2 sm:mt-3 text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                {posts.length} {posts.length === 1 ? 'article' : 'articles'} and counting
-              </p>
+          <div className="flex flex-col gap-4 sm:gap-6 mb-8 sm:mb-12">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500">
+                  All Posts
+                </h1>
+                <p className="mt-2 sm:mt-3 text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+                  {filteredPosts.length} of {posts.length} {posts.length === 1 ? 'article' : 'articles'}
+                  {selectedTag && <span className="text-amber-500"> • filtered by "{selectedTag}"</span>}
+                </p>
+              </div>
+              
+              {/* Content Type Filter Pills */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                {['all', 'markdown', 'html'].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
+                      filter === f
+                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
-            
-            {/* Filter Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2">
-              {['all', 'markdown', 'html'].map((f) => (
+
+            {/* Tags Filter Section */}
+            {availableTags.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm text-gray-500 dark:text-gray-400 mr-1">Tags:</span>
                 <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                    filter === f
-                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
-                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  onClick={() => setSelectedTag(null)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
+                    !selectedTag
+                      ? 'bg-amber-500 text-white'
+                      : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50'
                   }`}
                 >
-                  {f.charAt(0).toUpperCase() + f.slice(1)}
+                  All Tags
                 </button>
-              ))}
-            </div>
+                {availableTags.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
+                      selectedTag === tag
+                        ? 'bg-amber-500 text-white'
+                        : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50'
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Posts Grid */}
