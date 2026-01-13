@@ -42,6 +42,7 @@ function App() {
               </Routes>
             </Suspense>
           </BrowserRouter>
+          </SiteSettingsProvider>
         </AuthProvider>
         <Toaster />
       </ThemeProvider>
