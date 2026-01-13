@@ -51,6 +51,31 @@ const AdminPage = () => {
   // Available tags suggestions
   const [availableTags, setAvailableTags] = useState([]);
 
+  // Posts Management State
+  const [allPosts, setAllPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
+
+  // About Page State
+  const [aboutContent, setAboutContent] = useState('');
+  const [loadingAbout, setLoadingAbout] = useState(false);
+  const [savingAbout, setSavingAbout] = useState(false);
+
+  // Site Settings State
+  const [siteSettings, setSiteSettings] = useState({
+    blog_title: "Dinmay's Blog",
+    blog_description: "A personal blog about technology, AI, and more",
+    author_name: "Dinmay",
+    author_bio: "",
+    author_avatar: "",
+    social_twitter: "",
+    social_github: "",
+    social_linkedin: "",
+    footer_text: "© 2025 Dinmay's Blog. All Rights Reserved"
+  });
+  const [loadingSettings, setLoadingSettings] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
