@@ -91,6 +91,7 @@ api_router.include_router(comments.router, tags=["comments"])
 api_router.include_router(github.router, tags=["github"])
 api_router.include_router(upload.router, tags=["upload"])
 api_router.include_router(contact.router, tags=["contact"])
+api_router.include_router(site_settings.router, tags=["settings"])
 
 # Include the router in the main app
 app.include_router(api_router)
