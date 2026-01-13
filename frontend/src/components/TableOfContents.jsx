@@ -104,9 +104,9 @@ const TableOfContents = ({ content }) => {
       </div>
       
       <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
-        isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+        isOpen ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'
       }`}>
-        <nav className="space-y-1">
+        <nav className="space-y-1 overflow-y-auto max-h-[350px] pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
           {headings.map((heading, index) => (
             <button
               key={heading.id}
