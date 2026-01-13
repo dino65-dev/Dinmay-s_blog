@@ -120,13 +120,13 @@ const BlogPostPage = () => {
         </main>
 
         {/* Floating Bottom Navigation */}
-        <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-          <div className="flex items-center gap-1 px-2 py-2 bg-gray-900/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-full shadow-2xl">
-            <Link to="/" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">Home</Link>
-            <Link to="/all-posts" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">Posts</Link>
-            <Link to="/about" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">About</Link>
-            <Link to="/search" className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors">Search</Link>
-            <Link to="/admin" className="px-5 py-2.5 bg-amber-500 text-white text-sm font-medium rounded-full">Admin</Link>
+        <nav className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] sm:w-auto max-w-lg">
+          <div className="flex items-center justify-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-1.5 sm:py-2 bg-gray-900/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-full shadow-2xl">
+            <Link to="/" className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors">Home</Link>
+            <Link to="/all-posts" className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors">Posts</Link>
+            <Link to="/about" className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors">About</Link>
+            <Link to="/search" className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors">Search</Link>
+            <Link to="/admin" className="px-3 sm:px-5 py-2 sm:py-2.5 bg-amber-500 text-white text-xs sm:text-sm font-medium rounded-full">Admin</Link>
           </div>
         </nav>
       </div>
