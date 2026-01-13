@@ -7,25 +7,34 @@ const AllPostsPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [selectedTag, setSelectedTag] = useState(null);
+  const [availableTags, setAvailableTags] = useState([]);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchData = async () => {
       try {
-        const data = await api.getPosts();
-        setPosts(data);
+        const [postsData, tagsData] = await Promise.all([
+          api.getPosts(),
+          api.getAllTags()
+        ]);
+        setPosts(postsData);
+        setAvailableTags(tagsData);
       } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchPosts();
+    fetchData();
   }, []);
 
-  const filteredPosts = filter === 'all' 
-    ? posts 
-    : posts.filter(p => p.contentType === filter);
+  // Filter posts by content type and tag
+  const filteredPosts = posts.filter(p => {
+    const matchesType = filter === 'all' || p.contentType === filter;
+    const matchesTag = !selectedTag || (p.tags && p.tags.includes(selectedTag));
+    return matchesType && matchesTag;
+  });
 
   const cleanExcerpt = (text) => {
     if (!text) return '';
