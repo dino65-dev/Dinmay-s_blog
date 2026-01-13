@@ -80,7 +80,7 @@ const HomePage = () => {
         scrolled ? 'bg-cream/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm' : ''
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             Dinmay's Blog
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -101,7 +101,7 @@ const HomePage = () => {
               )}
             </button>
             {/* Available for work */}
-            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Available for work
             </div>
