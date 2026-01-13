@@ -177,24 +177,25 @@ const HomePage = () => {
             </div>
             
             {/* Right Content - 3D Spiral Video */}
-            <div className="hidden lg:block relative">
+            <div className="hidden lg:block relative -mr-12 xl:-mr-24">
               {/* Gradient overlay for seamless integration */}
               <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode gradient - black to transparent */}
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-gray-950" />
+                {/* Dark mode gradient - stronger black edges for seamless blending */}
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/20 to-gray-950" />
                 <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950 via-transparent to-gray-950" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/80" />
                 {/* Light mode gradient - cream to transparent */}
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-cream via-transparent to-cream" />
               </div>
-              <div className="relative flex items-center justify-center">
+              <div className="relative flex items-center justify-center overflow-hidden">
                 <video
                   autoPlay
                   loop
                   muted
                   playsInline
                   preload="auto"
-                  className="w-full h-auto max-h-[700px] object-contain scale-125"
+                  className="w-full h-auto max-h-[800px] object-contain scale-150 transform"
                   poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                   onCanPlay={(e) => e.target.play()}
                 >
@@ -207,8 +208,11 @@ const HomePage = () => {
             {/* Mobile/Tablet - 3D Spiral Video */}
             <div className="lg:hidden relative mt-8 -mx-4 sm:-mx-6 overflow-hidden">
               <div className="absolute inset-0 z-10 pointer-events-none">
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-gray-950" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950" />
+                {/* Dark mode - stronger gradients for seamless blending */}
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/10 to-gray-950" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/80" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/60 via-transparent to-gray-950" />
+                {/* Light mode */}
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-cream via-transparent to-cream" />
               </div>
@@ -218,7 +222,7 @@ const HomePage = () => {
                 muted
                 playsInline
                 preload="auto"
-                className="w-full h-auto max-h-[400px] object-contain scale-110"
+                className="w-full h-auto max-h-[450px] object-contain scale-125"
                 poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                 onCanPlay={(e) => e.target.play()}
               >
