@@ -75,6 +75,49 @@ const BlogPostPage = () => {
     }
   };
 
+  // Start editing
+  const handleStartEdit = () => {
+    setEditTitle(post.title);
+    setEditContent(post.content);
+    setEditImage(post.featuredImage || '');
+    setEditExcerpt(post.excerpt || '');
+    setIsEditing(true);
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditTitle('');
+    setEditContent('');
+    setEditImage('');
+    setEditExcerpt('');
+  };
+
+  // Save edit
+  const handleSaveEdit = async () => {
+    if (!editTitle.trim() || !editContent.trim()) {
+      toast({ title: "Error", description: "Title and content are required", variant: "destructive" });
+      return;
+    }
+    
+    setSaving(true);
+    try {
+      const updatedPost = await api.updatePost(post.id, {
+        title: editTitle,
+        content: editContent,
+        featuredImage: editImage,
+        excerpt: editExcerpt || editContent.substring(0, 150),
+      });
+      setPost(updatedPost);
+      setIsEditing(false);
+      toast({ title: "Success", description: "Post updated successfully" });
+    } catch (error) {
+      toast({ title: "Error", description: error.message || "Failed to update post", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-cream dark:bg-gray-950 flex items-center justify-center">
