@@ -9,6 +9,9 @@ import Comments from '../components/Comments';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Label } from '../components/ui/label';
 import { useToast } from '../hooks/use-toast';
 
 const BlogPostPage = () => {
@@ -22,6 +25,14 @@ const BlogPostPage = () => {
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [editImage, setEditImage] = useState('');
+  const [editExcerpt, setEditExcerpt] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
