@@ -187,20 +187,35 @@ const BlogPostPage = () => {
     );
   }
 
+  // Determine if we should show overlay header (when there's a featured image and not scrolled)
+  const showOverlayHeader = post.featuredImage && !scrolled;
+
   return (
     <div className="min-h-screen bg-cream dark:bg-gray-950 transition-colors duration-300">
-      {/* Header - with text shadow for dark mode visibility */}
+      {/* Header - Always visible with proper contrast */}
       <header className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-12 py-4 sm:py-6 transition-all duration-300 ${
-        scrolled ? 'bg-cream/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm' : ''
+        scrolled 
+          ? 'bg-cream/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm' 
+          : post.featuredImage 
+            ? 'bg-gradient-to-b from-black/50 to-transparent' 
+            : ''
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <Link to="/" className={`font-script text-lg sm:text-xl md:text-2xl transition-colors ${
+            showOverlayHeader 
+              ? 'text-white hover:text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]' 
+              : 'text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400'
+          }`}>
             Dinmay's Blog
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all shadow-sm"
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full backdrop-blur-sm flex items-center justify-center transition-all shadow-sm ${
+                showOverlayHeader 
+                  ? 'bg-white/20 hover:bg-white/30' 
+                  : 'bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700'
+              }`}
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
@@ -208,12 +223,16 @@ const BlogPostPage = () => {
                   <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-4 h-4 sm:w-5 sm:h-5 ${showOverlayHeader ? 'text-white' : 'text-gray-700'}`} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               )}
             </button>
-            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div className={`hidden md:flex items-center gap-2 text-sm ${
+              showOverlayHeader 
+                ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]' 
+                : 'text-gray-700 dark:text-gray-300'
+            }`}>
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Available for work
             </div>
