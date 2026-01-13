@@ -8,6 +8,7 @@ const AboutPage = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [blogTags, setBlogTags] = useState([]);
   const { theme, toggleTheme } = useTheme();
 
   const GITHUB_USERNAME = 'dino65-dev';
@@ -25,6 +26,19 @@ const AboutPage = () => {
       }
     };
     fetchGitHubProfile();
+  }, []);
+
+  // Fetch blog tags
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tags = await api.getAllTags();
+        setBlogTags(tags);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+      }
+    };
+    fetchTags();
   }, []);
 
   if (loading) {
