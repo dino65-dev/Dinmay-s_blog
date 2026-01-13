@@ -121,10 +121,10 @@ const AboutPage = () => {
                     description: 'To create, share knowledge, and contribute to the developer community.'
                   }
                 ].map((item, i) => (
-                  <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div className="text-4xl mb-4">{item.icon}</div>
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
+                  <div key={i} className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">{item.icon}</div>
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-sm sm:text-base">{item.title}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
                   </div>
                 ))}
               </div>
