@@ -29,6 +29,7 @@ function App() {
     <div className="App">
       <ThemeProvider>
         <AuthProvider>
+          <SiteSettingsProvider>
           <BrowserRouter>
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
