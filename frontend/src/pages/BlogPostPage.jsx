@@ -195,7 +195,7 @@ const BlogPostPage = () => {
       {/* Header - Always visible with proper contrast */}
       <header className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-12 py-4 sm:py-6 transition-all duration-300 ${
         scrolled 
-          ? 'bg-cream/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm' 
+          ? 'bg-[#F5F3EF]/95 dark:bg-[#030712]/95 backdrop-blur-md shadow-sm dark:shadow-gray-900/50' 
           : post.featuredImage 
             ? 'bg-gradient-to-b from-black/50 to-transparent' 
             : ''
@@ -204,7 +204,7 @@ const BlogPostPage = () => {
           <Link to="/" className={`font-script text-lg sm:text-xl md:text-2xl transition-colors ${
             showOverlayHeader 
               ? 'text-white hover:text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]' 
-              : 'text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400'
+              : 'text-gray-800 dark:text-gray-100 hover:text-amber-600 dark:hover:text-amber-400'
           }`}>
             Dinmay's Blog
           </Link>
