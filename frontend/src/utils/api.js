@@ -262,6 +262,21 @@ export const api = {
     });
     return response.data;
   },
+
+  // Site Settings API
+  // Get site settings (public)
+  getSiteSettings: async () => {
+    const response = await axiosInstance.get('/settings');
+    return response.data;
+  },
+
+  // Update site settings (requires auth)
+  updateSiteSettings: async (settingsData) => {
+    const response = await axiosInstance.put('/settings', settingsData, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
 };
 
 export default api;
