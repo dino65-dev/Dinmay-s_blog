@@ -83,7 +83,7 @@ const HomePage = () => {
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-            Dinmay's Blog
+            {settings.blog_title}
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Theme Toggle */}
