@@ -223,6 +223,45 @@ export const api = {
     const response = await axiosInstance.get('/health');
     return response.data;
   },
+
+  // Contact Messages API
+  // Submit a contact message (public)
+  submitContactMessage: async (messageData) => {
+    const response = await axiosInstance.post('/contact', messageData);
+    return response.data;
+  },
+
+  // Get all contact messages (requires auth)
+  getContactMessages: async () => {
+    const response = await axiosInstance.get('/contact/messages', {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  // Mark message as read (requires auth)
+  markMessageRead: async (messageId) => {
+    const response = await axiosInstance.put(`/contact/messages/${messageId}/read`, {}, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  // Delete a contact message (requires auth)
+  deleteContactMessage: async (messageId) => {
+    const response = await axiosInstance.delete(`/contact/messages/${messageId}`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  // Get unread messages count (requires auth)
+  getUnreadCount: async () => {
+    const response = await axiosInstance.get('/contact/unread-count', {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
 };
 
 export default api;
