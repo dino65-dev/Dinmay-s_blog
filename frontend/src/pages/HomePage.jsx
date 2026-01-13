@@ -164,7 +164,7 @@ const HomePage = () => {
               </div>
               
               <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-lg leading-relaxed">
-                Welcome to my blog, your go-to source for in-depth analysis and clear explanations of technology, coding, and creative writing. Join me in exploring ideas.
+                {settings.blog_description || "Welcome to my blog, your go-to source for in-depth analysis and clear explanations of technology, coding, and creative writing. Join me in exploring ideas."}
               </p>
               
               <Link
