@@ -189,12 +189,12 @@ const BlogPostPage = () => {
 
   return (
     <div className="min-h-screen bg-cream dark:bg-gray-950 transition-colors duration-300">
-      {/* Header */}
+      {/* Header - with text shadow for dark mode visibility */}
       <header className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-12 py-4 sm:py-6 transition-all duration-300 ${
         scrolled ? 'bg-cream/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm' : ''
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             Dinmay's Blog
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -213,13 +213,103 @@ const BlogPostPage = () => {
                 </svg>
               )}
             </button>
-            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Available for work
             </div>
           </div>
         </div>
       </header>
+
+      {/* Edit Mode Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6 md:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Edit Post</h2>
+                <button
+                  onClick={handleCancelEdit}
+                  className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="space-y-4 sm:space-y-6">
+                <div>
+                  <Label htmlFor="edit-title" className="text-gray-700 dark:text-gray-300 mb-2 block text-sm sm:text-base">Title</Label>
+                  <Input
+                    id="edit-title"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder="Post title"
+                    className="rounded-xl"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-image" className="text-gray-700 dark:text-gray-300 mb-2 block text-sm sm:text-base">Featured Image URL</Label>
+                  <Input
+                    id="edit-image"
+                    value={editImage}
+                    onChange={(e) => setEditImage(e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                    className="rounded-xl"
+                  />
+                  {editImage && (
+                    <div className="mt-2 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-xl border overflow-hidden">
+                      <img src={editImage} alt="Preview" className="max-w-full max-h-full object-contain" />
+                    </div>
+                  )}
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-excerpt" className="text-gray-700 dark:text-gray-300 mb-2 block text-sm sm:text-base">Excerpt (optional)</Label>
+                  <Input
+                    id="edit-excerpt"
+                    value={editExcerpt}
+                    onChange={(e) => setEditExcerpt(e.target.value)}
+                    placeholder="Short description"
+                    className="rounded-xl"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-content" className="text-gray-700 dark:text-gray-300 mb-2 block text-sm sm:text-base">Content</Label>
+                  <Textarea
+                    id="edit-content"
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    placeholder="Post content..."
+                    className="rounded-xl font-mono text-sm min-h-[300px]"
+                    rows={15}
+                  />
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button
+                    onClick={handleSaveEdit}
+                    disabled={saving}
+                    className="flex-1 py-5 sm:py-6 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium hover:bg-gray-800 dark:hover:bg-gray-100"
+                  >
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                  <Button
+                    onClick={handleCancelEdit}
+                    variant="outline"
+                    className="py-5 sm:py-6 rounded-full"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section with Featured Image */}
       {post.featuredImage && (
@@ -230,8 +320,8 @@ const BlogPostPage = () => {
             alt={post.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute bottom-0 left-0 right-0 z-20 max-w-4xl mx-auto px-6 md:px-12 pb-8">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
+          <div className="absolute bottom-0 left-0 right-0 z-20 max-w-4xl mx-auto px-4 sm:px-6 md:px-12 pb-6 sm:pb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
               {post.title}
             </h1>
           </div>
@@ -239,12 +329,12 @@ const BlogPostPage = () => {
       )}
 
       {/* Mobile TOC */}
-      <div className="lg:hidden max-w-4xl mx-auto px-6 pt-6">
+      <div className="lg:hidden max-w-4xl mx-auto px-4 sm:px-6 pt-6">
         <TableOfContents content={post.content} />
       </div>
 
-      <main className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
-        <div className="flex gap-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-8 md:py-12">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* Sidebar Left - TOC */}
           <aside className="hidden lg:block w-72 shrink-0">
             <div className="sticky top-24">
@@ -256,17 +346,17 @@ const BlogPostPage = () => {
           <article className="flex-1 min-w-0">
             {/* Post Header (if no featured image) */}
             {!post.featuredImage && (
-              <header className="mb-8 pt-24">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              <header className="mb-6 sm:mb-8 pt-20 sm:pt-24">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
                   {post.title}
                 </h1>
               </header>
             )}
 
             {/* Meta Info */}
-            <div className="flex flex-wrap items-center gap-4 mb-8 pb-8 border-b border-gray-200 dark:border-gray-800">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-amber-400">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-amber-400">
                   <img 
                     src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-11d4c42a" 
                     alt="Avatar" 
@@ -274,44 +364,52 @@ const BlogPostPage = () => {
                   />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white">Dinmay</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{formatDate(post.publishedDate)}</p>
+                  <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Dinmay</p>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{formatDate(post.publishedDate)}</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 ml-auto">
-                <span className="px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium">
+              <div className="flex items-center gap-2 ml-auto flex-wrap">
+                <span className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium">
                   {post.contentType === 'markdown' ? 'Markdown' : 'HTML'}
                 </span>
                 {isAuthenticated && (
-                  <button 
-                    onClick={handleDelete}
-                    disabled={deleting}
-                    className="px-4 py-1.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-medium hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
-                  >
-                    {deleting ? 'Deleting...' : 'Delete'}
-                  </button>
+                  <>
+                    <button 
+                      onClick={handleStartEdit}
+                      className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-medium hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                    >
+                      {deleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </>
                 )}
               </div>
             </div>
 
             {/* Post Content */}
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-amber-600 dark:prose-a:text-amber-400 prose-code:text-amber-600 dark:prose-code:text-amber-400 prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-700">
+            <div className="prose prose-sm sm:prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-amber-600 dark:prose-a:text-amber-400 prose-code:text-amber-600 dark:prose-code:text-amber-400 prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-700 prose-img:rounded-xl">
               <MarkdownRenderer content={post.content} />
             </div>
 
             {/* Social Share */}
-            <div className="mt-12">
+            <div className="mt-8 sm:mt-12">
               <SocialShare title={post.title} url={window.location.href} />
             </div>
 
             {/* Comments */}
-            <div className="mt-12">
+            <div className="mt-8 sm:mt-12">
               <Comments postId={post.id} />
             </div>
 
             {/* Related Posts */}
-            <div className="mt-12">
+            <div className="mt-8 sm:mt-12">
               <RelatedPosts currentPostId={post.id} />
             </div>
           </article>
