@@ -541,20 +541,149 @@ const AdminPage = () => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500">Admin Panel</h1>
           </div>
 
-          <Tabs defaultValue="html" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6 sm:mb-8 bg-gray-100 dark:bg-gray-800 rounded-full p-1 h-auto">
-              <TabsTrigger value="html" className="rounded-full data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs sm:text-sm py-2 sm:py-2.5">HTML</TabsTrigger>
-              <TabsTrigger value="markdown" className="rounded-full data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs sm:text-sm py-2 sm:py-2.5">Markdown</TabsTrigger>
-              <TabsTrigger value="admin" className="rounded-full data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs sm:text-sm py-2 sm:py-2.5">Quick</TabsTrigger>
-              <TabsTrigger value="messages" className="rounded-full data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs sm:text-sm py-2 sm:py-2.5 relative">
-                Messages
+          <Tabs defaultValue="posts" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 sm:grid-cols-8 mb-6 sm:mb-8 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 h-auto gap-1">
+              <TabsTrigger value="posts" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5">Posts</TabsTrigger>
+              <TabsTrigger value="html" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5">HTML</TabsTrigger>
+              <TabsTrigger value="markdown" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5">Markdown</TabsTrigger>
+              <TabsTrigger value="admin" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5">Quick</TabsTrigger>
+              <TabsTrigger value="about" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5">About</TabsTrigger>
+              <TabsTrigger value="settings" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5">Settings</TabsTrigger>
+              <TabsTrigger value="tags" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5">Tags</TabsTrigger>
+              <TabsTrigger value="messages" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs py-2 sm:py-2.5 relative">
+                Msgs
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
                     {unreadCount}
                   </span>
                 )}
               </TabsTrigger>
             </TabsList>
+
+            {/* Posts Management Tab */}
+            <TabsContent value="posts">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">All Posts</h2>
+                  <button
+                    onClick={fetchAllPosts}
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    title="Refresh posts"
+                  >
+                    <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
+                </div>
+
+                {loadingPosts ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="w-8 h-8 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin" />
+                  </div>
+                ) : allPosts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 dark:text-gray-400">No posts yet. Create your first post!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {allPosts.map((post) => (
+                      <div key={post.id} className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl flex flex-col sm:flex-row sm:items-center gap-4">
+                        {post.featuredImage && (
+                          <img src={post.featuredImage} alt="" className="w-full sm:w-20 h-32 sm:h-14 object-cover rounded-lg" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900 dark:text-white truncate">{post.title}</h3>
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {new Date(post.publishedDate).toLocaleDateString()}
+                            </span>
+                            {post.tags && post.tags.slice(0, 3).map((tag, i) => (
+                              <span key={i} className="text-xs px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleEditPost(post)} className="rounded-lg text-xs">
+                            Edit
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDeletePost(post.id)} className="rounded-lg text-xs">
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Edit Post Modal */}
+              {editingPost && (
+                <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                  <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">Edit Post</h3>
+                        <button onClick={() => setEditingPost(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Title</Label>
+                          <Input
+                            value={editingPost.title}
+                            onChange={(e) => setEditingPost({...editingPost, title: e.target.value})}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Featured Image URL</Label>
+                          <Input
+                            value={editingPost.featuredImage || ''}
+                            onChange={(e) => setEditingPost({...editingPost, featuredImage: e.target.value})}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Excerpt</Label>
+                          <Input
+                            value={editingPost.excerpt || ''}
+                            onChange={(e) => setEditingPost({...editingPost, excerpt: e.target.value})}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Tags (comma separated)</Label>
+                          <Input
+                            value={editingPost.tags?.join(', ') || ''}
+                            onChange={(e) => setEditingPost({...editingPost, tags: e.target.value.split(',').map(t => t.trim().toLowerCase()).filter(Boolean)})}
+                            placeholder="ai, ml, python"
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Content</Label>
+                          <Textarea
+                            value={editingPost.content}
+                            onChange={(e) => setEditingPost({...editingPost, content: e.target.value})}
+                            className="rounded-xl font-mono text-sm min-h-[200px]"
+                            rows={10}
+                          />
+                        </div>
+                        <div className="flex gap-3 pt-4">
+                          <Button onClick={handleUpdatePost} className="flex-1 rounded-full">Save Changes</Button>
+                          <Button variant="outline" onClick={() => setEditingPost(null)} className="rounded-full">Cancel</Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </TabsContent>
 
             <TabsContent value="html">
               <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
