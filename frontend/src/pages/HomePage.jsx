@@ -121,12 +121,12 @@ const HomePage = () => {
                 <span className="text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white">Hey,</span>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-amber-400">
                   <img 
-                    src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-11d4c42a" 
+                    src={settings.author_avatar} 
                     alt="Avatar" 
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="font-script text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white">Dinmay</span>
+                <span className="font-script text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white">{settings.author_name}</span>
               </div>
               
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
