@@ -177,16 +177,17 @@ const HomePage = () => {
             </div>
             
             {/* Right Content - 3D Spiral Video */}
-            <div className="hidden lg:block relative -mr-12 xl:-mr-24">
-              {/* Gradient overlay for seamless integration */}
+            <div className="hidden lg:block relative -mr-12 xl:-mr-24 overflow-hidden">
+              {/* Gradient overlay for seamless integration - enhanced for better blending */}
               <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode gradient - stronger black edges for seamless blending */}
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/20 to-gray-950" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950 via-transparent to-gray-950" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/80" />
-                {/* Light mode gradient - cream to transparent */}
+                {/* Dark mode gradient - radial gradient from transparent center to black edges */}
+                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(3,7,18,0.6)_50%,rgba(3,7,18,0.95)_75%,rgb(3,7,18)_100%)]" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-gray-950" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/80 via-transparent to-gray-950" />
+                {/* Light mode gradient - cream to transparent for seamless blending */}
+                <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(245,243,239,0.5)_60%,rgba(245,243,239,0.9)_80%,rgb(245,243,239)_100%)]" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
-                <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-cream via-transparent to-cream" />
+                <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-cream/60 via-transparent to-cream" />
               </div>
               <div className="relative flex items-center justify-center overflow-hidden">
                 <video
@@ -195,7 +196,7 @@ const HomePage = () => {
                   muted
                   playsInline
                   preload="auto"
-                  className="w-full h-auto max-h-[800px] object-contain scale-150 transform"
+                  className="w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
                   poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                   onCanPlay={(e) => e.target.play()}
                 >
@@ -208,11 +209,12 @@ const HomePage = () => {
             {/* Mobile/Tablet - 3D Spiral Video */}
             <div className="lg:hidden relative mt-8 -mx-4 sm:-mx-6 overflow-hidden">
               <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode - stronger gradients for seamless blending */}
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/10 to-gray-950" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/80" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/60 via-transparent to-gray-950" />
+                {/* Dark mode - radial gradient for seamless center blending */}
+                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(3,7,18,0.7)_45%,rgba(3,7,18,0.95)_70%,rgb(3,7,18)_100%)]" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-gray-950" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/90" />
                 {/* Light mode */}
+                <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(245,243,239,0.6)_55%,rgba(245,243,239,0.95)_80%,rgb(245,243,239)_100%)]" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-cream via-transparent to-cream" />
               </div>
@@ -222,7 +224,7 @@ const HomePage = () => {
                 muted
                 playsInline
                 preload="auto"
-                className="w-full h-auto max-h-[450px] object-contain scale-125"
+                className="w-full h-auto max-h-[450px] object-contain scale-[1.6]"
                 poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                 onCanPlay={(e) => e.target.play()}
               >
