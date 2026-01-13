@@ -137,7 +137,7 @@ const BlogPostPage = () => {
         }`}>
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-gray-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
-              Dinmay's Blog
+              {settings.blog_title}
             </Link>
             <button
               onClick={toggleTheme}
