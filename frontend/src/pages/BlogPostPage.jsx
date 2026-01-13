@@ -379,13 +379,13 @@ const BlogPostPage = () => {
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-amber-400">
                   <img 
-                    src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-11d4c42a" 
+                    src={settings.author_avatar} 
                     alt="Avatar" 
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Dinmay</p>
+                  <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">{settings.author_name}</p>
                   <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{formatDate(post.publishedDate)}</p>
                 </div>
               </div>
