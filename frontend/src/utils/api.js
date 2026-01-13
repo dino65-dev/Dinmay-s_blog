@@ -47,12 +47,19 @@ export const api = {
     const params = new URLSearchParams();
     if (filters.q) params.append('q', filters.q);
     if (filters.contentType) params.append('content_type', filters.contentType);
+    if (filters.tag) params.append('tag', filters.tag);
     if (filters.startDate) params.append('start_date', filters.startDate);
     if (filters.endDate) params.append('end_date', filters.endDate);
     if (filters.sortBy) params.append('sort_by', filters.sortBy);
     if (filters.order) params.append('order', filters.order);
     
     const response = await axiosInstance.get(`/search/posts?${params.toString()}`);
+    return response.data;
+  },
+
+  // Get all unique tags
+  getAllTags: async () => {
+    const response = await axiosInstance.get('/tags');
     return response.data;
   },
 
