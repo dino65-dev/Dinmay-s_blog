@@ -98,12 +98,12 @@ const AboutPage = () => {
           ) : (
             <>
               {/* Profile Card */}
-              <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-xl mb-12">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl mb-8 sm:mb-12">
                 <GitHubProfile profile={profile} />
               </div>
 
               {/* Additional Info */}
-              <div className="grid gap-6 md:grid-cols-3">
+              <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {[
                   {
                     icon: '💻',
