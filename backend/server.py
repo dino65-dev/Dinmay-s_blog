@@ -9,7 +9,7 @@ from pathlib import Path
 import time
 
 # Import routes
-from routes import blog_posts, auth, about, comments, github, upload, contact
+from routes import blog_posts, auth, about, comments, github, upload, contact, site_settings
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
