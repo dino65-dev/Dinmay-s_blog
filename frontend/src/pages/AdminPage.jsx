@@ -88,6 +88,9 @@ const AdminPage = () => {
     if (isAuthenticated) {
       fetchMessages();
       fetchAvailableTags();
+      fetchAllPosts();
+      fetchAboutContent();
+      fetchSiteSettings();
     }
   }, [isAuthenticated]);
 
