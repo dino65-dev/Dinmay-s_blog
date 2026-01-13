@@ -21,6 +21,7 @@ const BlogPostPage = () => {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const { theme, toggleTheme } = useTheme();
+  const { settings } = useSiteSettings();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
