@@ -71,16 +71,16 @@ const AboutPage = () => {
       <main className="pt-24 sm:pt-32 pb-24 sm:pb-32 px-4 sm:px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 sm:mb-12">
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="w-3 h-3 rounded-full bg-amber-400" />
-              <span className="text-gray-600 dark:text-gray-400">Live from GitHub</span>
+              <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Live from GitHub</span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-semibold text-amber-500 mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500 mb-4">
               About Me
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
               Developer, creator, and lifelong learner. Here's my story.
             </p>
           </div>
