@@ -103,9 +103,27 @@ const HomePage = () => {
                 <span className="font-script text-3xl md:text-4xl text-gray-800 dark:text-white">Dinmay</span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-900 dark:text-white leading-tight">
-                Blog Writer &<br />Content Creator
-              </h1>
+              <div className="flex items-center gap-4">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-900 dark:text-white leading-tight">
+                  Blog Writer &<br />Content Creator
+                </h1>
+                <div className="hidden md:flex items-center gap-2 self-start mt-2">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <img 
+                      src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-934b45fb" 
+                      alt="Work sample 1" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <img 
+                      src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-2cceee45" 
+                      alt="Work sample 2" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
               
               <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                 <span>Based in</span>
