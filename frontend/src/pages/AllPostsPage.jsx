@@ -175,6 +175,14 @@ const AllPostsPage = () => {
               </div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No posts found</h2>
               <p className="text-gray-600 dark:text-gray-400">Try adjusting your filter or check back later.</p>
+              {selectedTag && (
+                <button
+                  onClick={() => setSelectedTag(null)}
+                  className="mt-4 px-4 py-2 bg-amber-500 text-white rounded-full text-sm hover:bg-amber-600 transition-colors"
+                >
+                  Clear tag filter
+                </button>
+              )}
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -200,14 +208,28 @@ const AllPostsPage = () => {
                     )}
                   </div>
                   <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
                       <span className="text-xs text-gray-500 dark:text-gray-400">
                         {formatDate(post.publishedDate)}
                       </span>
-                      <span className="w-1 h-1 rounded-full bg-gray-400" />
-                      <span className="text-xs text-amber-500 font-medium">
-                        {post.contentType === 'markdown' ? 'Markdown' : 'HTML'}
-                      </span>
+                      {post.tags && post.tags.length > 0 && (
+                        <>
+                          <span className="w-1 h-1 rounded-full bg-gray-400" />
+                          <div className="flex gap-1 flex-wrap">
+                            {post.tags.slice(0, 3).map((tag, i) => (
+                              <span 
+                                key={i} 
+                                className="text-xs px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            {post.tags.length > 3 && (
+                              <span className="text-xs text-gray-500 dark:text-gray-400">+{post.tags.length - 3}</span>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-amber-500 transition-colors line-clamp-2 mb-2">
                       {post.title}
