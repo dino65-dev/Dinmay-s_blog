@@ -142,6 +142,32 @@ const AboutPage = () => {
                   </div>
                 ))}
               </div>
+
+              {/* Blog Topics/Tags Section */}
+              {blogTags.length > 0 && (
+                <div className="mt-8 sm:mt-12">
+                  <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8">
+                    <div className="flex items-center gap-2 mb-4 sm:mb-6">
+                      <span className="w-3 h-3 rounded-full bg-amber-400" />
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Topics I Write About</h2>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                      Explore my blog posts by topic. Click on any tag to find related articles.
+                    </p>
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
+                      {blogTags.map((tag, index) => (
+                        <Link
+                          key={index}
+                          to={`/search?tag=${encodeURIComponent(tag)}`}
+                          className="px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-400 rounded-full text-sm sm:text-base font-medium hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/50 dark:hover:to-orange-900/50 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+                        >
+                          #{tag}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
