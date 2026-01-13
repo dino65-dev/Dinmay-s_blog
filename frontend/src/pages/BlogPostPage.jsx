@@ -208,7 +208,7 @@ const BlogPostPage = () => {
               ? 'text-white hover:text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]' 
               : 'text-gray-800 dark:text-gray-100 hover:text-amber-600 dark:hover:text-amber-400'
           }`}>
-            Dinmay's Blog
+            {settings.blog_title}
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <button
