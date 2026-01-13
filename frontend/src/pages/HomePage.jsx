@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../components/Header';
-import BlogPostCard from '../components/BlogPostCard';
-import api from '../utils/api';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated } = useAuth();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    email: '',
+    website: '',
+    date: '',
+    message: ''
+  });
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -22,175 +31,488 @@ const HomePage = () => {
     fetchPosts();
   }, []);
 
-  const featuredPost = posts[0];
-  const recentPosts = posts.slice(1, 5);
+  const featuredPosts = posts.slice(0, 3);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    // Add your form submission logic here
+  };
 
   if (loading) {
     return (
-      <div className="min-h-screen mesh-gradient transition-colors">
-        <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col items-center justify-center min-h-[60vh]">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-full border-4 border-indigo-200 dark:border-indigo-800 border-t-indigo-600 dark:border-t-indigo-400 animate-spin" />
-              <div className="absolute inset-0 w-16 h-16 rounded-full bg-indigo-500/20 blur-xl animate-pulse" />
-            </div>
-            <p className="mt-6 text-gray-600 dark:text-gray-400 font-medium">Loading amazing content...</p>
-          </div>
-        </main>
+      <div className="min-h-screen bg-cream dark:bg-gray-950 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen mesh-gradient transition-colors">
-      <Header />
-      
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-sm font-medium mb-6 animate-fade-in">
-              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-              Welcome to my corner of the internet
+    <div className="min-h-screen bg-cream dark:bg-gray-950 transition-colors duration-300">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link to="/" className="font-script text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+            Dinmay's Blog
+          </Link>
+          <div className="flex items-center gap-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all shadow-sm"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+            {/* Available for work */}
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              Available for work
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-display mb-6" style={{ animationDelay: '0.1s' }}>
-              <span className="gradient-text">Ideas</span>
-              <span className="text-gray-900 dark:text-white">, </span>
-              <span className="gradient-text">Stories</span>
-              <span className="text-gray-900 dark:text-white"> & </span>
-              <br className="hidden sm:block" />
-              <span className="gradient-text">Code</span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8" style={{ animationDelay: '0.2s' }}>
-              Exploring the intersection of technology, creativity, and human experience through thoughtful writing.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4" style={{ animationDelay: '0.3s' }}>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center pt-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl md:text-4xl text-gray-800 dark:text-white">Hey,</span>
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-400">
+                  <img 
+                    src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-11d4c42a" 
+                    alt="Avatar" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="font-script text-3xl md:text-4xl text-gray-800 dark:text-white">Dinmay</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-900 dark:text-white leading-tight">
+                Blog Writer &<br />Content Creator
+              </h1>
+              
+              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <span>Based in</span>
+                <div className="w-8 h-8 rounded-full overflow-hidden">
+                  <img 
+                    src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-fc2aae2c" 
+                    alt="Globe" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-2xl md:text-3xl text-gray-800 dark:text-white">Global</span>
+              </div>
+              
+              <p className="text-gray-600 dark:text-gray-400 text-lg max-w-lg leading-relaxed">
+                Welcome to my blog, your go-to source for in-depth analysis and clear explanations of technology, coding, and creative writing. Join me in exploring ideas.
+              </p>
+              
               <Link
                 to="/all-posts"
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all duration-300 hover:scale-105"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors group"
               >
-                Explore All Posts
+                Explore Insights
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </Link>
+            </div>
+            
+            {/* Right Content - 3D Spiral Video */}
+            <div className="hidden lg:block relative">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-auto max-h-[600px] object-contain"
+              >
+                <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Section */}
+      <section className="py-20 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-3 h-3 rounded-full bg-amber-400" />
+            <span className="text-gray-600 dark:text-gray-400">Featured</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-semibold text-amber-500 mb-12">
+            Latest Blog Posts
+          </h2>
+          
+          {posts.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-gray-500 dark:text-gray-400 text-lg">No posts yet. Be the first to create one!</p>
+              <Link to="/admin" className="inline-flex items-center gap-2 mt-4 text-amber-500 hover:text-amber-600">
+                Create First Post
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredPosts.map((post, index) => (
+                  <Link
+                    key={post.id}
+                    to={`/post/${post.slug}`}
+                    className="group block bg-gray-100 dark:bg-gray-900 rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  >
+                    <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-800">
+                      {post.featuredImage ? (
+                        <img
+                          src={post.featuredImage}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6 flex items-center justify-between">
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-amber-500 transition-colors line-clamp-1">
+                        {post.title}
+                      </h3>
+                      <svg className="w-6 h-6 text-gray-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              
+              <div className="mt-8">
+                <Link
+                  to="/all-posts"
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  See All
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Skills Section */}
+      <section className="py-20 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-3 h-3 rounded-full bg-amber-400" />
+            <span className="text-gray-600 dark:text-gray-400">My Skills and</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-semibold text-amber-500 mb-12">
+            Expertise
+          </h2>
+          
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="relative rounded-3xl overflow-hidden bg-gray-100 dark:bg-gray-900">
+              <img
+                src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-27504a48"
+                alt="Skills"
+                className="w-full h-auto"
+              />
+              <div className="absolute bottom-6 left-6">
+                <div className="w-16 h-16 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center">
+                  <img
+                    src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-9b141fed"
+                    alt="Icon"
+                    className="w-10 h-10 object-contain"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-8">
+              <div className="flex flex-wrap gap-3">
+                {['Blog Writing', 'Content Creation', 'Technical Writing', 'Storytelling'].map((skill) => (
+                  <span
+                    key={skill}
+                    className="px-5 py-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-800 dark:text-gray-200 font-medium shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+              
+              <p className="font-script text-2xl md:text-3xl text-gray-700 dark:text-gray-300 leading-relaxed">
+                My journey in writing and content creation has equipped me with a unique blend of analytical and communication skills.
+              </p>
+              
               <Link
                 to="/about"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:border-indigo-500 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors group"
               >
-                About Me
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                View Insights
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </Link>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-16">
+      {/* Content Offerings Section */}
+      <section className="py-20 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-3 h-3 rounded-full bg-amber-400" />
+            <span className="text-gray-600 dark:text-gray-400">Content</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-semibold text-amber-500 mb-12">
+            Offerings
+          </h2>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { value: posts.length, label: 'Posts' },
-              { value: '1K+', label: 'Readers' },
-              { value: '☕', label: 'Coffees' },
-            ].map((stat, i) => (
-              <div key={i} className="text-center p-4 rounded-2xl glass">
-                <div className="text-2xl md:text-3xl font-bold gradient-text font-display">{stat.value}</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</div>
+              { title: 'Blog Posts', icon: '📝' },
+              { title: 'Technical Guides', icon: '📚' },
+              { title: 'Tutorials', icon: '🎓' },
+              { title: 'Code Reviews', icon: '💻' },
+              { title: 'Custom Content', icon: '✨' },
+              { title: 'Education', icon: '🎯' },
+              { title: 'Visualization', icon: '📊' },
+              { title: 'Consulting', icon: '💡' },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="group p-6 bg-white dark:bg-gray-900 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{item.icon}</span>
+                  <span className="text-gray-800 dark:text-gray-200 font-medium group-hover:text-amber-500 transition-colors">
+                    {item.title}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
       </section>
 
-      {/* Posts Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        {posts.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2.5 2.5 0 00-2.5-2.5H15" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No posts yet</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">Be the first to create amazing content!</p>
-            <Link
-              to="/admin"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Create First Post
-            </Link>
+      {/* FAQ Section */}
+      <section className="py-20 px-6 md:px-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-3 h-3 rounded-full bg-amber-400" />
+            <span className="text-gray-600 dark:text-gray-400">FAQ's</span>
           </div>
-        ) : (
-          <>
-            {/* Featured Post */}
-            {featuredPost && (
-              <section className="mb-16">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-1 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600" />
-                  <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Featured</h2>
+          
+          <h2 className="text-4xl md:text-5xl font-semibold text-amber-500 mb-12">
+            FAQ's
+          </h2>
+          
+          <div className="space-y-4">
+            {[
+              { q: 'What topics do you write about?', a: 'I cover technology, coding, AI, web development, and creative writing.' },
+              { q: 'How often do you publish new posts?', a: 'I aim to publish new content weekly, focusing on quality and relevance.' },
+              { q: 'Is the content free?', a: 'Yes, all content on this blog is freely accessible to everyone.' },
+              { q: 'Can I request a specific topic?', a: 'Yes, feel free to suggest topics. I prioritize based on relevance and community interest.' },
+            ].map((faq, index) => (
+              <details
+                key={index}
+                className="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden"
+              >
+                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                  <span className="font-medium text-gray-900 dark:text-white">{faq.q}</span>
+                  <svg className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <div className="px-6 pb-6 text-gray-600 dark:text-gray-400">
+                  {faq.a}
                 </div>
-                <BlogPostCard post={featuredPost} featured={true} />
-              </section>
-            )}
+              </details>
+            ))}
+          </div>
+          
+          <p className="mt-8 text-center text-gray-600 dark:text-gray-400">
+            Still have questions? Feel free to get in touch today!
+          </p>
+        </div>
+      </section>
 
-            {/* Recent Posts Grid */}
-            {recentPosts.length > 0 && (
-              <section>
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-1 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500" />
-                    <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Recent Posts</h2>
-                  </div>
-                  <Link
-                    to="/all-posts"
-                    className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 transition-colors"
-                  >
-                    View all
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-                <div className="grid gap-6 md:grid-cols-2">
-                  {recentPosts.map((post, index) => (
-                    <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                      <BlogPostCard post={post} />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* CTA Section */}
-            <section className="mt-24">
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-8 md:p-12">
-                <div className="relative z-10 text-center">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-display">Want to create your own posts?</h2>
-                  <p className="text-white/80 mb-6 max-w-md mx-auto">Access the admin panel to start writing and sharing your thoughts with the world.</p>
-                  <Link
-                    to="/admin"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-indigo-600 font-medium hover:bg-gray-100 transition-colors"
-                  >
-                    Go to Admin
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </Link>
-                </div>
-                {/* Decorative shapes */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
+      {/* Contact Section */}
+      <section className="py-20 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-3 h-3 rounded-full bg-amber-400" />
+                <span className="text-gray-600 dark:text-gray-400">Get in touch today</span>
               </div>
-            </section>
-          </>
-        )}
-      </main>
+              
+              <h2 className="text-4xl md:text-5xl font-semibold text-amber-500 mb-8">
+                Contact
+              </h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">First Name</label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-gray-900 dark:text-white"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-gray-900 dark:text-white"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Website</label>
+                    <input
+                      type="url"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-gray-900 dark:text-white"
+                      placeholder="https://yoursite.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Preferred Date</label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-4">
+                  <button
+                    type="submit"
+                    className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+                  >
+                    Message me
+                  </button>
+                  <button
+                    type="button"
+                    className="px-8 py-4 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    Prefer to book a call
+                  </button>
+                </div>
+              </form>
+            </div>
+            
+            <div className="flex flex-col justify-center">
+              <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 space-y-6">
+                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  Dinmay's Blog
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 font-script text-lg">
+                  Sharing ideas, one post at a time.
+                </p>
+                <p className="text-gray-500 dark:text-gray-500">
+                  info@dinmaysblog.com
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 md:px-12 border-t border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-gray-500 dark:text-gray-500 text-sm">
+            © 2025 Dinmay's Blog. All Rights Reserved
+          </p>
+          <nav className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+            <Link to="/" className="hover:text-amber-500 transition-colors">Home</Link>
+            <Link to="/all-posts" className="hover:text-amber-500 transition-colors">Posts</Link>
+            <Link to="/about" className="hover:text-amber-500 transition-colors">About</Link>
+            <Link to="/admin" className="hover:text-amber-500 transition-colors">Admin</Link>
+          </nav>
+        </div>
+      </footer>
+
+      {/* Floating Bottom Navigation */}
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-center gap-1 px-2 py-2 bg-gray-900/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-full shadow-2xl">
+          <Link
+            to="/"
+            className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
+          >
+            Home
+          </Link>
+          <Link
+            to="/all-posts"
+            className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
+          >
+            Posts
+          </Link>
+          <Link
+            to="/about"
+            className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
+          >
+            About
+          </Link>
+          <Link
+            to="/search"
+            className="px-5 py-2.5 text-white text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
+          >
+            Search
+          </Link>
+          <Link
+            to="/admin"
+            className="px-5 py-2.5 bg-amber-500 text-white text-sm font-medium rounded-full hover:bg-amber-600 transition-colors"
+          >
+            Admin
+          </Link>
+        </div>
+      </nav>
     </div>
   );
 };
