@@ -63,9 +63,9 @@ const AllPostsPage = () => {
   return (
     <div className="min-h-screen bg-cream dark:bg-gray-950 transition-colors duration-300">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-12 py-4 sm:py-6">
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-12 py-4 sm:py-6 bg-[#F5F3EF]/90 dark:bg-[#030712]/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-gray-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
             Dinmay's Blog
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -84,7 +84,7 @@ const AllPostsPage = () => {
                 </svg>
               )}
             </button>
-            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Available for work
             </div>
@@ -112,54 +112,38 @@ const AllPostsPage = () => {
                   {selectedTag && <span className="text-amber-500"> • filtered by "{selectedTag}"</span>}
                 </p>
               </div>
-              
-              {/* Content Type Filter Pills */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-2">
-                {['all', 'markdown', 'html'].map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setFilter(f)}
-                    className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                      filter === f
-                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
-                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                  >
-                    {f.charAt(0).toUpperCase() + f.slice(1)}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Tags Filter Section */}
-            {availableTags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm text-gray-500 dark:text-gray-400 mr-1">Tags:</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm text-gray-500 dark:text-gray-400 mr-1">Filter by Tags:</span>
+              <button
+                onClick={() => setSelectedTag(null)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
+                  !selectedTag
+                    ? 'bg-amber-500 text-white'
+                    : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50'
+                }`}
+              >
+                All
+              </button>
+              {availableTags.map((tag) => (
                 <button
-                  onClick={() => setSelectedTag(null)}
+                  key={tag}
+                  onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
-                    !selectedTag
+                    selectedTag === tag
                       ? 'bg-amber-500 text-white'
                       : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50'
                   }`}
                 >
-                  All Tags
+                  {tag}
                 </button>
-                {availableTags.map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
-                      selectedTag === tag
-                        ? 'bg-amber-500 text-white'
-                        : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50'
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            )}
+              ))}
+              {availableTags.length === 0 && (
+                <span className="text-xs text-gray-400 dark:text-gray-500 italic">No tags yet - add tags when creating posts</span>
+              )}
+            </div>
           </div>
 
           {/* Posts Grid */}
