@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 import uuid
 
@@ -10,6 +10,7 @@ class BlogPostBase(BaseModel):
     excerpt: Optional[str] = ""
     featuredImage: Optional[str] = ""
     contentType: str = "markdown"
+    tags: Optional[List[str]] = []
 
 class BlogPostCreate(BlogPostBase):
     pass
@@ -21,6 +22,7 @@ class BlogPostUpdate(BaseModel):
     excerpt: Optional[str] = None
     featuredImage: Optional[str] = None
     contentType: Optional[str] = None
+    tags: Optional[List[str]] = None
 
 class BlogPost(BlogPostBase):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
