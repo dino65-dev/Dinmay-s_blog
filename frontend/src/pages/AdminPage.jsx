@@ -117,6 +117,103 @@ const AdminPage = () => {
     }
   };
 
+  const fetchAllPosts = async () => {
+    setLoadingPosts(true);
+    try {
+      const posts = await api.getPosts();
+      setAllPosts(posts);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+
+  const fetchAboutContent = async () => {
+    setLoadingAbout(true);
+    try {
+      const data = await api.getAbout();
+      setAboutContent(data.content || '');
+    } catch (error) {
+      console.error('Error fetching about:', error);
+    } finally {
+      setLoadingAbout(false);
+    }
+  };
+
+  const fetchSiteSettings = async () => {
+    setLoadingSettings(true);
+    try {
+      const settings = await api.getSiteSettings();
+      setSiteSettings(settings);
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+    } finally {
+      setLoadingSettings(false);
+    }
+  };
+
+  const handleSaveAbout = async () => {
+    setSavingAbout(true);
+    try {
+      await api.updateAbout(aboutContent);
+      toast({ title: "Success", description: "About page updated successfully" });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to save about page", variant: "destructive" });
+    } finally {
+      setSavingAbout(false);
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    setSavingSettings(true);
+    try {
+      await api.updateSiteSettings(siteSettings);
+      toast({ title: "Success", description: "Site settings updated successfully" });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to save settings", variant: "destructive" });
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    try {
+      await api.deletePost(postId);
+      setAllPosts(allPosts.filter(p => p.id !== postId));
+      toast({ title: "Success", description: "Post deleted successfully" });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to delete post", variant: "destructive" });
+    }
+  };
+
+  const handleEditPost = (post) => {
+    setEditingPost({
+      ...post,
+      tags: post.tags || []
+    });
+  };
+
+  const handleUpdatePost = async () => {
+    if (!editingPost) return;
+    try {
+      const updated = await api.updatePost(editingPost.id, {
+        title: editingPost.title,
+        content: editingPost.content,
+        featuredImage: editingPost.featuredImage,
+        excerpt: editingPost.excerpt,
+        tags: editingPost.tags
+      });
+      setAllPosts(allPosts.map(p => p.id === updated.id ? updated : p));
+      setEditingPost(null);
+      toast({ title: "Success", description: "Post updated successfully" });
+      fetchAvailableTags();
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update post", variant: "destructive" });
+    }
+  };
+
   const isDirectImageUrl = (url) => {
     if (!url) return true;
     const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|avif)/i;
