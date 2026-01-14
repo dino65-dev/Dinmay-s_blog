@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import GitHubProfile from '../components/GitHubProfile';
 import api from '../utils/api';
 
@@ -10,6 +11,7 @@ const AboutPage = () => {
   const [error, setError] = useState(null);
   const [blogTags, setBlogTags] = useState([]);
   const { theme, toggleTheme } = useTheme();
+  const { settings } = useSiteSettings();
 
   const GITHUB_USERNAME = 'dino65-dev';
 
