@@ -587,7 +587,7 @@ plot_base64
         ) : (
           <div className="bg-gray-900">
             <div className="p-4 text-gray-100 text-sm font-mono whitespace-pre-wrap min-h-[100px]">
-              {output || <span className="text-gray-500">Click "Run" to see output...</span>}
+              {output || <span className="text-gray-500">Click &quot;Run&quot; to see output...</span>}
             </div>
             {/* Animation frames display for matplotlib animations */}
             {animationFrames.length > 0 && (
