@@ -238,7 +238,7 @@ const AllPostsPage = () => {
       <footer className="py-12 px-6 md:px-12 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-gray-500 dark:text-gray-500 text-sm">
-            © 2025 Dinmay's Blog. All Rights Reserved
+            {settings.footer_text}
           </p>
           <nav className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
             <Link to="/" className="hover:text-amber-500 transition-colors">Home</Link>

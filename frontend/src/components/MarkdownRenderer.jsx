@@ -37,7 +37,7 @@ const CodeBlock = ({ inline, className, children, ...props }) => {
     }
   }, [children]);
 
-  const match = /language-(\w+)/.exec(className || '');
+  const match = /language-([\w-]+)/.exec(className || '');
   const language = match ? match[1] : '';
   const codeContent = String(children).replace(/\n$/, '');
 
