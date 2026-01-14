@@ -212,38 +212,28 @@ const HomePage = () => {
             {/* Mobile/Tablet - 3D Spiral Video */}
             <div className="lg:hidden relative mt-8 -mx-4 sm:-mx-6 overflow-hidden">
               <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode - lighter gradient for visibility */}
-                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(3,7,18,0.4)_60%,rgba(3,7,18,0.7)_85%,rgb(3,7,18)_100%)]" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/50 via-transparent to-gray-950/50" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950/60 via-transparent to-gray-950/50" />
+                {/* Dark mode - very light gradient for visibility */}
+                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(3,7,18,0.2)_70%,rgba(3,7,18,0.5)_90%,rgb(3,7,18)_100%)]" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/25 via-transparent to-gray-950/25" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950/30 via-transparent to-gray-950/25" />
                 {/* Light mode */}
                 <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(245,243,239,0.6)_55%,rgba(245,243,239,0.95)_80%,rgb(245,243,239)_100%)]" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-cream via-transparent to-cream" />
               </div>
-              {/* Light mode video */}
+              {/* Same video for both modes - auto plays reliably */}
               <video
                 autoPlay
                 loop
                 muted
                 playsInline
                 preload="auto"
-                className="dark:hidden w-full h-auto max-h-[450px] object-contain scale-[1.6]"
+                className="w-full h-auto max-h-[450px] object-contain scale-[1.6]"
                 poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                 onCanPlay={(e) => e.target.play()}
               >
                 <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
               </video>
-              {/* Dark mode - ScreenPal spiral embed with autoplay */}
-              <div className="hidden dark:block w-full h-[350px] relative overflow-hidden">
-                <iframe
-                  src="https://screenpal.com/player/cOV211nrp8T?ff=1&autostart=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
-                  className="w-full h-full scale-[1.4] transform-gpu"
-                  style={{ border: 'none', background: 'transparent' }}
-                  allow="autoplay; fullscreen"
-                  allowFullScreen
-                />
-              </div>
             </div>
           </div>
         </div>
