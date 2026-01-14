@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
  * InteractiveCodeBlock - A client-side code playground
  * Supports HTML, CSS, JavaScript, and Python (via Pyodide)
  * All execution happens in the browser - no server load
+ * Supports numpy, matplotlib, pandas, scipy, and other scientific packages
  */
 const InteractiveCodeBlock = ({ 
   language = 'javascript', 
@@ -16,8 +17,52 @@ const InteractiveCodeBlock = ({
   const [error, setError] = useState(null);
   const [pyodideReady, setPyodideReady] = useState(false);
   const [pyodideLoading, setPyodideLoading] = useState(false);
+  const [loadingPackages, setLoadingPackages] = useState(false);
+  const [loadedPackages, setLoadedPackages] = useState([]);
+  const [plotImage, setPlotImage] = useState(null);
   const iframeRef = useRef(null);
   const pyodideRef = useRef(null);
+
+  // Package mappings - some imports need different package names
+  const packageMappings = {
+    'numpy': 'numpy',
+    'np': 'numpy',
+    'matplotlib': 'matplotlib',
+    'plt': 'matplotlib',
+    'pandas': 'pandas',
+    'pd': 'pandas',
+    'scipy': 'scipy',
+    'sklearn': 'scikit-learn',
+    'cv2': 'opencv-python',
+    'PIL': 'Pillow',
+    'sympy': 'sympy',
+    'networkx': 'networkx',
+  };
+
+  // Detect which packages are needed from code
+  const detectRequiredPackages = (codeText) => {
+    const packages = new Set();
+    const importPatterns = [
+      /import\s+(\w+)/g,                           // import numpy
+      /from\s+(\w+)/g,                             // from numpy import
+      /import\s+(\w+)\s+as\s+\w+/g,                // import numpy as np
+    ];
+    
+    importPatterns.forEach(pattern => {
+      let match;
+      while ((match = pattern.exec(codeText)) !== null) {
+        const importName = match[1];
+        // Check if this import maps to a package
+        Object.keys(packageMappings).forEach(key => {
+          if (importName === key || importName.startsWith(key + '.')) {
+            packages.add(packageMappings[key]);
+          }
+        });
+      }
+    });
+    
+    return Array.from(packages);
+  };
 
   // Load Pyodide for Python execution
   const loadPyodide = useCallback(async () => {
