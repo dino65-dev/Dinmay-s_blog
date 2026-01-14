@@ -455,11 +455,11 @@ const HomePage = () => {
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-3 h-3 rounded-full bg-amber-400" />
-            <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">FAQ's</span>
+            <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">FAQs</span>
           </div>
           
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500 mb-8 sm:mb-12">
-            FAQ's
+            FAQs
           </h2>
           
           <div className="space-y-3 sm:space-y-4">
