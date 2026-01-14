@@ -217,27 +217,43 @@ const AdminPage = () => {
     }
   };
 
-  const isDirectImageUrl = (url) => {
+  const isDirectMediaUrl = (url) => {
     if (!url) return true;
+    // Image extensions
     const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|avif)/i;
-    if (imageExtensions.test(url)) return true;
-    const imageHosts = ['unsplash.com', 'imgur.com', 'ibb.co', 'cloudinary.com', 'imagekit.io', 'images.pexels.com'];
-    return imageHosts.some(host => url.includes(host));
+    // Video extensions
+    const videoExtensions = /\.(mp4|webm|ogg|mov|m4v)/i;
+    if (imageExtensions.test(url) || videoExtensions.test(url)) return true;
+    // Known media hosts
+    const mediaHosts = ['unsplash.com', 'imgur.com', 'ibb.co', 'cloudinary.com', 'imagekit.io', 'images.pexels.com', 'youtube.com', 'youtu.be', 'vimeo.com', 'screenpal.com', 'giphy.com'];
+    return mediaHosts.some(host => url.includes(host));
   };
 
-  const validateImageUrl = (url) => {
+  const validateMediaUrl = (url) => {
     if (!url) return '';
     if (url.includes('pin.it') || url.includes('pinterest.com/pin/')) {
       return '⚠️ Pinterest links don\'t work. Right-click the image on Pinterest and select "Copy Image Address"';
     }
     if (url.includes('instagram.com') || url.includes('facebook.com') || url.includes('twitter.com')) {
-      return '⚠️ Social media page links don\'t work. You need the direct image URL';
+      return '⚠️ Social media page links don\'t work. You need the direct media URL';
     }
-    if (!isDirectImageUrl(url)) {
-      return '⚠️ URL should end with image extension (.jpg, .png, .webp, etc.) or be from a known image host';
+    if (!isDirectMediaUrl(url)) {
+      return '⚠️ URL should end with media extension (.jpg, .png, .gif, .mp4, .webm) or be from a known media host';
     }
     return '';
   };
+
+  // Detect if URL is a video
+  const isVideoUrl = (url) => {
+    if (!url) return false;
+    const videoExtensions = /\.(mp4|webm|ogg|mov|m4v)/i;
+    const videoHosts = ['youtube.com', 'youtu.be', 'vimeo.com', 'screenpal.com'];
+    return videoExtensions.test(url) || videoHosts.some(host => url.includes(host));
+  };
+
+  // Keep legacy function name for backward compatibility
+  const isDirectImageUrl = isDirectMediaUrl;
+  const validateImageUrl = validateMediaUrl;
 
   const handleLogin = async (e) => {
     e.preventDefault();
