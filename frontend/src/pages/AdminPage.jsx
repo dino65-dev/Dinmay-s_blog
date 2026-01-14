@@ -661,12 +661,26 @@ const AdminPage = () => {
                           />
                         </div>
                         <div>
-                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Featured Image URL</Label>
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Featured Media URL (image, GIF, video)</Label>
                           <Input
                             value={editingPost.featuredImage || ''}
                             onChange={(e) => setEditingPost({...editingPost, featuredImage: e.target.value})}
+                            placeholder="https://example.com/image.jpg or video URL"
                             className="rounded-xl"
                           />
+                          {editingPost.featuredImage && (
+                            <div className="mt-2 w-full h-32 bg-gray-100 dark:bg-gray-700 rounded-xl border overflow-hidden">
+                              <FeaturedMedia 
+                                src={editingPost.featuredImage} 
+                                alt="Preview" 
+                                className="max-w-full max-h-full object-contain"
+                                containerClassName="w-full h-full flex items-center justify-center"
+                                autoPlay={true}
+                                loop={true}
+                                muted={true}
+                              />
+                            </div>
+                          )}
                         </div>
                         <div>
                           <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Excerpt</Label>
