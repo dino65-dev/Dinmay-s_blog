@@ -14,6 +14,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-css';
 import 'katex/dist/katex.min.css';
+import InteractiveCodeBlock from './InteractiveCodeBlock';
 
 const CodeBlock = ({ inline, className, children, ...props }) => {
   const [copied, setCopied] = useState(false);
@@ -38,6 +39,27 @@ const CodeBlock = ({ inline, className, children, ...props }) => {
 
   const match = /language-(\w+)/.exec(className || '');
   const language = match ? match[1] : '';
+  const codeContent = String(children).replace(/\n$/, '');
+
+  // Check if this is an interactive code block
+  const interactiveMatch = /^interactive[-_]?(\w+)?$/.exec(language);
+  if (interactiveMatch) {
+    const interactiveLang = interactiveMatch[1] || 'javascript';
+    // Map language aliases
+    const langMap = {
+      'js': 'javascript',
+      'py': 'python',
+      'htm': 'html'
+    };
+    const normalizedLang = langMap[interactiveLang] || interactiveLang;
+    
+    return (
+      <InteractiveCodeBlock 
+        language={normalizedLang} 
+        initialCode={codeContent}
+      />
+    );
+  }
 
   if (!inline && match) {
     return (
@@ -382,6 +404,11 @@ const MarkdownRenderer = ({ content }) => {
         }
         .dark .markdown-content blockquote {
           border-left-color: #4b5563;
+        }
+
+        /* Interactive Code Block Styles */
+        .markdown-content .interactive-code-block {
+          margin: 1.5rem 0;
         }
       `}</style>
       <ReactMarkdown
