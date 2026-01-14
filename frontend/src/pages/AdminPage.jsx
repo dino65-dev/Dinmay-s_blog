@@ -58,6 +58,7 @@ const AdminPage = () => {
   const [allPosts, setAllPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
+  const [editTagInput, setEditTagInput] = useState('');
 
   // About Page State
   const [aboutContent, setAboutContent] = useState('');
