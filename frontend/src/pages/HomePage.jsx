@@ -180,12 +180,12 @@ const HomePage = () => {
             
             {/* Right Content - 3D Spiral Video */}
             <div className="hidden lg:block relative -mr-12 xl:-mr-24 overflow-hidden">
-              {/* Gradient overlay for seamless integration - enhanced for better blending */}
+              {/* Gradient overlay for seamless integration - lighter for dark mode */}
               <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode gradient - radial gradient from transparent center to black edges */}
-                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(3,7,18,0.6)_50%,rgba(3,7,18,0.95)_75%,rgb(3,7,18)_100%)]" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-gray-950" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/80 via-transparent to-gray-950" />
+                {/* Dark mode gradient - much lighter to keep video visible */}
+                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(3,7,18,0.3)_70%,rgba(3,7,18,0.6)_90%,rgb(3,7,18)_100%)]" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/60 via-transparent to-gray-950/60" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/40 via-transparent to-gray-950/60" />
                 {/* Light mode gradient - cream to transparent for seamless blending */}
                 <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(245,243,239,0.5)_60%,rgba(245,243,239,0.9)_80%,rgb(245,243,239)_100%)]" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
@@ -206,10 +206,10 @@ const HomePage = () => {
                   <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
-                {/* Dark mode - ScreenPal spiral embed */}
+                {/* Dark mode - ScreenPal spiral embed with autoplay */}
                 <div className="hidden dark:block w-full h-[600px] relative overflow-hidden">
                   <iframe
-                    src="https://screenpal.com/player/cOV211nrp8T?ff=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
+                    src="https://screenpal.com/player/cOV211nrp8T?ff=1&autostart=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
                     className="w-full h-full scale-[1.8] transform-gpu"
                     style={{ border: 'none', background: 'transparent' }}
                     allow="autoplay; fullscreen"
@@ -222,10 +222,10 @@ const HomePage = () => {
             {/* Mobile/Tablet - 3D Spiral Video */}
             <div className="lg:hidden relative mt-8 -mx-4 sm:-mx-6 overflow-hidden">
               <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode - radial gradient for seamless center blending */}
-                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(3,7,18,0.7)_45%,rgba(3,7,18,0.95)_70%,rgb(3,7,18)_100%)]" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-gray-950" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/90" />
+                {/* Dark mode - lighter gradient for visibility */}
+                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(3,7,18,0.4)_60%,rgba(3,7,18,0.7)_85%,rgb(3,7,18)_100%)]" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/50 via-transparent to-gray-950/50" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950/60 via-transparent to-gray-950/50" />
                 {/* Light mode */}
                 <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(245,243,239,0.6)_55%,rgba(245,243,239,0.95)_80%,rgb(245,243,239)_100%)]" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
@@ -244,10 +244,10 @@ const HomePage = () => {
               >
                 <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
               </video>
-              {/* Dark mode - ScreenPal spiral embed */}
+              {/* Dark mode - ScreenPal spiral embed with autoplay */}
               <div className="hidden dark:block w-full h-[350px] relative overflow-hidden">
                 <iframe
-                  src="https://screenpal.com/player/cOV211nrp8T?ff=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
+                  src="https://screenpal.com/player/cOV211nrp8T?ff=1&autostart=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
                   className="w-full h-full scale-[1.4] transform-gpu"
                   style={{ border: 'none', background: 'transparent' }}
                   allow="autoplay; fullscreen"
