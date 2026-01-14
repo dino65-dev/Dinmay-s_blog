@@ -1176,7 +1176,7 @@ const AdminPage = () => {
       {/* Footer */}
       <footer className="py-8 sm:py-12 px-4 sm:px-6 md:px-12 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
-          <p className="text-gray-500 text-xs sm:text-sm">© 2025 Dinmay's Blog. All Rights Reserved</p>
+          <p className="text-gray-500 text-xs sm:text-sm">{settings.footer_text}</p>
           <nav className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             <Link to="/" className="hover:text-amber-500 transition-colors">Home</Link>
             <Link to="/all-posts" className="hover:text-amber-500 transition-colors">Posts</Link>
