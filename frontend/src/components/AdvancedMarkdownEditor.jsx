@@ -1228,6 +1228,68 @@ const AdvancedMarkdownEditor = ({
           </DialogContent>
         </Dialog>
 
+        {/* Interactive Code Dialog */}
+        <Dialog open={interactiveDialogOpen} onOpenChange={setInteractiveDialogOpen}>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button type="button" className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors relative">
+                    <CodeIcon />
+                    <span className="absolute -top-1 -right-1 text-[8px] bg-green-500 text-white rounded-full w-3 h-3 flex items-center justify-center">▶</span>
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent><p>Insert Interactive Code (runnable)</p></TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <DialogContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d] max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="text-gray-900 dark:text-white flex items-center gap-2">
+                <span className="text-green-500">▶</span> Insert Interactive Code
+              </DialogTitle>
+              <DialogDescription className="text-gray-500 dark:text-gray-400">
+                Add code that readers can edit and run directly in their browser. No server required!
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div>
+                <Label htmlFor="interactiveLang" className="text-gray-700 dark:text-gray-300">Language</Label>
+                <Select value={interactiveLang} onValueChange={setInteractiveLang}>
+                  <SelectTrigger className="mt-1 bg-white dark:bg-[#0d1117] border-gray-300 dark:border-[#30363d] text-gray-900 dark:text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d]">
+                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="python">Python (via Pyodide)</SelectItem>
+                    <SelectItem value="html">HTML (with CSS)</SelectItem>
+                    <SelectItem value="css">CSS (with demo)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <strong>💡 How it works:</strong>
+                </p>
+                <ul className="text-xs text-amber-700 dark:text-amber-300 mt-2 space-y-1 list-disc list-inside">
+                  <li>JavaScript: Runs in a sandboxed environment</li>
+                  <li>Python: Uses Pyodide (runs in browser)</li>
+                  <li>HTML/CSS: Renders in an iframe preview</li>
+                  <li>All code runs client-side (no server load)</li>
+                </ul>
+              </div>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" className="border-gray-300 dark:border-[#30363d] text-gray-700 dark:text-gray-300">Cancel</Button>
+              </DialogClose>
+              <Button onClick={handleInsertInteractiveCode} className="bg-green-600 hover:bg-green-700 text-white">
+                <span className="mr-1">▶</span> Insert
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <div className="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1" />
 
         {/* Direct Upload Button */}
