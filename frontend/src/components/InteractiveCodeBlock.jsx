@@ -20,6 +20,10 @@ const InteractiveCodeBlock = ({
   const [loadingPackages, setLoadingPackages] = useState(false);
   const [loadedPackages, setLoadedPackages] = useState([]);
   const [plotImage, setPlotImage] = useState(null);
+  const [animationFrames, setAnimationFrames] = useState([]);
+  const [currentFrame, setCurrentFrame] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animationRef = useRef(null);
   const iframeRef = useRef(null);
   const pyodideRef = useRef(null);
 
