@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -15,6 +16,7 @@ const AdminPage = () => {
   const { isAuthenticated, login, logout } = useAuth();
   const { toast } = useToast();
   const { theme, toggleTheme } = useTheme();
+  const { settings, refreshSettings } = useSiteSettings();
   const [password, setPassword] = useState('');
   const [scrolled, setScrolled] = useState(false);
 
