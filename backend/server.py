@@ -13,8 +13,6 @@ from routes import blog_posts, auth, about, comments, github, upload, contact, s
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
-# Ensure environment variables are loaded
-load_dotenv('/app/backend/.env')
 
 # MongoDB connection with optimized settings for low RAM
 mongo_url = os.environ['MONGO_URL']
