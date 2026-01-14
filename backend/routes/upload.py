@@ -20,8 +20,9 @@ cloudinary.config(
 )
 
 # Fallback: Create local uploads directory for backward compatibility
-UPLOAD_DIR = Path("/app/backend/uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+# Use relative path from current file location for better portability across environments
+UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # Allowed image extensions
 ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.avif', '.bmp'}
