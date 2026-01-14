@@ -171,6 +171,7 @@ const AdminPage = () => {
     setSavingSettings(true);
     try {
       await api.updateSiteSettings(siteSettings);
+      await refreshSettings(); // Refresh the global settings context
       toast({ title: "Success", description: "Site settings updated successfully" });
     } catch (error) {
       toast({ title: "Error", description: "Failed to save settings", variant: "destructive" });
