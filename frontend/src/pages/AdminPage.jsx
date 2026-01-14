@@ -753,15 +753,23 @@ const AdminPage = () => {
                     <Input
                       id="md-image"
                       value={mdImage}
-                      onChange={(e) => { setMdImage(e.target.value); setMdImageError(validateImageUrl(e.target.value)); }}
-                      placeholder="https://example.com/image.jpg"
+                      onChange={(e) => { setMdImage(e.target.value); setMdImageError(validateMediaUrl(e.target.value)); }}
+                      placeholder="https://example.com/image.jpg or video URL"
                       className={`rounded-xl ${mdImageError ? 'border-yellow-500' : ''}`}
                     />
                     {mdImageError && <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">{mdImageError}</p>}
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">💡 Use direct image URLs from Unsplash, Imgur, or your own hosting</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">💡 Supports images, GIFs, MP4 videos, YouTube, Vimeo links</p>
                     {mdImage && !mdImageError && (
-                      <div className="mt-3 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-xl border">
-                        <img src={mdImage} alt="Preview" className="max-w-full max-h-full object-contain rounded" onError={(e) => { e.target.style.display = 'none'; setMdImageError('❌ Image failed to load. Check if URL is a direct image link'); }} onLoad={() => setMdImageError('')} />
+                      <div className="mt-3 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-xl border overflow-hidden">
+                        <FeaturedMedia 
+                          src={mdImage} 
+                          alt="Preview" 
+                          className="max-w-full max-h-full object-contain rounded"
+                          containerClassName="w-full h-full"
+                          autoPlay={true}
+                          loop={true}
+                          muted={true}
+                        />
                       </div>
                     )}
                   </div>
