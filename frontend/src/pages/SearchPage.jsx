@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
@@ -10,6 +11,7 @@ import api from '../utils/api';
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { theme, toggleTheme } = useTheme();
+  const { settings } = useSiteSettings();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [contentType, setContentType] = useState(searchParams.get('type') || 'all');
   const [startDate, setStartDate] = useState(searchParams.get('start') || '');
