@@ -180,42 +180,32 @@ const HomePage = () => {
             
             {/* Right Content - 3D Spiral Video */}
             <div className="hidden lg:block relative -mr-12 xl:-mr-24 overflow-hidden">
-              {/* Gradient overlay for seamless integration - lighter for dark mode */}
+              {/* Gradient overlay for seamless integration */}
               <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode gradient - much lighter to keep video visible */}
-                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(3,7,18,0.3)_70%,rgba(3,7,18,0.6)_90%,rgb(3,7,18)_100%)]" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/60 via-transparent to-gray-950/60" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/40 via-transparent to-gray-950/60" />
+                {/* Dark mode gradient - very light to keep video visible and bright */}
+                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_60%,rgba(3,7,18,0.15)_80%,rgba(3,7,18,0.4)_95%,rgb(3,7,18)_100%)]" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/30 via-transparent to-gray-950/30" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/20 via-transparent to-gray-950/30" />
                 {/* Light mode gradient - cream to transparent for seamless blending */}
                 <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(245,243,239,0.5)_60%,rgba(245,243,239,0.9)_80%,rgb(245,243,239)_100%)]" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-cream/60 via-transparent to-cream" />
               </div>
               <div className="relative flex items-center justify-center overflow-hidden">
-                {/* Light mode - Original spiral video */}
+                {/* Same video for both modes - auto plays reliably */}
                 <video
                   autoPlay
                   loop
                   muted
                   playsInline
                   preload="auto"
-                  className="dark:hidden w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
+                  className="w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
                   poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                   onCanPlay={(e) => e.target.play()}
                 >
                   <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
-                {/* Dark mode - ScreenPal spiral embed with autoplay */}
-                <div className="hidden dark:block w-full h-[600px] relative overflow-hidden">
-                  <iframe
-                    src="https://screenpal.com/player/cOV211nrp8T?ff=1&autostart=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
-                    className="w-full h-full scale-[1.8] transform-gpu"
-                    style={{ border: 'none', background: 'transparent' }}
-                    allow="autoplay; fullscreen"
-                    allowFullScreen
-                  />
-                </div>
               </div>
             </div>
 
