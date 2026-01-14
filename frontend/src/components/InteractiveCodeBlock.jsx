@@ -589,8 +589,44 @@ plot_base64
             <div className="p-4 text-gray-100 text-sm font-mono whitespace-pre-wrap min-h-[100px]">
               {output || <span className="text-gray-500">Click "Run" to see output...</span>}
             </div>
+            {/* Animation frames display for matplotlib animations */}
+            {animationFrames.length > 0 && (
+              <div className="p-4 bg-white border-t border-gray-700">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs text-gray-600 font-medium">🎬 Animation Output ({animationFrames.length} frames):</div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setIsAnimating(!isAnimating)}
+                      className="px-3 py-1 text-xs font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
+                    >
+                      {isAnimating ? '⏸ Pause' : '▶ Play'}
+                    </button>
+                    <span className="text-xs text-gray-500">
+                      Frame {currentFrame + 1}/{animationFrames.length}
+                    </span>
+                  </div>
+                </div>
+                <img 
+                  src={animationFrames[currentFrame]} 
+                  alt={`Animation frame ${currentFrame + 1}`}
+                  className="max-w-full h-auto rounded-lg shadow-md"
+                />
+                {/* Frame scrubber */}
+                <input
+                  type="range"
+                  min={0}
+                  max={animationFrames.length - 1}
+                  value={currentFrame}
+                  onChange={(e) => {
+                    setIsAnimating(false);
+                    setCurrentFrame(parseInt(e.target.value));
+                  }}
+                  className="w-full mt-2 accent-blue-500"
+                />
+              </div>
+            )}
             {/* Plot image display for matplotlib */}
-            {plotImage && (
+            {plotImage && animationFrames.length === 0 && (
               <div className="p-4 bg-white border-t border-gray-700">
                 <div className="text-xs text-gray-600 mb-2 font-medium">📊 Plot Output:</div>
                 <img 
