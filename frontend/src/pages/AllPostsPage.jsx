@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import api from '../utils/api';
 
 const AllPostsPage = () => {
