@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useSiteSettings } from '../contexts/SiteSettingsContext';
+import FeaturedMedia from '../components/FeaturedMedia';
 import api from '../utils/api';
 import { useToast } from '../hooks/use-toast';
 
