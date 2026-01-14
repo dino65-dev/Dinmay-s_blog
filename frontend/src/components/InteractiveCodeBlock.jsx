@@ -464,8 +464,21 @@ else:
             title="Code output"
           />
         ) : (
-          <div className="p-4 bg-gray-900 text-gray-100 text-sm font-mono whitespace-pre-wrap min-h-[100px]">
-            {output || <span className="text-gray-500">Click "Run" to see output...</span>}
+          <div className="bg-gray-900">
+            <div className="p-4 text-gray-100 text-sm font-mono whitespace-pre-wrap min-h-[100px]">
+              {output || <span className="text-gray-500">Click "Run" to see output...</span>}
+            </div>
+            {/* Plot image display for matplotlib */}
+            {plotImage && (
+              <div className="p-4 bg-white border-t border-gray-700">
+                <div className="text-xs text-gray-600 mb-2 font-medium">📊 Plot Output:</div>
+                <img 
+                  src={plotImage} 
+                  alt="Matplotlib plot output" 
+                  className="max-w-full h-auto rounded-lg shadow-md"
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
