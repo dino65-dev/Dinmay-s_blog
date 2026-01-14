@@ -131,6 +131,43 @@ const InteractiveCodeBlock = ({
     }
   };
 
+  // Load required packages
+  const loadRequiredPackages = async (packages) => {
+    if (!pyodideRef.current || packages.length === 0) return;
+    
+    const packagesToLoad = packages.filter(pkg => !loadedPackages.includes(pkg));
+    if (packagesToLoad.length === 0) return;
+    
+    setLoadingPackages(true);
+    try {
+      // Special handling for matplotlib - need micropip for some packages
+      if (packagesToLoad.includes('matplotlib')) {
+        await pyodideRef.current.loadPackage('micropip');
+      }
+      
+      // Load packages
+      for (const pkg of packagesToLoad) {
+        try {
+          if (pkg === 'scikit-learn') {
+            // scikit-learn needs special handling
+            const micropip = pyodideRef.current.pyimport('micropip');
+            await micropip.install('scikit-learn');
+          } else {
+            await pyodideRef.current.loadPackage(pkg);
+          }
+        } catch (pkgErr) {
+          console.warn(`Failed to load ${pkg}:`, pkgErr.message);
+        }
+      }
+      
+      setLoadedPackages([...loadedPackages, ...packagesToLoad]);
+    } catch (err) {
+      console.error('Package loading error:', err);
+    } finally {
+      setLoadingPackages(false);
+    }
+  };
+
   // Run Python code
   const runPython = async () => {
     if (!pyodideRef.current) {
@@ -140,22 +177,83 @@ const InteractiveCodeBlock = ({
     
     setError(null);
     setOutput('');
+    setPlotImage(null);
     setIsRunning(true);
     
     try {
-      // Redirect stdout
-      pyodideRef.current.runPython(`
+      // Detect and load required packages
+      const requiredPackages = detectRequiredPackages(code);
+      if (requiredPackages.length > 0) {
+        await loadRequiredPackages(requiredPackages);
+      }
+      
+      // Check if matplotlib is used
+      const usesMatplotlib = code.includes('matplotlib') || code.includes('plt.');
+      
+      // Setup code for matplotlib if needed
+      let setupCode = `
 import sys
 from io import StringIO
 sys.stdout = StringIO()
-      `);
+`;
+      
+      if (usesMatplotlib) {
+        setupCode = `
+import sys
+from io import StringIO, BytesIO
+import base64
+sys.stdout = StringIO()
+
+# Configure matplotlib for non-interactive backend
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+# Clear any existing figures
+plt.close('all')
+`;
+      }
+      
+      // Run setup code
+      pyodideRef.current.runPython(setupCode);
       
       // Run the user code
       await pyodideRef.current.runPythonAsync(code);
       
       // Get stdout content
-      const stdout = pyodideRef.current.runPython('sys.stdout.getvalue()');
-      setOutput(stdout || '(No output)');
+      let stdout = pyodideRef.current.runPython('sys.stdout.getvalue()');
+      
+      // If matplotlib was used, capture the plot as base64 image
+      if (usesMatplotlib) {
+        const plotCode = `
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+
+# Get current figure
+fig = plt.gcf()
+if fig.get_axes():  # Only if there are axes (a plot was created)
+    buf = BytesIO()
+    fig.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white', edgecolor='none')
+    buf.seek(0)
+    plot_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    plt.close('all')
+    plot_base64
+else:
+    ''
+`;
+        try {
+          const plotData = pyodideRef.current.runPython(plotCode);
+          if (plotData) {
+            setPlotImage(`data:image/png;base64,${plotData}`);
+          }
+        } catch (plotErr) {
+          // No plot generated, that's fine
+          console.log('No plot to capture:', plotErr.message);
+        }
+      }
+      
+      setOutput(stdout || (usesMatplotlib && !stdout ? '(Plot generated - see below)' : '(No output)'));
     } catch (err) {
       setError(err.message);
     } finally {
