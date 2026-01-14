@@ -211,6 +211,25 @@ import matplotlib.pyplot as plt
 
 # Clear any existing figures
 plt.close('all')
+
+# Store all figures created during execution
+_captured_figures = []
+
+# Override plt.show() to capture the figure instead of displaying
+_original_show = plt.show
+def _capture_show(*args, **kwargs):
+    fig = plt.gcf()
+    if fig.get_axes():
+        buf = BytesIO()
+        fig.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white', edgecolor='none')
+        buf.seek(0)
+        _captured_figures.append(base64.b64encode(buf.read()).decode('utf-8'))
+plt.show = _capture_show
+
+# Also override figure() to track new figures
+_original_figure = plt.figure
+def _tracked_figure(*args, **kwargs):
+    return _original_figure(*args, **kwargs)
 `;
       }
       
@@ -230,17 +249,21 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 
-# Get current figure
-fig = plt.gcf()
-if fig.get_axes():  # Only if there are axes (a plot was created)
-    buf = BytesIO()
-    fig.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white', edgecolor='none')
-    buf.seek(0)
-    plot_base64 = base64.b64encode(buf.read()).decode('utf-8')
-    plt.close('all')
-    plot_base64
+# First check if we captured any figures from plt.show()
+plot_base64 = ''
+if _captured_figures:
+    plot_base64 = _captured_figures[-1]  # Use the last captured figure
 else:
-    ''
+    # No plt.show() was called, try to capture the current figure
+    fig = plt.gcf()
+    if fig.get_axes():  # Only if there are axes (a plot was created)
+        buf = BytesIO()
+        fig.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white', edgecolor='none')
+        buf.seek(0)
+        plot_base64 = base64.b64encode(buf.read()).decode('utf-8')
+
+plt.close('all')
+plot_base64
 `;
         try {
           const plotData = pyodideRef.current.runPython(plotCode);
