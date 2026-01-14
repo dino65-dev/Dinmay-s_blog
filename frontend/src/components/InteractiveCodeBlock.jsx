@@ -339,6 +339,7 @@ else:
     setCode(initialCode);
     setOutput('');
     setError(null);
+    setPlotImage(null);
   };
 
   // Language display names
