@@ -208,7 +208,7 @@ const HomePage = () => {
                   Your browser does not support the video tag.
                 </video>
                 {/* Dark mode - Vimeo iframe */}
-                <div className="hidden dark:block w-full" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
+                <div className="hidden dark:block w-full scale-[1.8] transform" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
                   <iframe
                     src="https://player.vimeo.com/video/1154280710?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&background=1&muted=1"
                     frameBorder="0"

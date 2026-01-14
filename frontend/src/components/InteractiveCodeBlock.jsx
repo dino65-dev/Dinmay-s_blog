@@ -271,7 +271,7 @@ class _CapturingAnimation:
     def __init__(self, fig, func, frames=None, init_func=None, fargs=None, save_count=None, **kwargs):
         self.fig = fig
         self.func = func
-        self.frames = frames if frames is not None else range(50)
+        self.frames = frames if frames is not None else range(100)
         self.init_func = init_func
         self.fargs = fargs or ()
         
@@ -283,8 +283,8 @@ class _CapturingAnimation:
         else:
             frame_list = range(self.frames)
         
-        # Limit to max 100 frames for performance
-        frame_list = list(frame_list)[:100]
+        # Capture all frames - no artificial limit
+        frame_list = list(frame_list)
         
         if self.init_func:
             self.init_func()
@@ -295,9 +295,6 @@ class _CapturingAnimation:
             self.fig.savefig(buf, format='png', dpi=80, bbox_inches='tight', facecolor='white', edgecolor='none')
             buf.seek(0)
             _animation_frames.append(base64.b64encode(buf.read()).decode('utf-8'))
-            # Only capture first 50 frames max for smooth playback
-            if i >= 49:
-                break
         
     def save(self, *args, **kwargs):
         pass  # No-op for now
