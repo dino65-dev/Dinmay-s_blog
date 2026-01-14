@@ -172,6 +172,16 @@ const InteractiveCodeBlock = ({
     }
   };
 
+  // Animation frame cycling effect
+  useEffect(() => {
+    if (animationFrames.length > 1 && isAnimating) {
+      animationRef.current = setInterval(() => {
+        setCurrentFrame(prev => (prev + 1) % animationFrames.length);
+      }, 100); // 10 fps
+      return () => clearInterval(animationRef.current);
+    }
+  }, [animationFrames, isAnimating]);
+
   // Run Python code
   const runPython = async () => {
     if (!pyodideRef.current) {
@@ -182,6 +192,9 @@ const InteractiveCodeBlock = ({
     setError(null);
     setOutput('');
     setPlotImage(null);
+    setAnimationFrames([]);
+    setCurrentFrame(0);
+    setIsAnimating(false);
     setIsRunning(true);
     
     try {
@@ -193,6 +206,7 @@ const InteractiveCodeBlock = ({
       
       // Check if matplotlib is used
       const usesMatplotlib = code.includes('matplotlib') || code.includes('plt.');
+      const usesAnimation = code.includes('FuncAnimation') || code.includes('animation');
       
       // Setup code for matplotlib if needed
       let setupCode = `
@@ -218,6 +232,7 @@ plt.close('all')
 
 # Store all figures created during execution
 _captured_figures = []
+_animation_frames = []
 
 # Override plt.show() to capture the figure instead of displaying
 _original_show = plt.show
@@ -240,11 +255,84 @@ def _tracked_figure(*args, **kwargs):
       // Run setup code
       pyodideRef.current.runPython(setupCode);
       
+      // For animations, we need special handling
+      if (usesAnimation && usesMatplotlib) {
+        // Wrap the animation code to capture frames
+        const animSetup = `
+from matplotlib.animation import FuncAnimation
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+
+_animation_frames = []
+_original_FuncAnimation = FuncAnimation
+
+class _CapturingAnimation:
+    def __init__(self, fig, func, frames=None, init_func=None, fargs=None, save_count=None, **kwargs):
+        self.fig = fig
+        self.func = func
+        self.frames = frames if frames is not None else range(50)
+        self.init_func = init_func
+        self.fargs = fargs or ()
+        
+        # Capture frames
+        if callable(self.frames):
+            frame_list = list(self.frames())
+        elif hasattr(self.frames, '__iter__'):
+            frame_list = list(self.frames)
+        else:
+            frame_list = range(self.frames)
+        
+        # Limit to max 100 frames for performance
+        frame_list = list(frame_list)[:100]
+        
+        if self.init_func:
+            self.init_func()
+        
+        for i, frame_data in enumerate(frame_list):
+            self.func(frame_data, *self.fargs)
+            buf = BytesIO()
+            self.fig.savefig(buf, format='png', dpi=80, bbox_inches='tight', facecolor='white', edgecolor='none')
+            buf.seek(0)
+            _animation_frames.append(base64.b64encode(buf.read()).decode('utf-8'))
+            # Only capture first 50 frames max for smooth playback
+            if i >= 49:
+                break
+        
+    def save(self, *args, **kwargs):
+        pass  # No-op for now
+
+# Monkey-patch FuncAnimation
+import matplotlib.animation
+matplotlib.animation.FuncAnimation = _CapturingAnimation
+`;
+        pyodideRef.current.runPython(animSetup);
+      }
+      
       // Run the user code
       await pyodideRef.current.runPythonAsync(code);
       
       // Get stdout content
       let stdout = pyodideRef.current.runPython('sys.stdout.getvalue()');
+      
+      // Check for animation frames first
+      if (usesAnimation && usesMatplotlib) {
+        try {
+          const framesJson = pyodideRef.current.runPython(`
+import json
+json.dumps(_animation_frames)
+`);
+          const frames = JSON.parse(framesJson);
+          if (frames && frames.length > 0) {
+            setAnimationFrames(frames.map(f => `data:image/png;base64,${f}`));
+            setIsAnimating(true);
+            setOutput(stdout || `(Animation with ${frames.length} frames - see below)`);
+            return;
+          }
+        } catch (animErr) {
+          console.log('No animation frames captured:', animErr.message);
+        }
+      }
       
       // If matplotlib was used, capture the plot as base64 image
       if (usesMatplotlib) {
