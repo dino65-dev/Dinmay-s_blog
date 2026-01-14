@@ -556,7 +556,7 @@ const HomePage = () => {
                     {submitting ? 'Sending...' : 'Send Message'}
                   </button>
                   <a
-                    href="mailto:info@dinmaysblog.com"
+                    href="mailto:dinmaybrahma@outlook.com"
                     className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-center text-sm sm:text-base"
                   >
                     Prefer to email directly
@@ -574,7 +574,7 @@ const HomePage = () => {
                   {settings.author_bio || "Sharing ideas, one post at a time."}
                 </p>
                 <p className="text-gray-500 dark:text-gray-500 text-sm sm:text-base">
-                  info@dinmaysblog.com
+                  dinmaybrahma@outlook.com
                 </p>
               </div>
             </div>
