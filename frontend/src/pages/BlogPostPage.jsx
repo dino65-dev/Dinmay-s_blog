@@ -7,6 +7,7 @@ import TableOfContents from '../components/TableOfContents';
 import SocialShare from '../components/SocialShare';
 import RelatedPosts from '../components/RelatedPosts';
 import Comments from '../components/Comments';
+import FeaturedMedia from '../components/FeaturedMedia';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
