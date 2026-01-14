@@ -692,13 +692,70 @@ const AdminPage = () => {
                           />
                         </div>
                         <div>
-                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Tags (comma separated)</Label>
-                          <Input
-                            value={editingPost.tags?.join(', ') || ''}
-                            onChange={(e) => setEditingPost({...editingPost, tags: e.target.value.split(',').map(t => t.trim().toLowerCase()).filter(Boolean)})}
-                            placeholder="ai, ml, python"
-                            className="rounded-xl"
-                          />
+                          <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Tags</Label>
+                          <div className="space-y-2">
+                            <div className="flex flex-wrap gap-2 min-h-[38px] p-2 border rounded-xl bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              {(editingPost.tags || []).map((tag, index) => (
+                                <span key={index} className="inline-flex items-center gap-1 px-3 py-1 text-sm rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+                                  {tag}
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingPost({...editingPost, tags: editingPost.tags.filter((_, i) => i !== index)})}
+                                    className="hover:bg-amber-200 dark:hover:bg-amber-800 rounded-full p-0.5"
+                                  >
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </button>
+                                </span>
+                              ))}
+                              <input
+                                type="text"
+                                value={editTagInput}
+                                onChange={(e) => setEditTagInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ',') {
+                                    e.preventDefault();
+                                    const trimmedTag = editTagInput.trim().toLowerCase();
+                                    if (trimmedTag && !(editingPost.tags || []).includes(trimmedTag)) {
+                                      setEditingPost({...editingPost, tags: [...(editingPost.tags || []), trimmedTag]});
+                                    }
+                                    setEditTagInput('');
+                                  }
+                                }}
+                                placeholder={editingPost.tags?.length > 0 ? "Add more tags..." : "Add tags (press Enter)"}
+                                className="flex-1 min-w-[120px] outline-none bg-transparent text-sm text-gray-700 dark:text-gray-300"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const trimmedTag = editTagInput.trim().toLowerCase();
+                                  if (trimmedTag && !(editingPost.tags || []).includes(trimmedTag)) {
+                                    setEditingPost({...editingPost, tags: [...(editingPost.tags || []), trimmedTag]});
+                                  }
+                                  setEditTagInput('');
+                                }}
+                                className="px-2 py-1 text-xs font-medium text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg"
+                              >
+                                Add
+                              </button>
+                            </div>
+                            {availableTags.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                <span className="text-xs text-gray-500 mr-1">Suggested:</span>
+                                {availableTags.filter(t => !(editingPost.tags || []).includes(t)).slice(0, 5).map((tag, i) => (
+                                  <button
+                                    key={i}
+                                    type="button"
+                                    onClick={() => setEditingPost({...editingPost, tags: [...(editingPost.tags || []), tag]})}
+                                    className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-700 dark:hover:text-amber-400"
+                                  >
+                                    + {tag}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div>
                           <Label className="text-gray-700 dark:text-gray-300 mb-2 block">Content</Label>
