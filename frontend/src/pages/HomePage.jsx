@@ -192,19 +192,30 @@ const HomePage = () => {
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-cream/60 via-transparent to-cream" />
               </div>
               <div className="relative flex items-center justify-center overflow-hidden">
+                {/* Light mode - Original spiral video */}
                 <video
                   autoPlay
                   loop
                   muted
                   playsInline
                   preload="auto"
-                  className="w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
+                  className="dark:hidden w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
                   poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                   onCanPlay={(e) => e.target.play()}
                 >
                   <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
+                {/* Dark mode - ScreenPal spiral embed */}
+                <div className="hidden dark:block w-full h-[600px] relative overflow-hidden">
+                  <iframe
+                    src="https://screenpal.com/player/cOV211nrp8T?ff=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
+                    className="w-full h-full scale-[1.8] transform-gpu"
+                    style={{ border: 'none', background: 'transparent' }}
+                    allow="autoplay; fullscreen"
+                    allowFullScreen
+                  />
+                </div>
               </div>
             </div>
 
@@ -220,18 +231,29 @@ const HomePage = () => {
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-cream via-transparent to-cream" />
               </div>
+              {/* Light mode video */}
               <video
                 autoPlay
                 loop
                 muted
                 playsInline
                 preload="auto"
-                className="w-full h-auto max-h-[450px] object-contain scale-[1.6]"
+                className="dark:hidden w-full h-auto max-h-[450px] object-contain scale-[1.6]"
                 poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                 onCanPlay={(e) => e.target.play()}
               >
                 <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
               </video>
+              {/* Dark mode - ScreenPal spiral embed */}
+              <div className="hidden dark:block w-full h-[350px] relative overflow-hidden">
+                <iframe
+                  src="https://screenpal.com/player/cOV211nrp8T?ff=1&ahc=1&dcc=1&bg=transparent&share=1&download=1&embed=1&cl=1&width=100%&height=100%"
+                  className="w-full h-full scale-[1.4] transform-gpu"
+                  style={{ border: 'none', background: 'transparent' }}
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                />
+              </div>
             </div>
           </div>
         </div>
