@@ -294,10 +294,14 @@ const SearchPage = () => {
                     >
                       <div className="w-full md:w-48 h-48 md:h-32 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0">
                         {post.featuredImage ? (
-                          <img
+                          <FeaturedMedia
                             src={post.featuredImage}
                             alt={post.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            containerClassName="w-full h-full"
+                            autoPlay={true}
+                            loop={true}
+                            muted={true}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
