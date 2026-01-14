@@ -333,14 +333,18 @@ const BlogPostPage = () => {
         </div>
       )}
 
-      {/* Hero Section with Featured Image */}
+      {/* Hero Section with Featured Image/Video/GIF */}
       {post.featuredImage && (
         <div className="relative h-[40vh] md:h-[50vh] overflow-hidden mt-20">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 z-10" />
-          <img 
-            src={post.featuredImage} 
+          <FeaturedMedia 
+            src={post.featuredImage}
             alt={post.title}
             className="w-full h-full object-cover"
+            containerClassName="w-full h-full"
+            autoPlay={true}
+            loop={true}
+            muted={true}
           />
           <div className="absolute bottom-0 left-0 right-0 z-20 max-w-4xl mx-auto px-4 sm:px-6 md:px-12 pb-6 sm:pb-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
