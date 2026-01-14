@@ -6,6 +6,7 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import FeaturedMedia from '../components/FeaturedMedia';
 import api from '../utils/api';
 
 const SearchPage = () => {
