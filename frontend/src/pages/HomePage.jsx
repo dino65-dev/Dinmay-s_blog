@@ -193,20 +193,31 @@ const HomePage = () => {
                 <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-cream/60 via-transparent to-cream" />
               </div>
               <div className="relative flex items-center justify-center overflow-hidden">
-                {/* Same video for both modes - auto plays reliably */}
+                {/* Light mode - MP4 video */}
                 <video
                   autoPlay
                   loop
                   muted
                   playsInline
                   preload="auto"
-                  className="w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
+                  className="dark:hidden w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
                   poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
                   onCanPlay={(e) => e.target.play()}
                 >
                   <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
+                {/* Dark mode - Vimeo iframe */}
+                <div className="hidden dark:block w-full" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
+                  <iframe
+                    src="https://player.vimeo.com/video/1154280710?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&background=1&muted=1"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                    title="3D Spiral Animation"
+                  />
+                </div>
               </div>
             </div>
 
