@@ -599,6 +599,24 @@ const AdvancedMarkdownEditor = ({
     }
   }, [onChange]);
 
+  // Interactive code dialog state
+  const [interactiveDialogOpen, setInteractiveDialogOpen] = useState(false);
+  const [interactiveLang, setInteractiveLang] = useState('javascript');
+
+  // Insert interactive code block
+  const handleInsertInteractiveCode = useCallback(() => {
+    const sampleCode = {
+      javascript: `// Try it! Edit this code and click Run\nconsole.log("Hello, World!");\n\nconst sum = (a, b) => a + b;\nconsole.log("2 + 3 =", sum(2, 3));`,
+      python: `# Try it! Edit this code and click Run\nprint("Hello, World!")\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nfor i in range(10):\n    print(f"fib({i}) = {fibonacci(i)}")`,
+      html: `<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    .container {\n      padding: 20px;\n      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n      border-radius: 10px;\n      color: white;\n      text-align: center;\n    }\n  </style>\n</head>\n<body>\n  <div class="container">\n    <h1>Hello World!</h1>\n    <p>Edit this HTML and click Run to see changes</p>\n  </div>\n</body>\n</html>`,
+      css: `/* Try it! Edit and click Run to see changes */\n.demo {\n  padding: 20px;\n  font-family: sans-serif;\n}\n\nh1 {\n  color: #667eea;\n  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);\n}\n\nbutton {\n  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 5px;\n  cursor: pointer;\n}\n\n.box {\n  width: 100px;\n  height: 100px;\n  background: #f0f0f0;\n  margin: 10px;\n  animation: pulse 2s infinite;\n}\n\n@keyframes pulse {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.1); }\n}`
+    };
+    const code = sampleCode[interactiveLang] || sampleCode.javascript;
+    const interactiveBlock = `\n\`\`\`interactive-${interactiveLang}\n${code}\n\`\`\`\n`;
+    insertAtCursor(interactiveBlock);
+    setInteractiveDialogOpen(false);
+  }, [interactiveLang, insertAtCursor]);
+
   // Block menu items - memoized
   const blockMenuItems = useMemo(() => [
     { icon: <HeadingIcon />, label: 'Heading 1', shortcut: '#', action: () => { insertAtCursor('# ', 2, 0); setShowBlockMenu(false); } },
@@ -606,6 +624,7 @@ const AdvancedMarkdownEditor = ({
     { icon: <HeadingIcon />, label: 'Heading 3', shortcut: '###', action: () => { insertAtCursor('### ', 4, 0); setShowBlockMenu(false); } },
     { icon: <ImageIcon />, label: 'Image', shortcut: '![]', action: () => { setImageDialogOpen(true); setShowBlockMenu(false); } },
     { icon: <CodeIcon />, label: 'Code Block', shortcut: '```', action: () => { setCodeBlockDialogOpen(true); setShowBlockMenu(false); } },
+    { icon: <CodeIcon />, label: 'Interactive Code ✨', shortcut: '▶', action: () => { setInteractiveDialogOpen(true); setShowBlockMenu(false); } },
     { icon: <QuoteIcon />, label: 'Quote', shortcut: '>', action: () => { insertAtCursor('> ', 2, 0); setShowBlockMenu(false); } },
     { icon: <ListIcon />, label: 'Bullet List', shortcut: '-', action: () => { insertAtCursor('- ', 2, 0); setShowBlockMenu(false); } },
     { icon: <TableIcon />, label: 'Table', shortcut: '||', action: () => { setTableDialogOpen(true); setShowBlockMenu(false); } },
