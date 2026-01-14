@@ -247,7 +247,7 @@ const HomePage = () => {
                 <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
               </video>
               {/* Dark mode - Vimeo iframe */}
-              <div className="hidden dark:block w-full" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
+              <div className="hidden dark:block w-full scale-[1.6] transform" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
                 <iframe
                   src="https://player.vimeo.com/video/1154280710?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&background=1&muted=1"
                   frameBorder="0"
