@@ -455,6 +455,12 @@ plot_base64
     setOutput('');
     setError(null);
     setPlotImage(null);
+    setAnimationFrames([]);
+    setCurrentFrame(0);
+    setIsAnimating(false);
+    if (animationRef.current) {
+      clearInterval(animationRef.current);
+    }
   };
 
   // Language display names
