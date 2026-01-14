@@ -100,7 +100,7 @@ const SearchPage = () => {
       <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link to="/" className="font-script text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
-            Dinmay's Blog
+            {settings.blog_title}
           </Link>
           <div className="flex items-center gap-4">
             <button
