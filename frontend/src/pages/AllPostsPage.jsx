@@ -10,6 +10,7 @@ const AllPostsPage = () => {
   const [selectedTag, setSelectedTag] = useState(null);
   const [availableTags, setAvailableTags] = useState([]);
   const { theme, toggleTheme } = useTheme();
+  const { settings } = useSiteSettings();
 
   useEffect(() => {
     const fetchData = async () => {
