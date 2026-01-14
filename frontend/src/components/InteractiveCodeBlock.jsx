@@ -1,0 +1,311 @@
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+
+/**
+ * InteractiveCodeBlock - A client-side code playground
+ * Supports HTML, CSS, JavaScript, and Python (via Pyodide)
+ * All execution happens in the browser - no server load
+ */
+const InteractiveCodeBlock = ({ 
+  language = 'javascript', 
+  initialCode = '', 
+  title = '' 
+}) => {
+  const [code, setCode] = useState(initialCode);
+  const [output, setOutput] = useState('');
+  const [isRunning, setIsRunning] = useState(false);
+  const [error, setError] = useState(null);
+  const [pyodideReady, setPyodideReady] = useState(false);
+  const [pyodideLoading, setPyodideLoading] = useState(false);
+  const iframeRef = useRef(null);
+  const pyodideRef = useRef(null);
+
+  // Load Pyodide for Python execution
+  const loadPyodide = useCallback(async () => {
+    if (pyodideRef.current || pyodideLoading) return;
+    
+    setPyodideLoading(true);
+    try {
+      // Dynamically load Pyodide script
+      if (!window.loadPyodide) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
+        script.async = true;
+        await new Promise((resolve, reject) => {
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+      
+      pyodideRef.current = await window.loadPyodide({
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/'
+      });
+      setPyodideReady(true);
+    } catch (err) {
+      setError('Failed to load Python runtime: ' + err.message);
+    } finally {
+      setPyodideLoading(false);
+    }
+  }, [pyodideLoading]);
+
+  // Initialize Pyodide when Python is selected
+  useEffect(() => {
+    if (language === 'python' && !pyodideRef.current && !pyodideLoading) {
+      loadPyodide();
+    }
+  }, [language, loadPyodide, pyodideLoading]);
+
+  // Run JavaScript code
+  const runJavaScript = () => {
+    setError(null);
+    setOutput('');
+    
+    try {
+      // Create a sandboxed environment
+      const logs = [];
+      const mockConsole = {
+        log: (...args) => logs.push(args.map(a => 
+          typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)
+        ).join(' ')),
+        error: (...args) => logs.push('Error: ' + args.join(' ')),
+        warn: (...args) => logs.push('Warning: ' + args.join(' ')),
+        info: (...args) => logs.push('Info: ' + args.join(' ')),
+      };
+      
+      // Execute in isolated scope
+      const fn = new Function('console', code);
+      const result = fn(mockConsole);
+      
+      if (result !== undefined) {
+        logs.push('=> ' + (typeof result === 'object' ? JSON.stringify(result, null, 2) : String(result)));
+      }
+      
+      setOutput(logs.join('\n'));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Run Python code
+  const runPython = async () => {
+    if (!pyodideRef.current) {
+      setError('Python runtime not loaded yet. Please wait...');
+      return;
+    }
+    
+    setError(null);
+    setOutput('');
+    setIsRunning(true);
+    
+    try {
+      // Redirect stdout
+      pyodideRef.current.runPython(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+      `);
+      
+      // Run the user code
+      await pyodideRef.current.runPythonAsync(code);
+      
+      // Get stdout content
+      const stdout = pyodideRef.current.runPython('sys.stdout.getvalue()');
+      setOutput(stdout || '(No output)');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  // Run HTML/CSS code in iframe
+  const runHTML = () => {
+    setError(null);
+    if (iframeRef.current) {
+      const iframe = iframeRef.current;
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write(code);
+      doc.close();
+    }
+  };
+
+  // Run CSS (wraps in HTML)
+  const runCSS = () => {
+    setError(null);
+    if (iframeRef.current) {
+      const iframe = iframeRef.current;
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>${code}</style>
+</head>
+<body>
+  <div class="demo">
+    <h1>CSS Demo</h1>
+    <p>This is a paragraph to style.</p>
+    <button>A Button</button>
+    <div class="box">A Box</div>
+    <ul>
+      <li>List item 1</li>
+      <li>List item 2</li>
+      <li>List item 3</li>
+    </ul>
+  </div>
+</body>
+</html>
+      `;
+      doc.open();
+      doc.write(htmlContent);
+      doc.close();
+    }
+  };
+
+  // Main run handler
+  const handleRun = () => {
+    setIsRunning(true);
+    
+    switch (language) {
+      case 'javascript':
+      case 'js':
+        runJavaScript();
+        setIsRunning(false);
+        break;
+      case 'python':
+      case 'py':
+        runPython();
+        break;
+      case 'html':
+        runHTML();
+        setIsRunning(false);
+        break;
+      case 'css':
+        runCSS();
+        setIsRunning(false);
+        break;
+      default:
+        setError('Unsupported language: ' + language);
+        setIsRunning(false);
+    }
+  };
+
+  // Reset code
+  const handleReset = () => {
+    setCode(initialCode);
+    setOutput('');
+    setError(null);
+  };
+
+  // Language display names
+  const languageNames = {
+    javascript: 'JavaScript',
+    js: 'JavaScript',
+    python: 'Python',
+    py: 'Python',
+    html: 'HTML',
+    css: 'CSS'
+  };
+
+  const isVisualLanguage = ['html', 'css'].includes(language);
+
+  return (
+    <div className="interactive-code-block my-6 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-red-500" />
+            <span className="w-3 h-3 rounded-full bg-yellow-500" />
+            <span className="w-3 h-3 rounded-full bg-green-500" />
+          </div>
+          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {title || `Interactive ${languageNames[language] || language}`}
+          </span>
+          <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+            {languageNames[language] || language}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleReset}
+            className="px-3 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
+          >
+            Reset
+          </button>
+          <button
+            onClick={handleRun}
+            disabled={isRunning || (language === 'python' && !pyodideReady && !pyodideLoading)}
+            className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium bg-green-500 hover:bg-green-600 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isRunning ? (
+              <>
+                <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Running...
+              </>
+            ) : (
+              <>
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                Run
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Python loading indicator */}
+      {language === 'python' && pyodideLoading && (
+        <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs flex items-center gap-2">
+          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          Loading Python runtime (Pyodide)... This may take a moment.
+        </div>
+      )}
+
+      {/* Code Editor */}
+      <div className="relative">
+        <textarea
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          className="w-full min-h-[200px] p-4 font-mono text-sm bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-y focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+          placeholder={`Enter your ${languageNames[language] || language} code here...`}
+          spellCheck={false}
+        />
+      </div>
+
+      {/* Output Section */}
+      <div className="border-t border-gray-200 dark:border-gray-700">
+        <div className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-400">
+          Output
+        </div>
+        
+        {error ? (
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-mono whitespace-pre-wrap">
+            {error}
+          </div>
+        ) : isVisualLanguage ? (
+          <iframe
+            ref={iframeRef}
+            className="w-full min-h-[200px] bg-white"
+            sandbox="allow-scripts"
+            title="Code output"
+          />
+        ) : (
+          <div className="p-4 bg-gray-900 text-gray-100 text-sm font-mono whitespace-pre-wrap min-h-[100px]">
+            {output || <span className="text-gray-500">Click "Run" to see output...</span>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default InteractiveCodeBlock;
