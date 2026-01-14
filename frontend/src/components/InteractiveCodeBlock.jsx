@@ -483,7 +483,7 @@ plot_base64
           <iframe
             ref={iframeRef}
             className="w-full min-h-[200px] bg-white"
-            sandbox="allow-scripts"
+            sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
             title="Code output"
           />
         ) : (
