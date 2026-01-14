@@ -714,19 +714,27 @@ const AdminPage = () => {
                     <Input id="html-title" value={htmlTitle} onChange={(e) => setHtmlTitle(e.target.value)} placeholder="Enter post title" required className="rounded-xl" />
                   </div>
                   <div className="mb-4">
-                    <Label htmlFor="html-image" className="text-gray-700 dark:text-gray-300 mb-2 block text-sm sm:text-base">Featured Image URL</Label>
+                    <Label htmlFor="html-image" className="text-gray-700 dark:text-gray-300 mb-2 block text-sm sm:text-base">Featured Media URL</Label>
                     <Input
                       id="html-image"
                       value={htmlImage}
-                      onChange={(e) => { setHtmlImage(e.target.value); setHtmlImageError(validateImageUrl(e.target.value)); }}
-                      placeholder="https://example.com/image.jpg"
+                      onChange={(e) => { setHtmlImage(e.target.value); setHtmlImageError(validateMediaUrl(e.target.value)); }}
+                      placeholder="https://example.com/image.jpg or video URL"
                       className={`rounded-xl ${htmlImageError ? 'border-yellow-500' : ''}`}
                     />
                     {htmlImageError && <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">{htmlImageError}</p>}
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">💡 Use direct image URLs from Unsplash, Imgur, or your own hosting</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">💡 Supports images, GIFs, MP4 videos, YouTube, Vimeo links</p>
                     {htmlImage && !htmlImageError && (
-                      <div className="mt-2 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-xl border">
-                        <img src={htmlImage} alt="Preview" className="max-w-full max-h-full object-contain rounded" onError={() => setHtmlImageError('❌ Image failed to load. Please check the URL')} onLoad={() => setHtmlImageError('')} />
+                      <div className="mt-2 w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-xl border overflow-hidden">
+                        <FeaturedMedia 
+                          src={htmlImage} 
+                          alt="Preview" 
+                          className="max-w-full max-h-full object-contain rounded"
+                          containerClassName="w-full h-full"
+                          autoPlay={true}
+                          loop={true}
+                          muted={true}
+                        />
                       </div>
                     )}
                   </div>
