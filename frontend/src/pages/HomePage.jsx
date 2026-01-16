@@ -137,14 +137,14 @@ const HomePage = () => {
                 <div className="hidden md:flex items-center gap-2 self-start mt-2">
                   <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
                     <img 
-                      src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-934b45fb" 
+                      src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768577179/Female_hands_typing_text_on_smartphone_close-up_fh9kiq.jpg" 
                       alt="Work sample 1" 
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
                     <img 
-                      src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-2cceee45" 
+                      src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768576913/Calculator_Casio_caption_ilove_etp1uj.jpg" 
                       alt="Work sample 2" 
                       className="w-full h-full object-cover"
                     />
@@ -156,7 +156,7 @@ const HomePage = () => {
                 <span className="text-sm sm:text-base">Based in</span>
                 <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden">
                   <img 
-                    src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-fc2aae2c" 
+                    src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768577043/Gemini_Generated_Image_bz6bdbbz6bdbbz6b_aio8m8.png" 
                     alt="Globe" 
                     className="w-full h-full object-cover"
                   />
@@ -366,7 +366,7 @@ const HomePage = () => {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gray-100 dark:bg-gray-900 order-2 lg:order-1">
               <img
-                src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-27504a48"
+                src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768576845/Gemini_Generated_Image_h71vyzh71vyzh71v_wqwnbx.png"
                 alt="Skills"
                 className="w-full h-auto"
               />
