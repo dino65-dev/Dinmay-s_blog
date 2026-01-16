@@ -373,7 +373,7 @@ const HomePage = () => {
               <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center">
                   <img
-                    src="https://assets-v2.codedesign.ai/storage/v1/object/public/69666207f25d5592fb297096_0af76837/asset-9b141fed"
+                    src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768578127/Gemini_Generated_Image_carge8carge8carg_eq2req.png"
                     alt="Icon"
                     className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
                   />
