@@ -1,37 +1,24 @@
 from fastapi import FastAPI, APIRouter, Request, Response
 from fastapi.middleware.gzip import GZipMiddleware
-from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+from utils.proxy_client import is_proxy_enabled
+from utils import proxy_client
 import os
 import logging
-from pathlib import Path
 import time
+
+# Always import DB/Redis for safety fallback
+from database import client, db, ensure_indexes
+from utils import redis_cache
 
 # Import routes
 from routes import blog_posts, auth, about, comments, github, upload, contact, site_settings
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
-
-# MongoDB connection with optimized settings for low RAM
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(
-    mongo_url,
-    maxPoolSize=5,  # Reduced pool size for 500MB RAM
-    minPoolSize=1,
-    maxIdleTimeMS=30000,  # Close idle connections after 30s
-    serverSelectionTimeoutMS=5000,
-    connectTimeoutMS=5000,
-    socketTimeoutMS=10000
-)
-db = client[os.environ['DB_NAME']]
-
 # Create the main app with optimized settings
 app = FastAPI(
     title="Dinmay's Blog API",
-    description="Optimized blog API with Cloudinary image storage",
-    version="2.0.0",
+    description="Optimized blog API with Cloudinary image storage and smart caching proxy",
+    version="4.0.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
@@ -42,42 +29,45 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
-# Simple in-memory cache for frequently accessed data
-_cache = {}
-_cache_ttl = {}
-CACHE_DURATION = 60  # 60 seconds cache
-
-def get_cached(key: str):
-    """Get cached value if not expired"""
-    if key in _cache and key in _cache_ttl:
-        if time.time() < _cache_ttl[key]:
-            return _cache[key]
-        else:
-            del _cache[key]
-            del _cache_ttl[key]
-    return None
-
-def set_cached(key: str, value, ttl: int = CACHE_DURATION):
-    """Set cache with TTL"""
-    _cache[key] = value
-    _cache_ttl[key] = time.time() + ttl
-
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Dinmay's Blog API", "version": "2.0.0", "optimized": True}
+    return {
+        "message": "Dinmay's Blog API",
+        "version": "4.0.0",
+        "mode": "proxy" if is_proxy_enabled() else "direct",
+        "proxy_url": os.environ.get('VPS_PROXY_URL', 'not set'),
+    }
 
 @api_router.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
     try:
-        # Quick MongoDB ping
-        await db.command('ping')
-        return {
-            "status": "healthy",
-            "database": "connected",
-            "cloudinary": bool(os.environ.get('CLOUDINARY_CLOUD_NAME'))
-        }
+        if is_proxy_enabled():
+            # Check proxy health
+            result = await proxy_client.proxy_get("/health")
+            return {
+                "status": "healthy",
+                "mode": "proxy",
+                "proxy": result,
+            }
+        else:
+            await db.command('ping')
+            redis_status = "disabled"
+            try:
+                r = await redis_cache._get_redis()
+                if r is not None:
+                    await r.ping()
+                    redis_status = "connected"
+            except Exception:
+                redis_status = "unavailable"
+            return {
+                "status": "healthy",
+                "mode": "direct",
+                "database": "connected",
+                "redis": redis_status,
+                "cloudinary": bool(os.environ.get('CLOUDINARY_CLOUD_NAME'))
+            }
     except Exception as e:
         return {"status": "unhealthy", "error": str(e)}
 
@@ -102,37 +92,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add request timing middleware — logs slow requests
+@app.middleware("http")
+async def add_timing(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    elapsed_ms = (time.perf_counter() - start) * 1000
+
+    if elapsed_ms > 200 and request.method == "GET":
+        logger.warning(f"SLOW {request.method} {request.url.path} → {elapsed_ms:.0f}ms")
+
+    response.headers["X-Response-Time"] = f"{elapsed_ms:.0f}ms"
+    return response
+
 # Add caching headers middleware
 @app.middleware("http")
 async def add_cache_headers(request: Request, call_next):
     response = await call_next(request)
-    
-    # Add cache headers for GET requests to specific endpoints
     if request.method == "GET":
         path = request.url.path
-        
-        # Cache static assets and images for 1 year
         if "/uploads/" in path:
             response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
-        # Cache blog posts list for 60 seconds
         elif path == "/api/posts":
             response.headers["Cache-Control"] = "public, max-age=60"
-        # Cache individual posts for 5 minutes
         elif "/api/posts/" in path:
             response.headers["Cache-Control"] = "public, max-age=300"
-        # Cache about page for 10 minutes
         elif path == "/api/about":
             response.headers["Cache-Control"] = "public, max-age=600"
-    
     return response
 
 # Configure logging (minimal for low RAM)
 logging.basicConfig(
-    level=logging.WARNING,  # Only warnings and errors to reduce memory
+    level=logging.WARNING,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup():
+    mode = "PROXY (with Direct DB fallback)" if is_proxy_enabled() else "DIRECT DB"
+    logger.warning(f"Starting in {mode} mode")
+    # Always init DB/Redis for fallback
+    await redis_cache._get_redis()
+    await ensure_indexes()
+
 @app.on_event("shutdown")
-async def shutdown_db_client():
+async def shutdown():
+    if is_proxy_enabled():
+        await proxy_client.close()
+    await redis_cache.close()
     client.close()

@@ -1,0 +1,19 @@
+{
+  "name": "blog-proxy",
+  "version": "1.0.0",
+  "description": "Smart caching proxy for Dinmay's Blog — runs on Oracle VPS, owns Redis + Cosmos DB connections",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "warm": "node warmer.js",
+    "dev": "node server.js | tee proxy.log"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "ioredis": "^5.4.0",
+    "mongodb": "^6.10.0",
+    "dotenv": "^16.4.0",
+    "compression": "^1.7.4",
+    "helmet": "^8.0.0"
+  }
+}
