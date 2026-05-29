@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from utils.auth import verify_token
 from utils.proxy_client import is_proxy_enabled, proxy_get, proxy_put, ProxyFallback
@@ -42,7 +43,7 @@ async def update_about(about_data: AboutContent, token: dict = Depends(verify_to
     
     if is_proxy_enabled():
         try:
-            return await proxy_put("/about", about_data.dict())
+            return await proxy_put("/about", jsonable_encoder(about_data))
         except ProxyFallback:
             logger.warning("[FALLBACK] VPS Proxy unreachable for PUT /about, using direct DB")
 

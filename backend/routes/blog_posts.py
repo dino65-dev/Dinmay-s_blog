@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi.encoders import jsonable_encoder
 from typing import List, Optional
 from models.blog_post import BlogPost, BlogPostCreate, BlogPostUpdate
 from utils.auth import verify_token
@@ -127,7 +128,7 @@ async def create_post(post: BlogPostCreate, token: dict = Depends(verify_token))
     if is_proxy_enabled():
         try:
             post_obj = BlogPost(**post.dict())
-            return await proxy_post("/posts", post_obj.dict())
+            return await proxy_post("/posts", jsonable_encoder(post_obj))
         except Exception as e:
             if "400" in str(e):
                 raise HTTPException(status_code=400, detail="A post with this slug already exists")

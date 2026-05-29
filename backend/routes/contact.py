@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
+from fastapi.encoders import jsonable_encoder
 from typing import List
 from models.contact import ContactMessage, ContactMessageCreate
 from utils.auth import verify_token
@@ -16,7 +17,7 @@ async def create_contact_message(message: ContactMessageCreate):
     if is_proxy_enabled():
         try:
             message_obj = ContactMessage(**message.dict())
-            return await proxy_post("/contact", message_obj.dict())
+            return await proxy_post("/contact", jsonable_encoder(message_obj))
         except ProxyFallback:
             logger.warning("[FALLBACK] VPS Proxy unreachable for POST /contact")
 

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
+from fastapi.encoders import jsonable_encoder
 from typing import List
 from models.comment import Comment, CommentCreate
 from utils.auth import verify_token
@@ -37,7 +38,7 @@ async def create_comment(post_id: str, comment: CommentCreate):
     if is_proxy_enabled():
         try:
             comment_obj = Comment(**comment.dict())
-            return await proxy_post(f"/posts/{post_id}/comments", comment_obj.dict())
+            return await proxy_post(f"/posts/{post_id}/comments", jsonable_encoder(comment_obj))
         except ProxyFallback:
             logger.warning(f"[FALLBACK] VPS Proxy unreachable for POST comment on {post_id}")
 
