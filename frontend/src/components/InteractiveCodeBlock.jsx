@@ -473,132 +473,123 @@ plot_base64
   const isVisualLanguage = ['html', 'css'].includes(language);
 
   return (
-    <div className="interactive-code-block my-6 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-3">
-          <div className="flex gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-red-500" />
-            <span className="w-3 h-3 rounded-full bg-yellow-500" />
-            <span className="w-3 h-3 rounded-full bg-green-500" />
+    <div className="interactive-code-block">
+      <div className="interactive-code__header">
+        <div className="interactive-code__identity">
+          <div className="interactive-code__lights" aria-hidden="true">
+            <span />
+            <span />
+            <span />
           </div>
-          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <span className="interactive-code__title">
             {title || `Interactive ${languageNames[language] || language}`}
           </span>
-          <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+          <span className="interactive-code__language">
             {languageNames[language] || language}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="interactive-code__actions">
           <button
+            type="button"
             onClick={handleReset}
-            className="px-3 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
+            className="interactive-code__reset"
           >
             Reset
           </button>
           <button
+            type="button"
             onClick={handleRun}
-            disabled={isRunning || (language === 'python' && !pyodideReady && !pyodideLoading)}
-            className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium bg-green-500 hover:bg-green-600 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isRunning || (language === 'python' && !pyodideReady)}
+            className="interactive-code__run"
           >
             {isRunning ? (
               <>
-                <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                <svg className="spin" width="12" height="12" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity=".3" strokeWidth="3" />
+                  <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                 </svg>
                 Running...
               </>
             ) : (
               <>
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                Run
+                {language === 'python' && pyodideLoading ? 'Loading Python' : 'Run'}
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Python loading indicator */}
       {language === 'python' && pyodideLoading && (
-        <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs flex items-center gap-2">
-          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        <div className="interactive-code__status">
+          <svg className="spin" width="14" height="14" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity=".25" strokeWidth="3" />
+            <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
-          Loading Python runtime (Pyodide)... This may take a moment.
+          Loading the Python runtime. The first launch can take a moment.
         </div>
       )}
 
-      {/* Package loading indicator */}
       {language === 'python' && loadingPackages && (
-        <div className="px-4 py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs flex items-center gap-2">
-          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        <div className="interactive-code__status interactive-code__status--packages">
+          <svg className="spin" width="14" height="14" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity=".25" strokeWidth="3" />
+            <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
-          Loading packages (numpy, matplotlib, etc.)... This may take a moment for large packages.
+          Loading the packages used by this example.
         </div>
       )}
 
-      {/* Loaded packages indicator */}
       {language === 'python' && loadedPackages.length > 0 && !loadingPackages && !isRunning && (
-        <div className="px-4 py-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs flex items-center gap-2">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="interactive-code__status interactive-code__status--ready">
+          <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           Loaded: {loadedPackages.join(', ')}
         </div>
       )}
 
-      {/* Code Editor */}
-      <div className="relative">
+      <div className="interactive-code__editor">
         <textarea
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          className="w-full min-h-[200px] p-4 font-mono text-sm bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-y focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+          aria-label={`${languageNames[language] || language} code editor`}
           placeholder={`Enter your ${languageNames[language] || language} code here...`}
           spellCheck={false}
         />
       </div>
 
-      {/* Output Section */}
-      <div className="border-t border-gray-200 dark:border-gray-700">
-        <div className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-400">
-          Output
-        </div>
+      <div className="interactive-code__output">
+        <div className="interactive-code__output-label">Output</div>
         
         {error ? (
-          <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-mono whitespace-pre-wrap">
-            {error}
-          </div>
+          <div className="interactive-code__error">{error}</div>
         ) : isVisualLanguage ? (
           <iframe
             ref={iframeRef}
-            className="w-full min-h-[200px] bg-white"
+            className="interactive-code__frame"
             sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
             title="Code output"
           />
         ) : (
-          <div className="bg-gray-900">
-            <div className="p-4 text-gray-100 text-sm font-mono whitespace-pre-wrap min-h-[100px]">
-              {output || <span className="text-gray-500">Click &quot;Run&quot; to see output...</span>}
+          <div className="interactive-code__result">
+            <div className="interactive-code__console">
+              {output || <span>Click Run to see output.</span>}
             </div>
-            {/* Animation frames display for matplotlib animations */}
             {animationFrames.length > 0 && (
-              <div className="p-4 bg-white border-t border-gray-700">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs text-gray-600 font-medium">🎬 Animation Output ({animationFrames.length} frames):</div>
-                  <div className="flex items-center gap-2">
+              <div className="interactive-code__visual">
+                <div className="interactive-code__visual-head">
+                  <div>Animation output · {animationFrames.length} frames</div>
+                  <div>
                     <button
+                      type="button"
                       onClick={() => setIsAnimating(!isAnimating)}
-                      className="px-3 py-1 text-xs font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
                     >
-                      {isAnimating ? '⏸ Pause' : '▶ Play'}
+                      {isAnimating ? 'Pause' : 'Play'}
                     </button>
-                    <span className="text-xs text-gray-500">
+                    <span>
                       Frame {currentFrame + 1}/{animationFrames.length}
                     </span>
                   </div>
@@ -606,9 +597,8 @@ plot_base64
                 <img 
                   src={animationFrames[currentFrame]} 
                   alt={`Animation frame ${currentFrame + 1}`}
-                  className="max-w-full h-auto rounded-lg shadow-md"
+                  className="interactive-code__plot"
                 />
-                {/* Frame scrubber */}
                 <input
                   type="range"
                   min={0}
@@ -618,18 +608,17 @@ plot_base64
                     setIsAnimating(false);
                     setCurrentFrame(parseInt(e.target.value));
                   }}
-                  className="w-full mt-2 accent-blue-500"
+                  aria-label="Animation frame"
                 />
               </div>
             )}
-            {/* Plot image display for matplotlib */}
             {plotImage && animationFrames.length === 0 && (
-              <div className="p-4 bg-white border-t border-gray-700">
-                <div className="text-xs text-gray-600 mb-2 font-medium">📊 Plot Output:</div>
+              <div className="interactive-code__visual">
+                <div className="interactive-code__visual-head">Plot output</div>
                 <img 
                   src={plotImage} 
                   alt="Matplotlib plot output" 
-                  className="max-w-full h-auto rounded-lg shadow-md"
+                  className="interactive-code__plot"
                 />
               </div>
             )}

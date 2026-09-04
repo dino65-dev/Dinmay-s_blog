@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        sans: ['Outfit Variable', 'system-ui', 'sans-serif'],
+        display: ['Outfit Variable', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         lg: 'var(--radius)',

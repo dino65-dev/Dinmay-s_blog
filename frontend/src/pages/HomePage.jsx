@@ -1,639 +1,227 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../contexts/ThemeContext';
-import { useAuth } from '../contexts/AuthContext';
-import { useSiteSettings } from '../contexts/SiteSettingsContext';
-import FeaturedMedia from '../components/FeaturedMedia';
-import api from '../utils/api';
-import { useToast } from '../hooks/use-toast';
+import { ArrowLeft, ArrowRight, Asterisk, Menu } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import { api, optimizeCloudinaryUrl } from '../utils/api';
 
-const HomePage = () => {
+gsap.registerPlugin(ScrollTrigger);
+
+const VIDEO_URL =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_215831_c6a8989c-d716-4d8d-8745-e972a2eec711.mp4';
+
+const fallbackImages = [
+  'https://picsum.photos/seed/embodied-intelligence/1600/1000',
+  'https://picsum.photos/seed/robotic-senses/1400/1000',
+  'https://picsum.photos/seed/ai-research-studio/1200/1400',
+  'https://picsum.photos/seed/intelligent-systems/1200/900',
+];
+
+function formatDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Recently published';
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function cleanExcerpt(value) {
+  if (!value) return 'Open the story to read the full perspective.';
+  return value
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\*\*|__/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 154);
+}
+
+function HomePage() {
+  const root = useRef(null);
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated } = useAuth();
-  const { settings } = useSiteSettings();
-  const { toast } = useToast();
-  const [scrolled, setScrolled] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    email: '',
-    message: ''
-  });
+  const [status, setStatus] = useState('loading');
+  const [activeStory, setActiveStory] = useState(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const data = await api.getPosts();
-        setPosts(data);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
-
-  const featuredPosts = posts.slice(0, 3);
-
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.firstName || !formData.email || !formData.message) {
-      toast({ title: "Error", description: "Please fill in all fields", variant: "destructive" });
-      return;
-    }
-    setSubmitting(true);
+  const loadPosts = async () => {
+    setStatus('loading');
     try {
-      await api.submitContactMessage(formData);
-      toast({ title: "Success", description: "Message sent successfully!" });
-      setFormData({ firstName: '', email: '', message: '' });
+      const response = await api.getPosts();
+      setPosts(Array.isArray(response) ? response : []);
+      setStatus('ready');
     } catch (error) {
-      toast({ title: "Error", description: "Failed to send message. Please try again.", variant: "destructive" });
-    } finally {
-      setSubmitting(false);
+      setStatus('error');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-cream dark:bg-gray-950 flex items-center justify-center">
-        <div className="w-12 h-12 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin" />
-      </div>
-    );
-  }
+  useGSAP(
+    () => {
+      loadPosts();
+
+      const media = gsap.matchMedia();
+      media.add('(prefers-reduced-motion: no-preference)', () => {
+        const words = gsap.utils.toArray('[data-scrub-word]');
+        gsap.to(words, {
+          opacity: 1,
+          stagger: 0.035,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '[data-scrub-copy]',
+            start: 'top 76%',
+            end: 'bottom 46%',
+            scrub: 0.7,
+          },
+        });
+
+        gsap.utils.toArray('[data-media-reveal]').forEach((element) => {
+          gsap.fromTo(
+            element,
+            { scale: 0.82, opacity: 0.22 },
+            {
+              scale: 1,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: element,
+                start: 'top 82%',
+                end: 'bottom 24%',
+                scrub: 0.9,
+              },
+            }
+          );
+        });
+      });
+
+      return () => media.revert();
+    },
+    { scope: root }
+  );
+
+  const editorialPosts = useMemo(
+    () =>
+      posts.map((post, index) => ({
+        ...post,
+        image: optimizeCloudinaryUrl(post.featuredImage, { width: 1400, height: 1000 }) || fallbackImages[index % fallbackImages.length],
+        category: post.tags?.[0] || 'Essay',
+        excerpt: cleanExcerpt(post.excerpt || post.content),
+      })),
+    [posts]
+  );
+
+  const latest = editorialPosts.slice(0, 4);
+  const accordionPosts = editorialPosts.slice(1, 4);
+  const carouselPosts = editorialPosts.slice(0, 3);
+  const activeCarouselPost = carouselPosts[activeStory] || carouselPosts[0];
+  const scrubWords = 'The consequential story is not what a model can say. It is what people can safely do when intelligence enters the room.'.split(' ');
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-gray-950 transition-colors duration-300">
-      {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-12 py-4 sm:py-6 transition-all duration-300 ${
-        scrolled ? 'bg-cream/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm' : ''
-      }`}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="font-script text-lg sm:text-xl md:text-2xl text-gray-800 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-            {settings.blog_title}
+    <main ref={root} className="w-full max-w-full overflow-x-hidden bg-[#10110f] font-sans text-[#f3f4ef]">
+      <header className="absolute inset-x-0 top-0 z-30 px-4 pt-4 sm:px-6 lg:px-10 lg:pt-7">
+        <nav className="mx-auto flex h-14 max-w-[1440px] items-center justify-between rounded-full border border-white/15 bg-[#151714]/70 px-3.5 backdrop-blur-xl sm:px-5" aria-label="Primary navigation">
+          <Link to="/" className="inline-flex items-center gap-2.5 text-[13px] font-semibold tracking-[-0.04em] text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a6bcff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#151714]">
+            <span className="flex size-8 items-center justify-center rounded-full bg-[#f3f4ef] text-[#151714]"><Asterisk size={14} strokeWidth={2.3} aria-hidden="true" /></span>
+            Dinmay's Blog
           </Link>
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all shadow-sm"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? (
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
-            </button>
-            {/* Available for work */}
-            <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Available for work
-            </div>
+          <div className="hidden items-center gap-7 text-[12px] font-medium text-white/65 md:flex">
+            <a className="transition-colors hover:text-white" href="#latest">Latest</a>
+            <a className="transition-colors hover:text-white" href="#perspective">Perspective</a>
+            <Link className="transition-colors hover:text-white" to="/all-posts">Archive</Link>
           </div>
-        </div>
+          <Link to="/admin" className="hidden rounded-full bg-[#f3f4ef] px-4 py-2 text-[12px] font-semibold text-[#151714] transition duration-300 hover:-translate-y-0.5 hover:bg-[#a6bcff] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a6bcff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#151714] md:inline-flex">Publish</Link>
+          <Link to="/all-posts" className="inline-flex size-8 items-center justify-center rounded-full border border-white/20 text-white md:hidden" aria-label="Browse posts"><Menu size={16} aria-hidden="true" /></Link>
+        </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-16 sm:pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 w-full">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-4 sm:space-y-6">
-              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                <span className="text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white">Hey,</span>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-amber-400">
-                  <img 
-                    src={settings.author_avatar} 
-                    alt="Avatar" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <span className="font-script text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white">{settings.author_name}</span>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-900 dark:text-white leading-tight">
-                  Blog Writer &<br />Content Creator
-                </h1>
-                <div className="hidden md:flex items-center gap-2 self-start mt-2">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
-                    <img 
-                      src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768577179/Female_hands_typing_text_on_smartphone_close-up_fh9kiq.jpg" 
-                      alt="Work sample 1" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
-                    <img 
-                      src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768576913/Calculator_Casio_caption_ilove_etp1uj.jpg" 
-                      alt="Work sample 2" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <span className="text-sm sm:text-base">Based in</span>
-                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden">
-                  <img 
-                    src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768577043/Gemini_Generated_Image_bz6bdbbz6bdbbz6b_aio8m8.png" 
-                    alt="Globe" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <span className="text-xl sm:text-2xl md:text-3xl text-gray-800 dark:text-white">Global</span>
-              </div>
-              
-              <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-lg leading-relaxed">
-                {settings.blog_description || "Welcome to my blog, your go-to source for in-depth analysis and clear explanations of technology, coding, and creative writing. Join me in exploring ideas."}
-              </p>
-              
-              <Link
-                to="/all-posts"
-                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors group text-sm sm:text-base"
-              >
-                Explore Insights
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-            
-            {/* Right Content - 3D Spiral Video */}
-            <div className="hidden lg:block relative -mr-12 xl:-mr-24 overflow-hidden">
-              {/* Gradient overlay for seamless integration */}
-              <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode gradient - very light to keep video visible and bright */}
-                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_60%,rgba(3,7,18,0.15)_80%,rgba(3,7,18,0.4)_95%,rgb(3,7,18)_100%)]" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/30 via-transparent to-gray-950/30" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-gray-950/20 via-transparent to-gray-950/30" />
-                {/* Light mode gradient - cream to transparent for seamless blending */}
-                <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(245,243,239,0.5)_60%,rgba(245,243,239,0.9)_80%,rgb(245,243,239)_100%)]" />
-                <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
-                <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-cream/60 via-transparent to-cream" />
-              </div>
-              <div className="relative flex items-center justify-center overflow-hidden">
-                {/* Light mode - MP4 video */}
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  className="dark:hidden w-full h-auto max-h-[800px] object-contain scale-[1.8] transform"
-                  poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
-                  onCanPlay={(e) => e.target.play()}
-                >
-                  <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                {/* Dark mode - Vimeo iframe */}
-                <div className="hidden dark:block w-full scale-[1.8] transform" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
-                  <iframe
-                    src="https://player.vimeo.com/video/1154280710?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&background=1&muted=1"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                    title="3D Spiral Animation"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile/Tablet - 3D Spiral Video */}
-            <div className="lg:hidden relative mt-8 -mx-4 sm:-mx-6 overflow-hidden">
-              <div className="absolute inset-0 z-10 pointer-events-none">
-                {/* Dark mode - very light gradient for visibility */}
-                <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(3,7,18,0.2)_70%,rgba(3,7,18,0.5)_90%,rgb(3,7,18)_100%)]" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-gray-950/25 via-transparent to-gray-950/25" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-gray-950/30 via-transparent to-gray-950/25" />
-                {/* Light mode */}
-                <div className="dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(245,243,239,0.6)_55%,rgba(245,243,239,0.95)_80%,rgb(245,243,239)_100%)]" />
-                <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream" />
-                <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-cream via-transparent to-cream" />
-              </div>
-              {/* Light mode - MP4 video */}
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className="dark:hidden w-full h-auto max-h-[450px] object-contain scale-[1.6]"
-                poster="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/_video-thumbnails/asset-ed557b88-thumb"
-                onCanPlay={(e) => e.target.play()}
-              >
-                <source src="https://assets-v2.codedesign.ai/storage/v1/object/public/68cba0870189df94bdd9c5db_fb13161c/asset-ed557b88" type="video/mp4" />
-              </video>
-              {/* Dark mode - Vimeo iframe */}
-              <div className="hidden dark:block w-full scale-[1.6] transform" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
-                <iframe
-                  src="https://player.vimeo.com/video/1154280710?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&background=1&muted=1"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                  title="3D Spiral Animation"
-                />
-              </div>
-            </div>
+      <section className="relative flex min-h-[100dvh] items-end overflow-hidden px-4 pb-8 pt-28 sm:px-6 sm:pb-12 lg:px-10 lg:pb-14">
+        <video autoPlay loop muted playsInline preload="metadata" className="absolute inset-0 size-full object-cover" aria-hidden="true"><source src={VIDEO_URL} type="video/mp4" /></video>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,11,9,0.3)_0%,rgba(10,11,9,0.15)_28%,rgba(10,11,9,0.94)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_46%,transparent_0%,rgba(10,11,9,0.08)_36%,rgba(10,11,9,0.54)_100%)]" />
+        <div className="relative z-10 mx-auto w-full max-w-[1440px]">
+          <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">Dinmay's Blog</p>
+          <h1 className="max-w-6xl text-[clamp(3.2rem,6.3vw,7rem)] font-medium leading-[0.88] tracking-[-0.075em] text-white">Where intelligence becomes human.</h1>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a href="#latest" className="inline-flex items-center gap-2 rounded-full bg-[#f3f4ef] px-5 py-3 text-[13px] font-semibold text-[#151714] transition duration-300 hover:-translate-y-0.5 hover:bg-[#a6bcff] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a6bcff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#151714]">Read the latest <ArrowRight size={15} strokeWidth={2} aria-hidden="true" /></a>
+            <Link to="/all-posts" className="inline-flex items-center rounded-full border border-white/45 bg-[#10110f]/15 px-5 py-3 text-[13px] font-semibold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a6bcff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#151714]">Browse archive</Link>
           </div>
         </div>
       </section>
 
-      {/* Featured Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-3 h-3 rounded-full bg-amber-400" />
-            <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Featured</span>
-          </div>
-          
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500 mb-8 sm:mb-12">
-            Latest Blog Posts
-          </h2>
-          
-          {posts.length === 0 ? (
-            <div className="text-center py-12 sm:py-16">
-              <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg">No posts yet. Be the first to create one!</p>
-              <Link to="/admin" className="inline-flex items-center gap-2 mt-4 text-amber-500 hover:text-amber-600">
-                Create First Post
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {featuredPosts.map((post, index) => (
-                  <Link
-                    key={post.id}
-                    to={`/post/${post.slug}`}
-                    className="group block bg-gray-100 dark:bg-gray-900 rounded-2xl sm:rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-800">
-                      {post.featuredImage ? (
-                        <FeaturedMedia
-                          src={post.featuredImage}
-                          alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          containerClassName="w-full h-full"
-                          autoPlay={true}
-                          loop={true}
-                          muted={true}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4 sm:p-6 flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-base sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-amber-500 transition-colors line-clamp-1">
-                          {post.title}
-                        </h3>
-                        {post.tags && post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {post.tags.slice(0, 2).map((tag, i) => (
-                              <span key={i} className="px-2 py-0.5 text-xs rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              
-              <div className="mt-6 sm:mt-8">
-                <Link
-                  to="/all-posts"
-                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm sm:text-base"
-                >
-                  See All
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
+      <section id="latest" className="mx-auto max-w-[1440px] px-4 py-32 sm:px-6 md:py-40 lg:px-10 lg:py-48">
+        <div className="max-w-4xl">
+          <p className="text-[13px] font-medium text-[#a6bcff]">Latest writing</p>
+          <h2 className="mt-4 text-[clamp(2.6rem,5vw,5.5rem)] font-medium leading-[0.9] tracking-[-0.07em]">The part of technology that stays with you.</h2>
+        </div>
+
+        {status === 'loading' && <div className="mt-12 grid grid-flow-dense gap-4 lg:grid-cols-12 lg:auto-rows-[220px]" aria-label="Loading posts"><div className="min-h-[460px] animate-pulse rounded-[22px] bg-white/10 lg:col-span-7 lg:row-span-2" /><div className="min-h-[220px] animate-pulse rounded-[22px] bg-white/10 lg:col-span-5" /><div className="min-h-[220px] animate-pulse rounded-[22px] bg-white/10 lg:col-span-3" /><div className="min-h-[220px] animate-pulse rounded-[22px] bg-white/10 lg:col-span-2" /></div>}
+
+        {status === 'error' && <div className="mt-12 rounded-[22px] border border-white/15 p-7 sm:p-10"><h3 className="text-2xl font-medium tracking-[-0.04em]">The publishing API is not responding.</h3><p className="mt-3 max-w-xl text-sm leading-6 text-white/60">Start the FastAPI service or set `REACT_APP_BACKEND_URL` to its deployed address, then retry this connection.</p><button onClick={loadPosts} className="mt-6 rounded-full border border-white/30 px-4 py-2.5 text-[13px] font-semibold text-white transition hover:border-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a6bcff]">Retry connection</button></div>}
+
+        {status === 'ready' && latest.length === 0 && <div className="mt-12 rounded-[22px] border border-white/15 p-7 sm:p-10"><h3 className="text-2xl font-medium tracking-[-0.04em]">No stories have been published yet.</h3><p className="mt-3 max-w-xl text-sm leading-6 text-white/60">The feed is connected and ready for the first post from the admin workspace.</p><Link to="/admin" className="mt-6 inline-flex rounded-full bg-[#f3f4ef] px-4 py-2.5 text-[13px] font-semibold text-[#151714]">Open publishing</Link></div>}
+
+        {status === 'ready' && latest.length > 0 && (
+          <div className={latest.length >= 4 ? 'mt-12 grid grid-flow-dense gap-4 lg:grid-cols-12 lg:auto-rows-[220px]' : 'mt-12 grid gap-4 md:grid-cols-2'}>
+            {latest.map((post, index) => {
+              const spans = ['lg:col-span-7 lg:row-span-2', 'lg:col-span-5', 'lg:col-span-3', 'lg:col-span-2'];
+              return (
+                <Link key={post.id || post.slug} to={`/post/${post.slug}`} className={`group relative min-h-[310px] overflow-hidden rounded-[22px] bg-[#1b1d1a] ${latest.length >= 4 ? spans[index] : ''}`}>
+                  <img data-media-reveal src={post.image} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover opacity-80 grayscale transition duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0" />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,13,11,0.04)_0%,rgba(12,13,11,0.88)_100%)]" />
+                  <article className="relative flex h-full min-h-[310px] flex-col justify-end p-5 sm:p-7">
+                    <div className="flex items-center justify-between gap-3 text-[11px] font-medium text-white/60"><span>{post.category}</span><span>{formatDate(post.publishedDate)}</span></div>
+                    <h3 className={index === 0 ? 'mt-3 max-w-2xl line-clamp-3 text-[clamp(2rem,3.5vw,3.5rem)] font-medium leading-[0.97] tracking-[-0.055em]' : 'mt-3 line-clamp-3 text-2xl font-medium leading-[1] tracking-[-0.045em]'}>{post.title}</h3>
+                    <p className="mt-3 max-w-xl line-clamp-2 text-[13px] leading-5 text-white/68">{post.excerpt}</p>
+                    <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-semibold text-[#a6bcff]">Read story <ArrowRight size={14} strokeWidth={2} aria-hidden="true" /></span>
+                  </article>
                 </Link>
-              </div>
-            </>
-          )}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
-      {/* Skills Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-3 h-3 rounded-full bg-amber-400" />
-            <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">My Skills and</span>
-          </div>
-          
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500 mb-8 sm:mb-12">
-            Expertise
-          </h2>
-          
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gray-100 dark:bg-gray-900 order-2 lg:order-1">
-              <img
-                src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768576845/Gemini_Generated_Image_h71vyzh71vyzh71v_wqwnbx.png"
-                alt="Skills"
-                className="w-full h-auto"
-              />
-              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center">
-                  <img
-                    src="https://res.cloudinary.com/dldkejdtw/image/upload/v1768578127/Gemini_Generated_Image_carge8carge8carg_eq2req.png"
-                    alt="Icon"
-                    className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
-                  />
-                </div>
-              </div>
+      {accordionPosts.length > 0 && (
+        <section id="perspective" className="px-4 py-32 sm:px-6 md:py-40 lg:px-10 lg:py-48">
+          <div className="mx-auto max-w-[1440px]">
+            <div className="max-w-5xl">
+              <p className="text-[13px] font-medium text-[#a6bcff]">A closer look</p>
+              <h2 className="mt-4 text-[clamp(2.6rem,5vw,5.5rem)] font-medium leading-[0.9] tracking-[-0.07em]">Ideas that <span className="mx-1 inline-block h-[0.68em] w-[1.7em] rounded-full align-[0.02em] bg-cover bg-center" style={{ backgroundImage: `url(${accordionPosts[0].image})` }} /> change shape in the world.</h2>
             </div>
-            
-            <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
-              <div className="flex flex-wrap gap-2 sm:gap-3">
-                {['Blog Writing', 'Content Creation', 'Technical Writing', 'Storytelling'].map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-4 sm:px-5 py-2 sm:py-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-800 dark:text-gray-200 font-medium shadow-sm hover:shadow-md transition-shadow text-sm sm:text-base"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-              
-              <p className="font-script text-xl sm:text-2xl md:text-3xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                My journey in writing and content creation has equipped me with a unique blend of analytical and communication skills.
-              </p>
-              
-              <Link
-                to="/about"
-                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors group text-sm sm:text-base"
-              >
-                View Insights
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
+            <div className="mt-14 flex min-h-[560px] flex-col gap-3 lg:h-[640px] lg:flex-row">
+              {accordionPosts.map((post) => (
+                <Link key={post.id || post.slug} to={`/post/${post.slug}`} className="group relative min-h-[230px] flex-1 overflow-hidden rounded-[22px] transition-[flex] duration-700 ease-out hover:flex-[2.25] lg:min-h-0">
+                  <img data-media-reveal src={post.image} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover grayscale transition duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0" />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,13,11,0.08)_16%,rgba(12,13,11,0.9)_100%)]" />
+                  <div className="relative flex size-full flex-col justify-end p-5 sm:p-7"><span className="text-[11px] font-medium text-white/65">{post.category}</span><h3 className="mt-3 max-w-md text-2xl font-medium leading-[1] tracking-[-0.045em] opacity-100 transition-opacity duration-500 lg:opacity-0 lg:group-hover:opacity-100">{post.title}</h3><span className="mt-4 inline-flex items-center gap-2 text-[13px] font-semibold text-[#a6bcff] opacity-100 transition-opacity duration-500 lg:opacity-0 lg:group-hover:opacity-100">Read story <ArrowRight size={14} strokeWidth={2} aria-hidden="true" /></span></div>
+                </Link>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Content Offerings Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-3 h-3 rounded-full bg-amber-400" />
-            <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Content</span>
-          </div>
-          
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500 mb-8 sm:mb-12">
-            Offerings
-          </h2>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            {[
-              { title: 'Blog Posts', icon: '📝' },
-              { title: 'Technical Guides', icon: '📚' },
-              { title: 'Tutorials', icon: '🎓' },
-              { title: 'Code Reviews', icon: '💻' },
-              { title: 'Custom Content', icon: '✨' },
-              { title: 'Education', icon: '🎯' },
-              { title: 'Visualization', icon: '📊' },
-              { title: 'Consulting', icon: '💡' },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="group p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
-              >
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                  <span className="text-xl sm:text-2xl">{item.icon}</span>
-                  <span className="text-gray-800 dark:text-gray-200 font-medium group-hover:text-amber-500 transition-colors text-sm sm:text-base">
-                    {item.title}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 md:px-12">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-3 h-3 rounded-full bg-amber-400" />
-            <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">FAQs</span>
-          </div>
-          
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500 mb-8 sm:mb-12">
-            FAQs
-          </h2>
-          
-          <div className="space-y-3 sm:space-y-4">
-            {[
-              { q: 'What topics do you write about?', a: 'I cover technology, coding, AI, web development, and creative writing.' },
-              { q: 'How often do you publish new posts?', a: 'I aim to publish new content weekly, focusing on quality and relevance.' },
-              { q: 'Is the content free?', a: 'Yes, all content on this blog is freely accessible to everyone.' },
-              { q: 'Can I request a specific topic?', a: 'Yes, feel free to suggest topics. I prioritize based on relevance and community interest.' },
-            ].map((faq, index) => (
-              <details
-                key={index}
-                className="group bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl overflow-hidden"
-              >
-                <summary className="flex items-center justify-between p-4 sm:p-6 cursor-pointer list-none">
-                  <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base pr-4">{faq.q}</span>
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                  {faq.a}
-                </div>
-              </details>
-            ))}
-          </div>
-          
-          <p className="mt-6 sm:mt-8 text-center text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-            Still have questions? Feel free to get in touch today!
+      <section className="px-4 py-32 sm:px-6 md:py-40 lg:px-10 lg:py-48">
+        <div className="mx-auto max-w-6xl text-center" data-scrub-copy>
+          <p className="text-[clamp(2.5rem,5vw,5.2rem)] font-medium leading-[0.94] tracking-[-0.07em] text-white/18">
+            {scrubWords.map((word, index) => <span data-scrub-word key={`${word}-${index}`} className="mr-[0.22em] inline-block">{word}</span>)}
           </p>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="w-3 h-3 rounded-full bg-amber-400" />
-                <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Get in touch today</span>
-              </div>
-              
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-amber-500 mb-6 sm:mb-8">
-                Contact
-              </h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-                  <div>
-                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">First Name *</label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-gray-900 dark:text-white text-sm sm:text-base"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Email *</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-gray-900 dark:text-white text-sm sm:text-base"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Message *</label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={5}
-                    className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-gray-900 dark:text-white resize-none text-sm sm:text-base"
-                    placeholder="Write your message here..."
-                  />
-                </div>
-                
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="px-6 sm:px-8 py-3 sm:py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors disabled:opacity-50 text-sm sm:text-base"
-                  >
-                    {submitting ? 'Sending...' : 'Send Message'}
-                  </button>
-                  <a
-                    href="mailto:dinmaybrahma@outlook.com"
-                    className="px-6 sm:px-8 py-3 sm:py-4 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-center text-sm sm:text-base"
-                  >
-                    Prefer to email directly
-                  </a>
-                </div>
-              </form>
-            </div>
-            
-            <div className="flex flex-col justify-center">
-              <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-4 sm:space-y-6">
-                <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  {settings.blog_title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 font-script text-base sm:text-lg">
-                  {settings.author_bio || "Sharing ideas, one post at a time."}
-                </p>
-                <p className="text-gray-500 dark:text-gray-500 text-sm sm:text-base">
-                  dinmaybrahma@outlook.com
-                </p>
-              </div>
+      {carouselPosts.length > 0 && activeCarouselPost && (
+        <section className="px-4 pb-32 sm:px-6 md:pb-40 lg:px-10 lg:pb-48">
+          <div className="mx-auto grid max-w-[1440px] overflow-hidden rounded-[22px] bg-[#1b1d1a] lg:grid-cols-[0.95fr_1.05fr]">
+            <div className="relative min-h-[360px] overflow-hidden lg:min-h-[580px]"><img data-media-reveal src={activeCarouselPost.image} alt="" className="size-full object-cover grayscale" /><div className="absolute inset-0 bg-[#10110f]/15" /></div>
+            <div className="flex min-h-[360px] flex-col justify-between p-7 sm:p-10 lg:min-h-[580px] lg:p-14">
+              <div><p className="text-[13px] font-medium text-[#a6bcff]">Editor&apos;s selection</p><h2 className="mt-5 max-w-xl text-4xl font-medium leading-[0.96] tracking-[-0.06em] sm:text-5xl">{activeCarouselPost.title}</h2><p className="mt-6 max-w-lg text-[15px] leading-6 text-white/62">{activeCarouselPost.excerpt}</p></div>
+              <div className="mt-10 flex items-center justify-between gap-4"><Link to={`/post/${activeCarouselPost.slug}`} className="inline-flex items-center gap-2 text-[13px] font-semibold text-white">Open story <ArrowRight size={15} strokeWidth={2} aria-hidden="true" /></Link><div className="flex gap-2"><button onClick={() => setActiveStory((activeStory - 1 + carouselPosts.length) % carouselPosts.length)} className="inline-flex size-10 items-center justify-center rounded-full border border-white/20 text-white transition hover:border-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a6bcff]" aria-label="Previous featured story"><ArrowLeft size={16} aria-hidden="true" /></button><button onClick={() => setActiveStory((activeStory + 1) % carouselPosts.length)} className="inline-flex size-10 items-center justify-center rounded-full border border-white/20 text-white transition hover:border-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a6bcff]" aria-label="Next featured story"><ArrowRight size={16} aria-hidden="true" /></button></div></div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Footer */}
-      <footer className="py-8 sm:py-12 px-4 sm:px-6 md:px-12 border-t border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
-          <p className="text-gray-500 dark:text-gray-500 text-xs sm:text-sm">
-            {settings.footer_text}
-          </p>
-          <nav className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-            <Link to="/" className="hover:text-amber-500 transition-colors">Home</Link>
-            <Link to="/all-posts" className="hover:text-amber-500 transition-colors">Posts</Link>
-            <Link to="/about" className="hover:text-amber-500 transition-colors">About</Link>
-            <Link to="/admin" className="hover:text-amber-500 transition-colors">Admin</Link>
-          </nav>
-        </div>
+      <footer className="border-t border-white/10 px-4 py-12 sm:px-6 lg:px-10">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-8 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-3xl font-medium tracking-[-0.055em]">Keep reading closely.</p><Link to="/all-posts" className="mt-4 inline-flex items-center gap-2 text-[13px] font-semibold text-[#a6bcff]">Browse every story <ArrowRight size={14} strokeWidth={2} aria-hidden="true" /></Link></div><div className="flex gap-5 text-[12px] text-white/60"><Link className="hover:text-white" to="/about">About</Link><Link className="hover:text-white" to="/all-posts">Archive</Link><Link className="hover:text-white" to="/admin">Publishing</Link></div></div>
       </footer>
-
-      {/* Floating Bottom Navigation */}
-      <nav className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] sm:w-auto max-w-lg">
-        <div className="flex items-center justify-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-1.5 sm:py-2 bg-gray-900/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-full shadow-2xl">
-          <Link
-            to="/"
-            className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            to="/all-posts"
-            className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
-          >
-            Posts
-          </Link>
-          <Link
-            to="/about"
-            className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
-          >
-            About
-          </Link>
-          <Link
-            to="/search"
-            className="px-3 sm:px-5 py-2 sm:py-2.5 text-white text-xs sm:text-sm font-medium hover:bg-white/10 rounded-full transition-colors"
-          >
-            Search
-          </Link>
-          <Link
-            to="/admin"
-            className="px-3 sm:px-5 py-2 sm:py-2.5 bg-amber-500 text-white text-xs sm:text-sm font-medium rounded-full hover:bg-amber-600 transition-colors"
-          >
-            Admin
-          </Link>
-        </div>
-      </nav>
-    </div>
+    </main>
   );
-};
+}
 
 export default HomePage;

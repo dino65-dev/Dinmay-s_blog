@@ -1,18 +1,21 @@
-FROM node:16-alpine
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
-
-# Copy application code
 COPY . .
 
-# Expose port
-EXPOSE 3000
+ARG VITE_BACKEND_URL=http://localhost:8001
+ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
+RUN npm run build
 
-# Start development server
-CMD ["yarn", "start"]
+FROM nginx:1.27-alpine
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
